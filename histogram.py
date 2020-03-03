@@ -31,13 +31,13 @@ def histogram_RGB(img):
 
     #Plotting
     pl.subplot(3,1,1)    
-    pl.hist(V[0],bins=256, facecolor='r')
+    pl.hist(V[0],bins=256, color='r')
     pl.subplot(3,1,2)    
-    pl.hist(V[1],bins=256, facecolor='g')
+    pl.hist(V[1],bins=256, color='g')
     pl.subplot(3,1,3)  
-    pl.hist(V[2],bins=256, facecolor='b')  
+    pl.hist(V[2],bins=256, color='b')  
     pl.show()
-    return None
+    return V
 
 if __name__ == '__main__':
     

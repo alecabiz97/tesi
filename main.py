@@ -29,4 +29,4 @@ for k in cam1.keys():
     
 #img=imageio.imread(filename)
     
-histogram_RGB(cam1[Keys1[0]])    
+V=histogram_RGB(cam1[Keys1[0]])    
