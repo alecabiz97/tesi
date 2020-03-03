@@ -28,17 +28,19 @@ def importBmpFiles(Dir,filt):
         d_tmp={}
     return d_list
             
-            
-inDir='C:\\Users\\AleCabiz\\Desktop\\Tesi'
-newDir=os.path.join(inDir,'VIPeR')
-os.chdir(newDir)
-filt=glob.glob('cam*')
 
-d_list=importBmpFiles(newDir,filt)
-cam1=d_list[0]
-cam2=d_list[1]
-K=[]
-for k in cam1.keys():
-    K.append(k)
+if __name__ == '__main__':            
+    inDir='C:\\Users\\AleCabiz\\Desktop\\Tesi'
+    newDir=os.path.join(inDir,'VIPeR')
+    os.chdir(newDir)
+    filt=glob.glob('cam*')
+    
+    d_list=importBmpFiles(newDir,filt)
+    cam1=d_list[0]
+    cam2=d_list[1]
+    K=[]
+    for k in cam1.keys():
+        K.append(k)
+       
     
                     
