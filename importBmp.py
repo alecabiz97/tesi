@@ -7,7 +7,8 @@ Created on Mon Mar  2 18:02:19 2020
 
 import os
 import glob
-from PIL import Image
+#from PIL import Image
+import imageio
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
@@ -21,7 +22,7 @@ def importBmpFiles(Dir,filt):
         os.chdir(os.path.join(Dir,cartella))
         filt_files=glob.glob('*.bmp') 
         for k in filt_files:
-            file=Image.open(k)
+            file=imageio.imread(k)
             filename=k.replace('.bmp','')
             d_tmp[filename]=file
         d_list.append(d_tmp)

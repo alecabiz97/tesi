@@ -14,13 +14,11 @@ from PIL import Image
 
 
 
-def histogram_RGB(img):
+def histogram_RGB(X):
     
     #r,g,b = img.split()
     
     V=[]
-    
-    X=np.array(img)
     for l in range(X.shape[2]):
         X_l=X[:,:,l]
         
