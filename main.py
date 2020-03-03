@@ -4,6 +4,7 @@ Created on Tue Mar  3 14:36:45 2020
 
 @author: AleCabiz
 """
+
 import os
 import glob
 from PIL import Image
@@ -29,4 +30,5 @@ for k in cam1.keys():
     
 #img=imageio.imread(filename)
     
-V=histogram_RGB(cam1[Keys1[1]])    
+V=histogram_vector(cam1[Keys1[0]])    
+histogram_plot(V)
