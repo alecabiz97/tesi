@@ -23,8 +23,8 @@ def importBmpFiles(Dir,filt):
         filt_files=glob.glob('*.bmp') 
         for k in filt_files:
             file=imageio.imread(k)
-            filename=k.replace('.bmp','')
-            d_tmp[filename]=file
+            file_id=int(k.split('_')[0])
+            d_tmp[file_id]=file
         d_list.append(d_tmp)
         d_tmp={}
     return d_list

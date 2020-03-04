@@ -11,22 +11,41 @@ import matplotlib.pyplot as pl
 
 from PIL import Image
 
+def histogram_vector(X):        
+    V=np.zeros([256,1])
+    if len(X.shape) == 2:   #greyscale image        
+        x=X.reshape([1,X.shape[0]*X.shape[1]]) #anzi che (1,16) (16,1)
+        for i in range(len(x)):
+            val=x[i]
+            V[val] += 1
+        return V
+    if len(X.shape) == 3:  #RGB
+        V_rgb=[]
+        for ch in range(X.shape[2]):  #ch anzi l
+            X_ch=X[:,:,ch]
+            
+            #creo un vettore x1 con tutti i valori della matrice Xl
+            x=X_ch.reshape(X_ch.shape[0]*X_ch.shape[1],1)
+            for i in range(len(x)):
+                val=x[i]
+                V[val] += 1
+            V_rgb.append(V)
+        return V_rgb
 
-
-def histogram_vector(X):    
+def reshape_image(X):    
     #r,g,b = img.split()    
     V=[]
     if len(X.shape) == 2:   #greyscale image  
-        x=X.reshape([1,X.shape[0]*X.shape[1]])
+        x=X.reshape([1,X.shape[0]*X.shape[1]]) #anzi che (1,16) (16,1)
         x=np.transpose(x)
         V.append(x)
         return V
     if len(X.shape) == 3:  #RGB
-        for l in range(X.shape[2]):
-            X_l=X[:,:,l]
+        for ch in range(X.shape[2]):  #ch anzi l
+            X_ch=X[:,:,ch]
             
             #creo un vettore x1 con tutti i valori della matrice Xl
-            x=X_l.reshape([1,X_l.shape[0]*X_l.shape[1]])
+            x=X_ch.reshape([1,X_ch.shape[0]*X_ch.shape[1]])
             x=np.transpose(x)
             V.append(x)
         return V
@@ -63,6 +82,7 @@ def histogram_intersection(A,B):    #A e B sono due vettori
 if __name__ == '__main__':
     
     A=camA[KeysA[0]]
+    V1=histogram_vector(camA[0])
 #    K=0
 #    
 #    for key in KeysA: 

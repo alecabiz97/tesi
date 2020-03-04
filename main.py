@@ -28,10 +28,10 @@ camB=d_list[1]
 #KeysA e KeysB conterrano le chievi dei dizionari camA e camB
 KeysA,KeysB=[],[]
 for k in camA.keys():
-    KeysA.append(str(k))
+    KeysA.append(k) #guardare cosa è k, le chiavi è meglio che siano interi
 for k in camB.keys():
-    KeysB.append(str(k))    
+    KeysB.append(k)    
+    #keys -> id_a
     
-    
-V=histogram_vector(camA[KeysA[0]])    
+V=reshape_image(camA[KeysA[0]])    
 histogram_plot(V)
