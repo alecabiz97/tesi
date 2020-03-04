@@ -46,13 +46,38 @@ def histogram_plot(V):
     elif np.shape(V)[0] == 1:  #greyscale image 
         pl.hist(V[0],bins=256)  
         pl.show()
+
+#Prima bozza        
+def histogram_intersection(A,B):    #A e B sono due vettori
+    if len(A) == len(B):
+        K=0
+        for i in range(len(A)):
+            m=min([A[i],B[i]])
+            K += m
+        return K
+    else:
+        return None
+        
         
 
 if __name__ == '__main__':
     
-    histogram_vector('000_45.bmp')
-    
+    A=camA[KeysA[0]]
+#    K=0
+#    
+#    for key in KeysA: 
+#        if key != KeysA[0]:
+#            B=camA[key]
+#            Va=histogram_vector(A)
+#            Vb=histogram_vector(B)
+#            kR=histogram_intersection(Va[0],Vb[0]) #Red
+#            kG=histogram_intersection(Va[1],Vb[1]) #Green
+#            kB=histogram_intersection(Va[2],Vb[2]) #Blue
+#            k_media=(kR+kG+kB)/3
+#            if k_media > K:
+#                K=k_media
+#                pers=key
+        
+        
 
-
-    
-                    
+                        

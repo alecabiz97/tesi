@@ -22,13 +22,16 @@ filt=glob.glob('cam*')
 
 d_list=importBmpFiles(newDir,filt)
 #os.chdir(baseDir) #torno alla directory corrente
-cam1=d_list[0]
-cam2=d_list[1]
-Keys1=[]
-for k in cam1.keys():
-    Keys1.append(str(k))
+camA=d_list[0]
+camB=d_list[1]
+
+#KeysA e KeysB conterrano le chievi dei dizionari camA e camB
+KeysA,KeysB=[],[]
+for k in camA.keys():
+    KeysA.append(str(k))
+for k in camB.keys():
+    KeysB.append(str(k))    
     
-#img=imageio.imread(filename)
     
-V=histogram_vector(cam1[Keys1[0]])    
+V=histogram_vector(camA[KeysA[0]])    
 histogram_plot(V)
