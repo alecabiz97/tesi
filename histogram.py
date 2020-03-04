@@ -11,7 +11,7 @@ import matplotlib.pyplot as pl
 
 from PIL import Image
 
-def histogram_vector(X):        
+def histogram_vector(X):      #restituisce 3 array r,g,b  
     V=np.zeros([256,1])
     if len(X.shape) == 2:   #greyscale image        
         x=X.reshape([1,X.shape[0]*X.shape[1]]) #anzi che (1,16) (16,1)
@@ -30,7 +30,7 @@ def histogram_vector(X):
                 val=x[i]
                 V[val] += 1
             V_rgb.append(V)
-        return V_rgb
+        return V_rgb[0],V_rgb[1],V_rgb[2]
 
 def reshape_image(X):    
     #r,g,b = img.split()    
@@ -38,8 +38,7 @@ def reshape_image(X):
     if len(X.shape) == 2:   #greyscale image  
         x=X.reshape([1,X.shape[0]*X.shape[1]]) #anzi che (1,16) (16,1)
         x=np.transpose(x)
-        V.append(x)
-        return V
+        return x
     if len(X.shape) == 3:  #RGB
         for ch in range(X.shape[2]):  #ch anzi l
             X_ch=X[:,:,ch]
@@ -77,12 +76,29 @@ def histogram_intersection(A,B):    #A e B sono due vettori
     else:
         return None
         
-        
+def CMC_curve(da,db):
+    #rank=np.arange(len(da.keys()))
+    rank={}
+    for ida in da.keys():
+        #rate_ai_bi=np.arange(len(db.keys()))
+        rate_ai_bi={}
+        Va=histogram_vector(da[ida])
+        for idb in db.keys():
+            Vb=histogram_vector(db[idb])
+            kR=histogram_intersection(Va[0],Vb[0]) #Red
+            kG=histogram_intersection(Va[1],Vb[1]) #Green
+            kB=histogram_intersection(Va[2],Vb[2]) #Blue
+            K=(kR+kG+kB)/3
+            rate_ai_bi[idb]=K
+        print(ida)    
+        rank[ida]=rate_ai_bi 
+    return rank       
 
 if __name__ == '__main__':
     
-    A=camA[KeysA[0]]
-    V1=histogram_vector(camA[0])
+    rank=CMC_curve(camA,camB)
+#    A=camA[KeysA[0]]
+#    V1=histogram_vector(camA[0])
 #    K=0
 #    
 #    for key in KeysA: 
