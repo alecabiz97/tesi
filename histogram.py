@@ -11,7 +11,8 @@ import matplotlib.pyplot as pl
 
 from PIL import Image
 
-def histogram_vector(X):      #restituisce 3 array r,g,b  
+
+def histogram_vector(X):      #restituisce 3 array r,g,b, 1 se levelgrey  
     V=np.zeros([256,1])
     if len(X.shape) == 2:   #greyscale image        
         x=X.reshape([1,X.shape[0]*X.shape[1]]) #anzi che (1,16) (16,1)
@@ -32,7 +33,7 @@ def histogram_vector(X):      #restituisce 3 array r,g,b
             V_rgb.append(V)
         return V_rgb[0],V_rgb[1],V_rgb[2]
 
-def reshape_image(X):    
+def reshape_image(X):     #restituisco 3 array(in caso RGB)
     #r,g,b = img.split()    
     V=[]
     if len(X.shape) == 2:   #greyscale image  
@@ -47,10 +48,10 @@ def reshape_image(X):
             x=X_ch.reshape([1,X_ch.shape[0]*X_ch.shape[1]])
             x=np.transpose(x)
             V.append(x)
-        return V
+        return V[0],V[1],V[2]
     
 
-
+#inutile
 def histogram_plot(V):
     #Plotting
     if np.shape(V)[0] == 3:   #RGB
@@ -72,7 +73,7 @@ def histogram_intersection(A,B):    #A e B sono due vettori
         for i in range(len(A)):
             m=min([A[i],B[i]])
             K += m
-        return K
+        return int(K)
     else:
         return None
         
@@ -96,7 +97,13 @@ def CMC_curve(da,db):
 
 if __name__ == '__main__':
     
-    rank=CMC_curve(camA,camB)
+   a=np.array([1,4,3])
+   b=np.array([10,2,34])
+   print(histogram_intersection(a,b))
+   
+   #a_r,a_g,a_b=histogram_vector(A)
+   
+    # rank=CMC_curve(camA,camB)
 #    A=camA[KeysA[0]]
 #    V1=histogram_vector(camA[0])
 #    K=0

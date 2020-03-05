@@ -14,6 +14,7 @@ import matplotlib.pyplot as pl
 from importBmp import *
 from histogram import *
 
+
 fileDir='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Python files'
 inDir='C:\\Users\\AleCabiz\\Desktop\\Tesi'
 newDir=os.path.join(inDir,'VIPeR')
@@ -33,44 +34,72 @@ for k in camB.keys():
     Id_B.append(k)    
 
 V=reshape_image(camA[0])    
-histogram_plot(V)
+#histogram_plot(V)
     
 V1=histogram_vector(camA[0]) 
-print('ciao')
-rank=CMC_curve(camA,camB)
 
-#K=0
-#
-#for id in Id_A: 
-#    B=camB[id]
-#    Vb=histogram_vector(B)
-#    kR=histogram_intersection(V1[0],Vb[0]) #Red
-#    kG=histogram_intersection(V1[1],Vb[1]) #Green
-#    kB=histogram_intersection(V1[2],Vb[2]) #Blue
-#    k_media=(kR+kG+kB)/3
-#    if k_media > K:
-#        K=k_media
-#        pers=id
+#rank=CMC_curve(camA,camB)
+
 
 #%%
-#print(a)
-#A=camA[0]
-#B=camA[1]
-#Va=histogram_vector(A)
-#Vb=histogram_vector(B)
+
+#rank={}
+#K=np.zeros((25,2))
 #
-#kr=histogram_intersection(Va[0],Vb[0]) #11327
-#kg=histogram_intersection(Va[1],Vb[1]) #11327
-#kb=histogram_intersection(Va[2],Vb[2]) #11327
-#K1=(kr+kg+kr)/3 #11327
+#Id_A2=Id_A[0:25]
+#Id_B2=Id_B[0:25]
 #
-#kr=histogram_intersection(Va[0],Va[0]) #18432
-#kg=histogram_intersection(Va[1],Va[1]) #18432
-#kb=histogram_intersection(Va[2],Va[2]) #18432
-#K2=(kr+kg+kr)/3 #18432
+#for i in Id_A2:
+#    A=camA[i]
+#    a_r,a_g,a_b=histogram_vector(A)
+#    k_index=0
+#    for j in Id_B2:
+#        B=camB[j]
+#        b_r,b_g,b_b=histogram_vector(B)
+#        
+#        kr=histogram_intersection(a_r,b_r) 
+#        kg=histogram_intersection(a_g,b_g) 
+#        kb=histogram_intersection(a_b,b_b) 
+#        k=(kr+kg+kb)/3 
+#        K[k_index]=(j,k)
+#        k_index += 1
+#    rank[i]=K
+#    print(i) 
+#    
+##%%
+#v=np.zeros(25,1)
+#v_index,v_index_tmp=0,0
 #
-#a=Va[0:10]
-#b=Vb[0:10]
+#
+#for k in rank.keys():
+#    K=rank[k]
+#    for i in K[:,0]:
+#        R=K[i,:]
+#        if R[i,1] > v[v_index]:
+#            v[v_index]=R[i,:]
+#            
+            
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
 
 
 
