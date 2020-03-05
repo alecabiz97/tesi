@@ -69,31 +69,11 @@ def histogram_plot(V):
 #Prima bozza        
 def histogram_intersection(A,B):    #A e B sono due vettori
     if len(A) == len(B):
-        K=0
-        for i in range(len(A)):
-            m=min([A[i],B[i]])
-            K += m
-        return int(K)
+        return np.sum(np.minimum(A,B))
     else:
         return None
         
-def CMC_curve(da,db):
-    #rank=np.arange(len(da.keys()))
-    rank={}
-    for ida in da.keys():
-        #rate_ai_bi=np.arange(len(db.keys()))
-        rate_ai_bi={}
-        Va=histogram_vector(da[ida])
-        for idb in db.keys():
-            Vb=histogram_vector(db[idb])
-            kR=histogram_intersection(Va[0],Vb[0]) #Red
-            kG=histogram_intersection(Va[1],Vb[1]) #Green
-            kB=histogram_intersection(Va[2],Vb[2]) #Blue
-            K=(kR+kG+kB)/3
-            rate_ai_bi[idb]=K
-        print(ida)    
-        rank[ida]=rate_ai_bi 
-    return rank       
+     
 
 if __name__ == '__main__':
     

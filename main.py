@@ -38,46 +38,7 @@ V=reshape_image(camA[0])
     
 V1=histogram_vector(camA[0]) 
 
-#rank=CMC_curve(camA,camB)
 
-
-#%%
-
-#rank={}
-#K=np.zeros((25,2))
-#
-#Id_A2=Id_A[0:25]
-#Id_B2=Id_B[0:25]
-#
-#for i in Id_A2:
-#    A=camA[i]
-#    a_r,a_g,a_b=histogram_vector(A)
-#    k_index=0
-#    for j in Id_B2:
-#        B=camB[j]
-#        b_r,b_g,b_b=histogram_vector(B)
-#        
-#        kr=histogram_intersection(a_r,b_r) 
-#        kg=histogram_intersection(a_g,b_g) 
-#        kb=histogram_intersection(a_b,b_b) 
-#        k=(kr+kg+kb)/3 
-#        K[k_index]=(j,k)
-#        k_index += 1
-#    rank[i]=K
-#    print(i) 
-#    
-##%%
-#v=np.zeros(25,1)
-#v_index,v_index_tmp=0,0
-#
-#
-#for k in rank.keys():
-#    K=rank[k]
-#    for i in K[:,0]:
-#        R=K[i,:]
-#        if R[i,1] > v[v_index]:
-#            v[v_index]=R[i,:]
-#            
             
         
         
