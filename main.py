@@ -13,7 +13,7 @@ from scipy import linalg
 import matplotlib.pyplot as pl
 from importBmp import *
 from histogram import *
-
+from cmc import *
 
 fileDir='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Python files'
 inDir='C:\\Users\\AleCabiz\\Desktop\\Tesi'
@@ -33,11 +33,14 @@ for k in camA.keys():
 for k in camB.keys():
     Id_B.append(k)    
 
-V=reshape_image(camA[0])    
-#histogram_plot(V)
-    
-V1=histogram_vector(camA[0]) 
 
+d={k:v for k,v in camA.items() if k<2}
+d2={k:v for k,v in camB.items() if k<10}
+a,b=CMC_curve(d,d2)
+
+x=np.arange(len(b))+1
+pl.plot(x,b)
+pl.show()
 
             
         

@@ -14,7 +14,7 @@ from importBmp import *
 from histogram import *
 
 #Restituisce maching_position che contiene la posizione del id_a-iesima nel risulatato del matching
-#e rank_vettor, che contiene il conteggio di quante volte id-esimo si trova nella posizione i-esima.
+#e rank_vector, che contiene il conteggio di quante volte id-esimo si trova nella posizione i-esima.
 def CMC_curve(camA,camB): 
     similarity_dict={}
     similarity_dict=similarity_dictionary(camA,camB)
@@ -37,10 +37,12 @@ def CMC_curve(camA,camB):
         maching_position.append(r) 
         
     #Calcolo il quante volte id_a è stato trovato dentro un certo rank
-    rank_vettor=[]
-    for i in range(len(maching_position)):
-            rank_vettor.append(maching_position.count(i+1))
-    return maching_position,rank_vettor         
+    rank_vector=np.zeros((1,len(camB.keys())))
+    for i in range(max(maching_position)):
+            #rank_vector.append(maching_position.count(i+1))
+            rank_vector[0,i]=maching_position.count(i+1)
+    cmc_vector=np.cumsum(np.array(rank_vector))/len(camB.keys())
+    return maching_position,cmc_vector         
             
 #similarity_dict è un dizionario le cui chiavi sono gli id_a e i valori un altro dizionario
 #con chiave  id_b e valore il rispettivo grado di similarità con id_a
@@ -71,9 +73,9 @@ def sortDictForValue(d):
     
 
 #Plot CMC
-def plot_CMC(rank_vettor,Id_A):
+def plot_CMC(rank_vector,Id_A):
     x=np.arange(len(Id_A))+1
-    y=np.cumsum(np.array(rank_vettor))/len(Id_A) #Faccio la somma cumulativa e dividento per il numero totale ottengo le probabilità        
+    y=np.cumsum(np.array(rank_vector))/len(Id_A) #Faccio la somma cumulativa e dividento per il numero totale ottengo le probabilità        
     pl.plot(x,y)
     pl.show()        
 
@@ -82,7 +84,7 @@ if __name__ == '__main__':
     da={k: v for k,v in camA.items() if k<4}
     db={k: v for k,v in camB.items() if k<5}
     Id_A=da.keys()
-    maching_position,rank_vettor=CMC_curve(da,db)
-    plot_CMC(rank_vettor,Id_A)
+    maching_position,rank_vector=CMC_curve(da,db)
+    plot_CMC(rank_vector,Id_A)
 
 
