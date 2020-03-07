@@ -81,7 +81,7 @@ if __name__ == '__main__':
    b=np.array([10,2,34])
    print(histogram_intersection(a,b))
    
-   #a_r,a_g,a_b=histogram_vector(A)
+   a_r,a_g,a_b=histogram_vector(A)
    
     # rank=CMC_curve(camA,camB)
 #    A=camA[KeysA[0]]

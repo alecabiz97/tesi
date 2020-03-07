@@ -14,6 +14,8 @@ import matplotlib.pyplot as pl
 from importBmp import *
 from histogram import *
 from cmc import *
+import time
+import random
 
 fileDir='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Python files'
 inDir='C:\\Users\\AleCabiz\\Desktop\\Tesi'
@@ -33,16 +35,35 @@ for k in camA.keys():
 for k in camB.keys():
     Id_B.append(k)    
 
+#Test CMC
+#Per 10 volte seleziono in immagine a caso in camA calcolo la CMC_curve e alla fine
+#faccio il plot delle 10 curve e di quella media    
+start=time.time()
 
-d={k:v for k,v in camA.items() if k<2}
-d2={k:v for k,v in camB.items() if k<10}
-a,b=CMC_curve(d,d2)
-
-x=np.arange(len(b))+1
-pl.plot(x,b)
+cmc_mean_vector=np.zeros((len(Id_B),))  
+for i in range(10): 
+    rand_image=random.choice(Id_A)
+    
+    d={rand_image:camA[rand_image]}  
+    d2={k:v for k,v in camB.items()if k < max(Id_B)+1 } # +1 altrimenti non considero l'ultima immagine
+    maching_position,cmc_vector=CMC_curve(d,d2)
+    #Ricavo cmc_mean_vector
+    cmc_mean_vector += cmc_vector
+    
+    x=np.arange(len(cmc_vector))+1
+    pl.plot(x,cmc_vector,linewidth=0.5)
+    pl.xlim(1)
+cmc_mean_vector = cmc_mean_vector/(i+1)
+pl.plot(x,cmc_mean_vector,linewidth=2)
+pl.title('Cumulative Match Characteristic')
+pl.ylabel('Probability of Identification')
+pl.xlabel('Rank')
 pl.show()
 
-            
+
+end=time.time()
+tempo=end-start
+print('Tempo:' + str(tempo))           
         
         
 

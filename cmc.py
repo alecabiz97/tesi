@@ -12,6 +12,8 @@ from scipy import linalg
 import matplotlib.pyplot as pl
 from importBmp import *
 from histogram import *
+import random
+
 
 #Restituisce maching_position che contiene la posizione del id_a-iesima nel risulatato del matching
 #e rank_vector, che contiene il conteggio di quante volte id-esimo si trova nella posizione i-esima.
