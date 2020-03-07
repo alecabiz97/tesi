@@ -63,7 +63,7 @@ pl.show()
 
 end=time.time()
 tempo=end-start
-print('Tempo:' + str(tempo))           
+print('Tempo:' + str(tempo))            
         
         
 

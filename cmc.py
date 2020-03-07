@@ -43,7 +43,7 @@ def CMC_curve(camA,camB):
     for i in range(max(maching_position)):
             #rank_vector.append(maching_position.count(i+1))
             rank_vector[0,i]=maching_position.count(i+1)
-    cmc_vector=np.cumsum(np.array(rank_vector))/len(camB.keys())
+    cmc_vector=np.cumsum(np.array(rank_vector))/len(camA.keys())
     return maching_position,cmc_vector         
             
 #similarity_dict è un dizionario le cui chiavi sono gli id_a e i valori un altro dizionario
