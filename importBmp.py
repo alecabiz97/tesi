@@ -22,9 +22,9 @@ def importBmpFiles(Dir,filt):
         os.chdir(os.path.join(Dir,cartella))
         filt_files=glob.glob('*.bmp') 
         for k in filt_files:
-            file=imageio.imread(k)
-            file_id=int(k.split('_')[0])
-            d_tmp[file_id]=file
+            image=imageio.imread(k)
+            image_id=int(k.split('_')[0])
+            d_tmp[image_id]=image      #la chiave è l'id il valore è l'immagine
         d_list.append(d_tmp)
         d_tmp={}
     return d_list

@@ -16,14 +16,13 @@ import random
 
 
 #Restituisce maching_position che contiene la posizione del id_a-iesima nel risulatato del matching
-#e rank_vector, che contiene il conteggio di quante volte id-esimo si trova nella posizione i-esima.
+#e cmc_vector, che contiene le probabilità di identificazione per i diversi rank
 def CMC_curve(camA,camB): 
     similarity_dict={}
     similarity_dict=similarity_dictionary(camA,camB)
     similarity_dict_sort={}
     for k in similarity_dict.keys():
         sort_dict=sortDictForValue(similarity_dict[k])
-        #sort_dict=sorted(similarity_dict[k].items(), key= lambda kv:(kv[1],kv[0]),reverse=True)
         similarity_dict_sort[k] = sort_dict
     #maching_position contiene la posizione del id_a-iesima nel risulatato del matching
     maching_position=[]
@@ -41,12 +40,11 @@ def CMC_curve(camA,camB):
     #Calcolo il quante volte id_a è stato trovato dentro un certo rank
     rank_vector=np.zeros((1,len(camB.keys())))
     for i in range(max(maching_position)):
-            #rank_vector.append(maching_position.count(i+1))
             rank_vector[0,i]=maching_position.count(i+1)
     cmc_vector=np.cumsum(np.array(rank_vector))/len(camA.keys())
     return maching_position,cmc_vector         
             
-#similarity_dict è un dizionario le cui chiavi sono gli id_a e i valori un altro dizionario
+#similarity_dictionary() restituisce un dizionario le cui chiavi sono gli id_a e i valori sono altri dizionari
 #con chiave  id_b e valore il rispettivo grado di similarità con id_a
 def similarity_dictionary(camA,camB): 
     Id_A=camA.keys()

@@ -44,15 +44,17 @@ cmc_mean_vector=np.zeros((len(Id_B),))
 for i in range(10): 
     rand_image=random.choice(Id_A)
     
-    d={rand_image:camA[rand_image]}  
-    d2={k:v for k,v in camB.items()if k < max(Id_B)+1 } # +1 altrimenti non considero l'ultima immagine
-    maching_position,cmc_vector=CMC_curve(d,d2)
-    #Ricavo cmc_mean_vector
+    query={rand_image:camA[rand_image]}  
+    gallery={k:v for k,v in camB.items()if k < max(Id_B)+1 } # +1 altrimenti non considero l'ultima immagine, non uso len(Id_B) perchè l'ultima immagine ha id 873 invece di 631
+    
+    #CMC_curve() restituisce la posizione in cui è stata trovata la query e le probabilità di identificazione
+    maching_position,cmc_vector=CMC_curve(query,gallery) 
+    #Ricavo cmc_mean_vector, alla fine del ciclo verrà diviso per il numero di query scelto
     cmc_mean_vector += cmc_vector
     
     x=np.arange(len(cmc_vector))+1
     pl.plot(x,cmc_vector,linewidth=0.5)
-    pl.xlim(1)
+    pl.xlim(1,len(Id_B))
 cmc_mean_vector = cmc_mean_vector/(i+1)
 pl.plot(x,cmc_mean_vector,linewidth=2)
 pl.title('Cumulative Match Characteristic')
@@ -63,7 +65,7 @@ pl.show()
 
 end=time.time()
 tempo=end-start
-print('Tempo:' + str(tempo))            
+print('Tempo:' + str(tempo))             
         
         
 

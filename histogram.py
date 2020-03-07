@@ -22,10 +22,10 @@ def histogram_vector(X):      #restituisce 3 array r,g,b, 1 se levelgrey
         return V
     if len(X.shape) == 3:  #RGB
         V_rgb=[]
-        for ch in range(X.shape[2]):  #ch anzi l
+        for ch in range(X.shape[2]):  
             X_ch=X[:,:,ch]
             
-            #creo un vettore x1 con tutti i valori della matrice Xl
+            #creo un vettore x con tutti i valori della matrice X_ch
             x=X_ch.reshape(X_ch.shape[0]*X_ch.shape[1],1)
             for i in range(len(x)):
                 val=x[i]
