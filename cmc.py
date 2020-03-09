@@ -29,13 +29,13 @@ def CMC_curve(camA,camB):
     for id_a in similarity_dict_sort.keys():
         id_a_found=False
         match_result=similarity_dict_sort[id_a]
-        r=1
+        position=1
         while(id_a_found==False):
-            if id_a != match_result[r-1][0]:
-                r += 1
+            if id_a != match_result[position-1][0]:
+                position += 1
             else:
                 id_a_found = True
-        maching_position.append(r) 
+        maching_position.append(position) 
         
     #Calcolo il quante volte id_a è stato trovato dentro un certo rank
     rank_vector=np.zeros((1,len(camB.keys())))
@@ -73,11 +73,13 @@ def sortDictForValue(d):
     
 
 #Plot CMC
-def plot_CMC(rank_vector,Id_A):
-    x=np.arange(len(Id_A))+1
-    y=np.cumsum(np.array(rank_vector))/len(Id_A) #Faccio la somma cumulativa e dividento per il numero totale ottengo le probabilità        
-    pl.plot(x,y)
-    pl.show()        
+def plot_CMC(cmc_vector):
+    x=np.arange(len(cmc_vector))+1
+    pl.plot(x,cmc_vector)
+    pl.title('Cumulative Match Characteristic')
+    pl.ylabel('Probability of Identification')
+    pl.xlabel('Rank')
+    pl.show()         
 
 if __name__ == '__main__':
     
@@ -86,6 +88,6 @@ if __name__ == '__main__':
     db={k: v for k,v in camB.items() if k<20}
     
     maching_position1,cmc_vector1=CMC_curve(da,db)
-    #plot_CMC(rank_vector,Id_A)
+    plot_CMC(cmc_vector1)
 
 

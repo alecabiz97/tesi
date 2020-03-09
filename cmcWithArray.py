@@ -90,9 +90,9 @@ def plot_CMC(cmc_vector):
     pl.show()     
         
 if __name__ == '__main__':   
-    
+
     da={k: v for k,v in camA.items() if k<5}
     db={k: v for k,v in camB.items() if k<20}
 
     maching_position2,cmc_vector2=CMC_curve(da,db)
-    #plot_CMC(cmc_vector)
+    plot_CMC(cmc_vector2)
