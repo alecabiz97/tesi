@@ -15,7 +15,7 @@ from PIL import Image
 def histogram_vector(X):      #restituisce 3 array r,g,b, 1 se levelgrey  
     V=np.zeros([256,1])
     if len(X.shape) == 2:   #greyscale image        
-        x=X.reshape([1,X.shape[0]*X.shape[1]]) #anzi che (1,16) (16,1)
+        x=X.reshape([X.shape[0]*X.shape[1],1]) #anzi che (1,16) (16,1)
         for i in range(len(x)):
             val=x[i]
             V[val] += 1
@@ -45,8 +45,7 @@ def reshape_image(X):     #restituisco 3 array(in caso RGB)
             X_ch=X[:,:,ch]
             
             #creo un vettore x1 con tutti i valori della matrice Xl
-            x=X_ch.reshape([1,X_ch.shape[0]*X_ch.shape[1]])
-            x=np.transpose(x)
+            x=X_ch.reshape([X_ch.shape[0]*X_ch.shape[1],1])
             V.append(x)
         return V[0],V[1],V[2]
     
