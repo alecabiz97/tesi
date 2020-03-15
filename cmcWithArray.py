@@ -90,7 +90,7 @@ def plot_CMC(cmc_vector):
     pl.show()     
         
 if __name__ == '__main__':   
-
+    
     da={k: v for k,v in camA.items() if k<5}
     db={k: v for k,v in camB.items() if k<20}
 

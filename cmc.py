@@ -13,7 +13,7 @@ import matplotlib.pyplot as pl
 from importBmp import *
 from histogram import *
 import random
-
+import time
 
 #Restituisce maching_position che contiene la posizione del id_a-iesima nel risulatato del matching
 #e cmc_vector, che contiene le probabilità di identificazione per i diversi rank
@@ -83,11 +83,13 @@ def plot_CMC(cmc_vector):
 
 if __name__ == '__main__':
     
-    
-    da={k: v for k,v in camA.items() if k<5}
-    db={k: v for k,v in camB.items() if k<20}
+    start=time.time()
+    da={k: v for k,v in camA.items() if k<10}
+    db={k: v for k,v in camB.items() if k<200}
     
     maching_position1,cmc_vector1=CMC_curve(da,db)
     plot_CMC(cmc_vector1)
-
+    end=time.time()
+    tempo=end-start
+    print('Tempo:' + str(tempo))
 
