@@ -49,6 +49,17 @@ def histogram_LBP(v):
         hist_Lbp[val] += 1
     return hist_Lbp
 
+
+#Hog3Channel riceve in ingresso un immagine RGB e restituisce 3 istogrammi LBP, 1 per canale
+def Lbp3Channel(X):
+    Xr=X[:,:,0]
+    Xg=X[:,:,1] 
+    Xb=X[:,:,2]     
+    lbp_xr=LBP(Xr)
+    lbp_xg=LBP(Xg)
+    lbp_xb=LBP(Xb)
+    return lbp_xr,lbp_xg,lbp_xb
+
 if __name__ == '__main__':
     
     #Prova LBP

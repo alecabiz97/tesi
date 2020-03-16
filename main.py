@@ -14,6 +14,8 @@ import matplotlib.pyplot as pl
 from importBmp import *
 from histogram import *
 from cmc import *
+from Lbp import *
+from hog import *
 import time
 import random
 
@@ -33,7 +35,9 @@ Id_A,Id_B=[],[]
 for k in camA.keys():
     Id_A.append(k) #guardare cosa è k, le chiavi è meglio che siano interi
 for k in camB.keys():
-    Id_B.append(k)    
+    Id_B.append(k)  
+    
+    
 
 #Test CMC
 #Per 10 volte seleziono in immagine a caso in camA calcolo la CMC_curve e alla fine

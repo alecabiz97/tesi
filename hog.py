@@ -116,6 +116,7 @@ def histogramHOG(v):
             h[0] += (1-(np.abs(d-180)/20))*m
     return h
 
+#Hog3Channel riceve in ingresso un immagine RGB e restituisce 3 istogrammi hog, 1 per canale
 def Hog3Channel(X):
     Xr=X[:,:,0]
     Xg=X[:,:,1] 
@@ -123,8 +124,8 @@ def Hog3Channel(X):
     hog_xr=HOG(Xr)
     hog_xg=HOG(Xg)
     hog_xb=HOG(Xb)
-    hog_tmp=np.maximum(hog_xr,hog_xg)
-    return np.maximum(hog_tmp,hog_xb)
+    #hog_tmp=np.maximum(hog_xr,hog_xg)
+    return hog_xr,hog_xg,hog_xb
 
 
 

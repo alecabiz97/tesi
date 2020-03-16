@@ -33,6 +33,10 @@ def histogram_vector(X):      #restituisce 3 array r,g,b, 1 se levelgrey
             V_rgb.append(V)
         return V_rgb[0],V_rgb[1],V_rgb[2]
 
+
+
+
+
 def reshape_image(X):     #restituisco 3 array(in caso RGB)
     #r,g,b = img.split()    
     V=[]
