@@ -37,9 +37,9 @@ def CMC_curve(camA,camB):
         maching_position.append(position) 
         
     #Calcolo il quante volte id_a è stato trovato dentro un certo rank
-    rank_vector=np.zeros((1,len(camB.keys())))
+    rank_vector=np.zeros((len(camB.keys()),1))
     for i in range(max(maching_position)):
-            rank_vector[0,i]=maching_position.count(i+1)
+            rank_vector[i]=maching_position.count(i+1)
     cmc_vector=np.cumsum(np.array(rank_vector))/len(camA.keys())
     return maching_position,cmc_vector         
             
@@ -70,7 +70,7 @@ def similarity_dictionary(camA,camB):
 #Ordino i dizionari interni in ordine decrescente di similarità      
 def sortMatrixForSimilarityValue(X):
     Xcopy=X.copy()
-    X_sort=np.zeros((Xcopy.shape[0],2))
+    X_sort=np.zeros(Xcopy.shape)
     index=0
     for i in  range(Xcopy.shape[0]):
         max_index=np.argmax(Xcopy[:,1])
@@ -91,8 +91,8 @@ def plot_CMC(cmc_vector):
         
 if __name__ == '__main__':   
     
-    da={k: v for k,v in camA.items() if k<5}
-    db={k: v for k,v in camB.items() if k<20}
+    da={k: v for k,v in camA.items() if k<3}
+    db={k: v for k,v in camB.items() if k<10}
 
     maching_position2,cmc_vector2=CMC_curve(da,db)
     plot_CMC(cmc_vector2)

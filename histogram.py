@@ -72,7 +72,7 @@ def histogram_plot(V):
 #Prima bozza        
 def histogram_intersection(A,B):    #A e B sono due vettori
     if len(A) == len(B):
-        return np.sum(np.minimum(A,B))
+        return np.sum(np.minimum(A,B))/np.sum(A) 
     else:
         return None
         
@@ -80,30 +80,40 @@ def histogram_intersection(A,B):    #A e B sono due vettori
 
 if __name__ == '__main__':
     
-   a=np.array([1,4,3])
-   b=np.array([10,2,34])
-   print(histogram_intersection(a,b))
-   
-   a_r,a_g,a_b=histogram_vector(A)
-   
-    # rank=CMC_curve(camA,camB)
-#    A=camA[KeysA[0]]
-#    V1=histogram_vector(camA[0])
-#    K=0
-#    
-#    for key in KeysA: 
-#        if key != KeysA[0]:
-#            B=camA[key]
-#            Va=histogram_vector(A)
-#            Vb=histogram_vector(B)
-#            kR=histogram_intersection(Va[0],Vb[0]) #Red
-#            kG=histogram_intersection(Va[1],Vb[1]) #Green
-#            kB=histogram_intersection(Va[2],Vb[2]) #Blue
-#            k_media=(kR+kG+kB)/3
-#            if k_media > K:
-#                K=k_media
-#                pers=key
+    #Prova histogram_vector
+    #Prendo le prime n immagini di camA e per ciscuna confronto l'istogramma RGB
+    #con un numero m di immagini in camB. In result i TRUE indicano che ki>kj(ki->stessa persona,
+    #kj->persone diverse) dove k è l'indice di similarità.Confronto il primo canale
+    n=5
+    m=50
+    for i in range(n):
+        Ai=camA[i]
+        Bi=camB[i]
+        hist_aR, hist_aG, hist_aB = histogram_vector(Ai)
+        hist_bR, hist_bG, hist_bB = histogram_vector(Bi)
+
         
+        kR=histogram_intersection(hist_aR,hist_bR)
+        kG=histogram_intersection(hist_aG,hist_bG)
+        kB=histogram_intersection(hist_aB,hist_bB)
+        
+        ki=(kR + kG + kB)/3
+        p=[]
+        
+        for j in range(m):
+            Bj=camB[j]
+            hist_bR_j, hist_bG_j, hist_bB_j = histogram_vector(Bj)
+                
+            kR_j=histogram_intersection(hist_aR,hist_bR_j)
+            kG_j=histogram_intersection(hist_aG,hist_bG_j)
+            kB_j=histogram_intersection(hist_aB,hist_bB_j)
+            kj=(kR_j + kG_j + kB_j)/3
+            p.append(ki>kj)
+    
+        print('True:' + str(p.count(True)))
+        print('False:' + str(p.count(False)))
+        print('#########################')
+                      
         
 
                         

@@ -9,7 +9,7 @@ from histogram import *
 
 
 #HOG() rieceve in input una matrice e restituisce l'istogramma HOG(Histogram of oriented gradients),un vettore colonna di 15x5x36=2700 elementi
-#X è 128*48, divido in blocchi da 16 ->16*6=96 blocchi. Per ciscun blocco considero 4 blocchi 8*8 e per ciscuno calcolo HOG da 9 bin.
+#X è 128*48, divido in blocchi da 16. Per ciscun blocco considero 4 blocchi 8*8 e per ciscuno calcolo HOG da 9 bin.
 #Quindi per ogni blocco da 16 concateno 4 histogrammi ottenendo un vettore da 36, che verra normalizzato.
 #Poi mi sposto di 8 colonne e itero il processo sino alla fine della riga. Incremento la riga fino alla fine dell immagine . 
 def HOG(X):
@@ -134,26 +134,39 @@ if __name__ == '__main__':
     #Prova HOG
     #Prendo le prime n immagini di camA e per ciscuna confronto l'istogramma HOG
     #con un numero m di immagini in camB. In result i TRUE indicano che ki>kj(ki->stessa persona,
-    #kj->persone diverse) dove k è l'indice di similarità.Confronto il primo canale
+    #kj->persone diverse) dove k è l'indice di similarità ottenuto facendo la media tra i 3 k calcolati per i 3 canali.
     n=5
-    m=50
+    m=20
     for i in range(n):
-        Ai=camA[i][:,:,0]
-        Bi=camB[i][:,:,0]
-        hogAi=HOG(Ai)
-        hogBi=HOG(Bi)
-        ki=histogram_intersection(hogAi,hogBi)
+        Ai=camA[i]
+        Bi=camB[i]
+        hog_aR, hog_aG, hog_aB = Hog3Channel(Ai)
+        hog_bR, hog_bG, hog_bB = Hog3Channel(Bi)
+
+        
+        kR=histogram_intersection(hog_aR,hog_bR)
+        kG=histogram_intersection(hog_aG,hog_bG)
+        kB=histogram_intersection(hog_aB,hog_bB)
+        
+        ki=(kR + kG + kB)/3
         p=[]
         
         for j in range(m):
-            Bj=camB[j][:,:,0]
-            hogBj=HOG(Bj)
+            Bj=camB[j]
+            hog_bR_j, hog_bG_j, hog_bB_j = Hog3Channel(Bj)
                 
-            kj=histogram_intersection(hogAi,hogBj)
+            kR_j=histogram_intersection(hog_aR,hog_bR_j)
+            kG_j=histogram_intersection(hog_aG,hog_bG_j)
+            kB_j=histogram_intersection(hog_aB,hog_bB_j)
+            kj=(kR_j + kG_j + kB_j)/3
             p.append(ki>kj)
     
         print('True:' + str(p.count(True)))
         print('False:' + str(p.count(False)))
         print('#########################')
 
+#%%
+        A0=camA[0][:,:,0]
+        v=HOG(2*A0)
+       # v1,v2,v3=Hog3Channel(2*A)
     

@@ -50,7 +50,7 @@ def histogram_LBP(v):
     return hist_Lbp
 
 
-#Hog3Channel riceve in ingresso un immagine RGB e restituisce 3 istogrammi LBP, 1 per canale
+#Lbp3Channel riceve in ingresso un immagine RGB e restituisce 3 istogrammi LBP, 1 per canale
 def Lbp3Channel(X):
     Xr=X[:,:,0]
     Xg=X[:,:,1] 
@@ -69,20 +69,31 @@ if __name__ == '__main__':
     n=5
     m=50
     for i in range(n):
-        ai=camA[i][:,:,0]
-        bi=camB[i][:,:,0]
-        hist_ai=LBP(ai)
-        hist_bi=LBP(bi)
-        ki=histogram_intersection(hist_ai,hist_bi)
+        Ai=camA[i]
+        Bi=camB[i]
+        Lbp_aR, Lbp_aG, Lbp_aB = Lbp3Channel(Ai)
+        Lbp_bR, Lbp_bG, Lbp_bB = Lbp3Channel(Bi)
+
+        
+        kR=histogram_intersection(Lbp_aR,Lbp_bR)
+        kG=histogram_intersection(Lbp_aG,Lbp_bG)
+        kB=histogram_intersection(Lbp_aB,Lbp_bB)
+        
+        ki=(kR + kG + kB)/3
         p=[]
         
         for j in range(m):
-            bj=camB[j][:,:,0]
-            hist_bj=LBP(bj)
+            Bj=camB[j]
+            Lbp_bR_j, Lbp_bG_j, Lbp_bB_j = Lbp3Channel(Bj)
                 
-            kj=histogram_intersection(hist_ai,hist_bj)
+            kR_j=histogram_intersection(Lbp_aR,Lbp_bR_j)
+            kG_j=histogram_intersection(Lbp_aG,Lbp_bG_j)
+            kB_j=histogram_intersection(Lbp_aB,Lbp_bB_j)
+            kj=(kR_j + kG_j + kB_j)/3
             p.append(ki>kj)
     
         print('True:' + str(p.count(True)))
         print('False:' + str(p.count(False)))
         print('#########################')
+              
+             

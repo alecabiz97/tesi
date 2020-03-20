@@ -12,6 +12,8 @@ from scipy import linalg
 import matplotlib.pyplot as pl
 from importBmp import *
 from histogram import *
+from Lbp import *
+from hog import *
 import random
 import time
 
@@ -38,9 +40,9 @@ def CMC_curve(camA,camB):
         maching_position.append(position) 
         
     #Calcolo il quante volte id_a è stato trovato dentro un certo rank
-    rank_vector=np.zeros((1,len(camB.keys())))
+    rank_vector=np.zeros((len(camB.keys()),1))
     for i in range(max(maching_position)):
-            rank_vector[0,i]=maching_position.count(i+1)
+            rank_vector[i]=maching_position.count(i+1)
     cmc_vector=np.cumsum(np.array(rank_vector))/len(camA.keys())
     return maching_position,cmc_vector         
             
@@ -53,16 +55,37 @@ def similarity_dictionary(camA,camB):
     for i in Id_A:
         A=camA[i]
         a_r,a_g,a_b=histogram_vector(A)
+#        Lbp_aR, Lbp_aG, Lbp_aB = Lbp3Channel(A)
+#        hog_aR, hog_aG, hog_aB = Hog3Channel(A)
+        
         K={}
         for j in Id_B:
             B=camB[j]
             b_r,b_g,b_b=histogram_vector(B)
+#            Lbp_bR, Lbp_bG, Lbp_bB = Lbp3Channel(B)
+#            hog_bR, hog_bG, hog_bB = Hog3Channel(B)
             
+#            #Colore
             kr=histogram_intersection(a_r,b_r) 
             kg=histogram_intersection(a_g,b_g) 
             kb=histogram_intersection(a_b,b_b) 
-            k=(kr+kg+kb)/3 
-            K[j]=k
+            k_color=(kr+kg+kb)/3 
+#            
+##            #LBP
+#            kR_LBP=histogram_intersection(Lbp_aR,Lbp_bR)
+#            kG_LBP=histogram_intersection(Lbp_aG,Lbp_bG)
+#            kB_LBP=histogram_intersection(Lbp_aB,Lbp_bB)
+#            k_LBP=(kR_LBP + kG_LBP + kB_LBP)/3
+#            
+#            #HOG
+#            kR_HOG=histogram_intersection(hog_aR,hog_bR)
+#            kG_HOG=histogram_intersection(hog_aG,hog_bG)
+#            kB_HOG=histogram_intersection(hog_aB,hog_bB)
+#            k_HOG=(kR_HOG + kG_HOG + kB_HOG)/3
+
+#            k=k_color + k_LBP + k_HOG
+            
+            K[j]=k_color
         similarity_dict[i]=K
     return similarity_dict
   
@@ -84,8 +107,8 @@ def plot_CMC(cmc_vector):
 if __name__ == '__main__':
     
     start=time.time()
-    da={k: v for k,v in camA.items() if k<10}
-    db={k: v for k,v in camB.items() if k<200}
+    da={k: v for k,v in camA.items() if k<3}
+    db={k: v for k,v in camB.items() if k<10}
     
     maching_position1,cmc_vector1=CMC_curve(da,db)
     plot_CMC(cmc_vector1)
