@@ -10,6 +10,7 @@ from scipy import linalg
 import matplotlib.pyplot as pl
 
 from PIL import Image
+import time
 
 
 def histogram_vector(X):      #restituisce 3 array r,g,b, 1 se levelgrey  
@@ -31,7 +32,7 @@ def histogram_vector(X):      #restituisce 3 array r,g,b, 1 se levelgrey
                 val=x[i]
                 V[val] += 1
             V_rgb.append(V)
-        return V_rgb[0],V_rgb[1],V_rgb[2]
+        return [V_rgb[0],V_rgb[1],V_rgb[2]]
 
 
 
@@ -92,6 +93,7 @@ if __name__ == '__main__':
         hist_aR, hist_aG, hist_aB = histogram_vector(Ai)
         hist_bR, hist_bG, hist_bB = histogram_vector(Bi)
 
+
         
         kR=histogram_intersection(hist_aR,hist_bR)
         kG=histogram_intersection(hist_aG,hist_bG)
@@ -113,6 +115,34 @@ if __name__ == '__main__':
         print('True:' + str(p.count(True)))
         print('False:' + str(p.count(False)))
         print('#########################')
+              
+#%%
+        A=camA[0]
+        B=camB[0]
+        hist_aR, hist_aG, hist_aB = histogram_vector(A)
+        hist_bR, hist_bG, hist_bB = histogram_vector(B)
+        
+        s=time.time()
+        kR=histogram_intersection(hist_aR,hist_bR)
+        kG=histogram_intersection(hist_aG,hist_bG)
+        kB=histogram_intersection(hist_aB,hist_bB)
+        
+        k1=(kR + kG + kB)/3
+        e=time.time()
+        print(e-s)
+        print(k1)
+        
+        s1=time.time()
+
+        hist_RGBA=[hist_aR, hist_aG, hist_aB]
+        hist_RGBB=[hist_bR, hist_bG, hist_bB]
+        k2=histogram_intersection(hist_RGBA,hist_RGBB)
+        e1=time.time()
+        print(e1-s1)
+        print(k2)
+        
+        
+        
                       
         
 
