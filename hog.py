@@ -125,7 +125,7 @@ def Hog3Channel(X):
     hog_xg=HOG(Xg)
     hog_xb=HOG(Xb)
     #hog_tmp=np.maximum(hog_xr,hog_xg)
-    return hog_xr,hog_xg,hog_xb
+    return [hog_xr,hog_xg,hog_xb]
 
 
 

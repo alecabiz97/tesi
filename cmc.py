@@ -23,6 +23,7 @@ def cmc(probes, id_probes, gallery, id_gallery):
     #similarità con la probe
     all_ranks=np.zeros((len(id_gallery),len(id_probes)))
     
+    
     #Calcolo istogrammi
     hist_probes=[histogram_vector(p) for p in probes]
     hist_gallery=[histogram_vector(g) for g in gallery]
@@ -46,27 +47,29 @@ def cmc(probes, id_probes, gallery, id_gallery):
         all_ranks[:,i]=sorted_id_gallery
         i += 1
     
-    rank=np.zeros((len(id_gallery),1))
-    position_id_matching=[]
-    i=0
-    for p_id in id_probes:
-        position=1
-        p_found=False
-        rank_tmp=all_ranks[:,i]
-        while(p_found == False):
-            if p_id == rank_tmp[position-1]:
-                p_found = True
-            else:
-                p_found = False
-                position += 1
-        rank[position-1] += 1
-        position_id_matching.append(position)
-        i +=1
-    position_id_matching=np.array(position_id_matching)
-    cmc=np.cumsum(rank)/len(rank)
-    
-    
-    return cmc,position_id_matching
+#    rank=np.zeros((len(id_gallery),1))
+#    position_id_matching=[]
+#    i=0
+#    for p_id in id_probes:
+#        position=1
+#        p_found=False
+#        rank_tmp=all_ranks[:,i]
+#        while(p_found == False):
+#            if p_id == rank_tmp[position-1]:
+#                p_found = True
+#            else:
+#                p_found = False
+#                position += 1
+#        rank[position-1] += 1
+#        position_id_matching.append(position)
+#        i +=1
+#    position_id_matching=np.array(position_id_matching)
+#    cmc=np.cumsum(rank)/len(id_probes)
+#    
+#    return np.array(cmc),position_id_matching
+
+        val_cmc=np.sum(all_ranks==id_probes,1).cumsum()
+    return val_cmc/len(id_probes)
 
 #Plot CMC
 def plot_CMC(cmc_vector):
@@ -77,34 +80,44 @@ def plot_CMC(cmc_vector):
     pl.xlabel('Rank')
     pl.show()  
     
-                
+def test_camA_vs_camB():
+    
+    id_probes=Id_A
+    probes=camA
+    
+    id_gallery=Id_B 
+    gallery=camB
+    
+    #cmc_vector,positions=cmc(probes, id_probes, gallery, id_gallery)
+    cmc_vector=cmc(probes, id_probes, gallery, id_gallery)
+
+    plot_CMC(cmc_vector)
+    
+
+def test_11B_vs_allA():
+    id_probes=[Id_B[i] for i in range(0,110,10)] 
+    set_of_probes=[camB[i] for i in range(0,110,10)]
+    
+    id_gallery=Id_A
+    gallery=camA
+        
+    cmc_vector= cmc(set_of_probes, id_probes, gallery, id_gallery)
+    plot_CMC(cmc_vector)    
+              
         
 if __name__ == '__main__':
 
-    CamA=[p for p in camA.values()]
-    CamB=[p for p in camB.values()]
-    Id_A=[i for i in camA.keys()]
-    Id_B=[i for i in camB.keys()]
-    
-    n=5
-    m=20
     start=time.time()
-    id_probes=[i for i in Id_A if i<n] 
-    probes=[p for p in CamA[0:n]]
+
+    print("START!")
     
-    id_gallery=[i for i in Id_B if i<m] 
-    gallery=[p for p in CamB[0:len(id_gallery)]]
-    
-    print('START')
-    cmc,positions=cmc(probes, id_probes, gallery, id_gallery)
-    plot_CMC(cmc)
-    print(positions)
+    test_camA_vs_camB()
     
     end=time.time()
     tempo=end-start
-    print('Tempo: ' + str(tempo))
+    print('Tempo:' + str(tempo)) 
 
-
+    
 
 
 

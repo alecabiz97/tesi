@@ -7,6 +7,8 @@ Created on Sun Mar 15 10:55:51 2020
 import numpy as np
 from histogram import *
 
+
+
 #LBP() rieceve in input una matrice e restituisce l'istogramma LBP(Local Binary Pattern)
 def LBP(X):
     riga,colonna=0,0
@@ -58,7 +60,7 @@ def Lbp3Channel(X):
     lbp_xr=LBP(Xr)
     lbp_xg=LBP(Xg)
     lbp_xb=LBP(Xb)
-    return lbp_xr,lbp_xg,lbp_xb
+    return [lbp_xr,lbp_xg,lbp_xb]
 
 if __name__ == '__main__':
     
@@ -66,34 +68,7 @@ if __name__ == '__main__':
     #Prendo le prime n immagini di camA e per ciscuna confronto l'istogramma LBP
     #con un numero m di immagini in camB. In result i TRUE indicano che ki>kj(ki->stessa persona,
     #kj->persone diverse) dove k è l'indice di similarità.Confronto il primo canale
-    n=5
-    m=50
-    for i in range(n):
-        Ai=camA[i]
-        Bi=camB[i]
-        Lbp_aR, Lbp_aG, Lbp_aB = Lbp3Channel(Ai)
-        Lbp_bR, Lbp_bG, Lbp_bB = Lbp3Channel(Bi)
-
-        
-        kR=histogram_intersection(Lbp_aR,Lbp_bR)
-        kG=histogram_intersection(Lbp_aG,Lbp_bG)
-        kB=histogram_intersection(Lbp_aB,Lbp_bB)
-        
-        ki=(kR + kG + kB)/3
-        p=[]
-        
-        for j in range(m):
-            Bj=camB[j]
-            Lbp_bR_j, Lbp_bG_j, Lbp_bB_j = Lbp3Channel(Bj)
-                
-            kR_j=histogram_intersection(Lbp_aR,Lbp_bR_j)
-            kG_j=histogram_intersection(Lbp_aG,Lbp_bG_j)
-            kB_j=histogram_intersection(Lbp_aB,Lbp_bB_j)
-            kj=(kR_j + kG_j + kB_j)/3
-            p.append(ki>kj)
     
-        print('True:' + str(p.count(True)))
-        print('False:' + str(p.count(False)))
-        print('#########################')
+    
               
              
