@@ -13,26 +13,22 @@ from PIL import Image
 import time
 
 
-def histogram_vector(X):      #restituisce 3 array r,g,b, 1 se levelgrey  
-    V=np.zeros([256,1])
-    if len(X.shape) == 2:   #greyscale image        
-        x=X.reshape([X.shape[0]*X.shape[1],1]) #anzi che (1,16) (16,1)
-        for i in range(len(x)):
-            val=x[i]
-            V[val] += 1
-        return V
-    if len(X.shape) == 3:  #RGB
-        V_rgb=[]
-        for ch in range(X.shape[2]):  
-            X_ch=X[:,:,ch]
-            
-            #creo un vettore x con tutti i valori della matrice X_ch
-            x=X_ch.reshape(X_ch.shape[0]*X_ch.shape[1],1)
-            for i in range(len(x)):
-                val=x[i]
-                V[val] += 1
-            V_rgb.append(V)
-        return [V_rgb[0],V_rgb[1],V_rgb[2]]
+def histFromGrayImage(img):
+    nBins=256
+    histVal=np.zeros(nBins) 
+    for i in img.flatten():
+        histVal[i]+=1
+    return histVal
+
+
+def histogram_vector(img, numLayer=3):
+    nBins=256
+    histValRGB=np.zeros(nBins*numLayer)
+    for i in range(numLayer):
+        i_start=i*nBins
+        i_stop=(i+1)*nBins
+        histValRGB[i_start: i_stop ]= histFromGrayImage(img[:,:,i])    
+    return histValRGB  
 
 
 
@@ -81,66 +77,8 @@ def histogram_intersection(A,B):    #A e B sono due vettori
 
 if __name__ == '__main__':
     
-    #Prova histogram_vector
-    #Prendo le prime n immagini di camA e per ciscuna confronto l'istogramma RGB
-    #con un numero m di immagini in camB. In result i TRUE indicano che ki>kj(ki->stessa persona,
-    #kj->persone diverse) dove k è l'indice di similarità.Confronto il primo canale
-    n=5
-    m=50
-    for i in range(n):
-        Ai=camA[i]
-        Bi=camB[i]
-        hist_aR, hist_aG, hist_aB = histogram_vector(Ai)
-        hist_bR, hist_bG, hist_bB = histogram_vector(Bi)
-
-
-        
-        kR=histogram_intersection(hist_aR,hist_bR)
-        kG=histogram_intersection(hist_aG,hist_bG)
-        kB=histogram_intersection(hist_aB,hist_bB)
-        
-        ki=(kR + kG + kB)/3
-        p=[]
-        
-        for j in range(m):
-            Bj=camB[j]
-            hist_bR_j, hist_bG_j, hist_bB_j = histogram_vector(Bj)
-                
-            kR_j=histogram_intersection(hist_aR,hist_bR_j)
-            kG_j=histogram_intersection(hist_aG,hist_bG_j)
-            kB_j=histogram_intersection(hist_aB,hist_bB_j)
-            kj=(kR_j + kG_j + kB_j)/3
-            p.append(ki>kj)
-    
-        print('True:' + str(p.count(True)))
-        print('False:' + str(p.count(False)))
-        print('#########################')
-              
-#%%
-        A=camA[0]
-        B=camB[0]
-        hist_aR, hist_aG, hist_aB = histogram_vector(A)
-        hist_bR, hist_bG, hist_bB = histogram_vector(B)
-        
-        s=time.time()
-        kR=histogram_intersection(hist_aR,hist_bR)
-        kG=histogram_intersection(hist_aG,hist_bG)
-        kB=histogram_intersection(hist_aB,hist_bB)
-        
-        k1=(kR + kG + kB)/3
-        e=time.time()
-        print(e-s)
-        print(k1)
-        
-        s1=time.time()
-
-        hist_RGBA=[hist_aR, hist_aG, hist_aB]
-        hist_RGBB=[hist_bR, hist_bG, hist_bB]
-        k2=histogram_intersection(hist_RGBA,hist_RGBB)
-        e1=time.time()
-        print(e1-s1)
-        print(k2)
-        
+   A=camA[0]
+   ha=histogram_vector(A)
         
         
                       

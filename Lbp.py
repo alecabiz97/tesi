@@ -68,7 +68,7 @@ if __name__ == '__main__':
     #Prendo le prime n immagini di camA e per ciscuna confronto l'istogramma LBP
     #con un numero m di immagini in camB. In result i TRUE indicano che ki>kj(ki->stessa persona,
     #kj->persone diverse) dove k è l'indice di similarità.Confronto il primo canale
-    
+    v=Lbp3Channel(X)
     
               
              
