@@ -77,8 +77,16 @@ def histogram_intersection(A,B):    #A e B sono due vettori
 
 if __name__ == '__main__':
     
-   A=camA[0]
-   ha=histogram_vector(A)
+    start=time.time()
+    
+    for A in camA:
+        v=histogram_vector(A)
+
+        
+        
+    end=time.time()
+    tempo=end-start
+    print(tempo)
         
         
                       

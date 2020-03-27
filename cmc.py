@@ -23,10 +23,24 @@ def cmc(probes, id_probes, gallery, id_gallery):
     #similarità con la probe
     all_ranks=np.zeros((len(id_gallery),len(id_probes)))
     
-    
-    #Calcolo istogrammi
+    #Calcolo istogrammi colori
     hist_probes=[histogram_vector(p) for p in probes]
     hist_gallery=[histogram_vector(g) for g in gallery]
+    
+    #Fusion color e LBP 
+#    #Calcolo istogrammi colori
+#    hist_probes_color=[histogram_vector(p) for p in probes]
+#    hist_gallery_color=[histogram_vector(g) for g in gallery]
+#    
+#    #Calcolo istogrammi LBP
+#    hist_probes_lbp=[Lbp3Channel(p) for p in probes]
+#    hist_gallery_lbp=[Lbp3Channel(g) for g in gallery]
+#    
+#    
+#    hist_probes=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_probes_color,hist_probes_lbp)]
+#    hist_gallery=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_gallery_color,hist_gallery_lbp)]
+#    
+#   
     
     print('Histogram computed')
     
@@ -46,9 +60,29 @@ def cmc(probes, id_probes, gallery, id_gallery):
         
         all_ranks[:,i]=sorted_id_gallery
         i += 1
-    
-        val_cmc=np.sum(all_ranks==id_probes,1).cumsum()
-    return val_cmc/len(id_probes)
+        
+    rank=np.zeros((len(id_gallery),1))
+    position_id_matching=[]
+    i=0
+    for p_id in id_probes:
+        position=1
+        p_found=False
+        rank_tmp=all_ranks[:,i]
+        while(p_found == False):
+            if p_id == rank_tmp[position-1]:
+                p_found = True
+            else:
+                p_found = False
+                position += 1
+        rank[position-1] += 1
+        position_id_matching.append(position)
+        i +=1
+    position_id_matching=np.array(position_id_matching)
+    cmc=np.cumsum(rank)/len(id_probes)
+    return np.array(cmc),position_id_matching     
+
+#        val_cmc=np.sum(all_ranks==id_probes,1).cumsum()
+#    return val_cmc/len(id_probes)
 
 #Plot CMC
 def plot_CMC(cmc_vector):
@@ -57,21 +91,22 @@ def plot_CMC(cmc_vector):
     pl.title('Cumulative Match Characteristic')
     pl.ylabel('Probability of Identification')
     pl.xlabel('Rank')
+    pl.grid(True)
     pl.show()  
     
-def test_camA_vs_camB():
+def test_camB_vs_camA():
     
-    id_probes=Id_A
-    probes=camA
+    id_probes=Id_B
+    probes=camB
     
-    id_gallery=Id_B 
-    gallery=camB
+    id_gallery=Id_A 
+    gallery=camA
     
     #cmc_vector,positions=cmc(probes, id_probes, gallery, id_gallery)
-    cmc_vector=cmc(probes, id_probes, gallery, id_gallery)
-
-    plot_CMC(cmc_vector)
-    
+    cmc_vector,positions=cmc(probes, id_probes, gallery, id_gallery)
+    plot_CMC(cmc_vector)  
+    print(sorted(positions))
+        
 
 def test_11B_vs_allA():
     id_probes=[Id_B[i] for i in range(0,110,10)] 
@@ -80,8 +115,9 @@ def test_11B_vs_allA():
     id_gallery=Id_A
     gallery=camA
         
-    cmc_vector= cmc(set_of_probes, id_probes, gallery, id_gallery)
-    plot_CMC(cmc_vector)    
+    cmc_vector,positions= cmc(set_of_probes, id_probes, gallery, id_gallery)
+    plot_CMC(cmc_vector)  
+    print(sorted(positions))
               
         
 if __name__ == '__main__':
@@ -90,12 +126,15 @@ if __name__ == '__main__':
 
     print("START!")
     
-    test_camA_vs_camB()
+    test_camB_vs_camA()
     #test_11B_vs_allA()
     
     end=time.time()
     tempo=end-start
     print('Tempo:' + str(tempo)) 
+    
+    
+    
 
     
 

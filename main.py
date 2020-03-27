@@ -48,7 +48,7 @@ gallery=camA
 
 print("START!")
 
-cmc_vector= cmc(set_of_probes, id_probes, gallery, id_gallery)
+cmc_vector,positions= cmc(set_of_probes, id_probes, gallery, id_gallery)
 print('done!')
 plot_CMC(cmc_vector)
 
