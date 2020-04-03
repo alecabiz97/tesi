@@ -24,23 +24,27 @@ def cmc(probes, id_probes, gallery, id_gallery):
     all_ranks=np.zeros((len(id_gallery),len(id_probes)))
     
     #Calcolo istogrammi colori
-    hist_probes=[histogram_vector(p) for p in probes]
-    hist_gallery=[histogram_vector(g) for g in gallery]
+#    hist_probes=[histogram_vector(p) for p in probes]
+#    hist_gallery=[histogram_vector(g) for g in gallery]
+    
+    #Calcolo istogrammi LBP
+#    hist_probes=[histogram_vector(LbpRGB(p)) for p in probes]
+#    hist_gallery=[histogram_vector(LbpRGB(g)) for g in gallery]
     
     #Fusion color e LBP 
-#    #Calcolo istogrammi colori
-#    hist_probes_color=[histogram_vector(p) for p in probes]
-#    hist_gallery_color=[histogram_vector(g) for g in gallery]
-#    
-#    #Calcolo istogrammi LBP
-#    hist_probes_lbp=[Lbp3Channel(p) for p in probes]
-#    hist_gallery_lbp=[Lbp3Channel(g) for g in gallery]
-#    
-#    
-#    hist_probes=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_probes_color,hist_probes_lbp)]
-#    hist_gallery=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_gallery_color,hist_gallery_lbp)]
-#    
-#   
+    #Calcolo istogrammi colori
+    hist_probes_color=[histogram_vector(p) for p in probes]
+    hist_gallery_color=[histogram_vector(g) for g in gallery]
+    
+    #Calcolo istogrammi LBP
+    hist_probes_lbp=[histogram_vector(LbpRGB(p)) for p in probes]
+    hist_gallery_lbp=[histogram_vector(LbpRGB(g)) for g in gallery]
+    
+    
+    hist_probes=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_probes_color,hist_probes_lbp)]
+    hist_gallery=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_gallery_color,hist_gallery_lbp)]
+    
+   
     
     print('Histogram computed')
     
@@ -88,7 +92,7 @@ def cmc(probes, id_probes, gallery, id_gallery):
 def plot_CMC(cmc_vector):
     x=np.arange(len(cmc_vector))+1
     pl.plot(x,cmc_vector)
-    pl.title('Cumulative Match Characteristic')
+    pl.title('Cumulative Match Characteristic (Color+LBP)')
     pl.ylabel('Probability of Identification')
     pl.xlabel('Rank')
     pl.grid(True)
@@ -126,8 +130,8 @@ if __name__ == '__main__':
 
     print("START!")
     
-    test_camB_vs_camA()
-    #test_11B_vs_allA()
+    #test_camB_vs_camA()
+    test_11B_vs_allA()
     
     end=time.time()
     tempo=end-start

@@ -12,27 +12,27 @@ import matplotlib.pyplot as pl
 from PIL import Image
 import time
 
-
-def histFromGrayImage(img):
-    nBins=256
-    histVal=np.zeros(nBins) 
-    for i in img.flatten():
-        histVal[i]+=1
-    return histVal
-
-
-def histogram_vector(img, numLayer=3):
-    nBins=256
-    histValRGB=np.zeros(nBins*numLayer)
-    for i in range(numLayer):
-        i_start=i*nBins
-        i_stop=(i+1)*nBins
-        histValRGB[i_start: i_stop ]= histFromGrayImage(img[:,:,i])    
-    return histValRGB  
-
-
-
-
+#Dato una matrice i cui valori sono compresi tra 0 e 255 crea l'istogramma
+def histogram_vector(img):
+    if len(img.shape) == 2:
+        nBins=256
+        histVal=np.zeros(nBins) 
+        for i in img.flatten():
+            histVal[i]+=1
+        return histVal
+    elif len(img.shape) == 3:
+        nBins=256
+        histValRGB=np.zeros(nBins*3)
+        for i in range(3):
+            i_start=i*nBins
+            i_stop=(i+1)*nBins
+            histVal=np.zeros(nBins) 
+            for j in img[:,:,i].flatten():
+                histVal[j]+=1
+            histValRGB[i_start: i_stop ]=histVal  
+        return histValRGB  
+    
+    
 
 def reshape_image(X):     #restituisco 3 array(in caso RGB)
     #r,g,b = img.split()    
