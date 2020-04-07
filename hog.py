@@ -5,70 +5,107 @@ Created on Sun Mar 15 10:53:42 2020
 @author: AleCabiz
 """
 import numpy as np
+from skimage import feature as ft 
 from histogram import *
 
-
-#HOG() rieceve in input una matrice e restituisce l'istogramma HOG(Histogram of oriented gradients),un vettore colonna di 15x5x36=2700 elementi
-#X è 128*48, divido in blocchi da 16. Per ciscun blocco considero 4 blocchi 8*8 e per ciscuno calcolo HOG da 9 bin.
-#Quindi per ogni blocco da 16 concateno 4 histogrammi ottenendo un vettore da 36, che verra normalizzato.
-#Poi mi sposto di 8 colonne e itero il processo sino alla fine della riga. Incremento la riga fino alla fine dell immagine . 
-def HOG(X):
-    riga,colonna=0,0  #indici di X
-    hog=[]
-    while riga <= X.shape[0]-16: #128-16=112
-        colonna=0
-        while colonna <= (X.shape[1]) -16: #48-16=32
-            W_16=np.zeros((16,16))
-            W_16=X[riga:riga+16,colonna:colonna+16].copy()
-            riga_W16,colonna_W16=0,0   #indici della finestra 16x16
-            hog16=[]
-            while riga_W16 < 16:
-                colonna_W16 = 0
-                while colonna_W16 < 16:
-                    W_8=np.zeros((8,8))
-                    W_8=W_16[riga_W16:riga_W16+8,colonna_W16:colonna_W16+8]
-                    riga_tmp,colonna_tmp=0,0  #indici della finestra 8x8
-                    vectorHog_tmp=[]  #conterrà magnitude e direction della finestra 3x3
-                    while riga_tmp < 6:
-                        colonna_tmp=0
-                        while colonna_tmp < 6:
-                            w=np.zeros((3,3))
-                            w=W_8[riga_tmp:riga_tmp+3,colonna_tmp:colonna_tmp+3].copy()
-                            x_direction=np.abs(int(w[1,0])-int(w[1,2]))
-                            y_direction=np.abs(int(w[0,1])-int(w[2,1]))
-                            grad_mag=np.sqrt((x_direction**2)+(y_direction**2)) #calcolo la gradient magnitude (modulo) 
-                            if y_direction == 0:        #np.arctan() di infinito da errore
-                                grad_direction = 90   #calcolo la gradient direction (fase)
-                            else:    
-                                grad_direction=np.degrees((np.arctan(x_direction/y_direction))) #np.degrees converte in gradi
-                            vectorHog_tmp.append([round(grad_mag),round(grad_direction)])
-                            colonna_tmp += 1
-                        riga_tmp += 1
-                    hog8=histogramHOG(vectorHog_tmp)  
-                    hog16.append(hog8)
-                    colonna_W16 += 8
-                riga_W16 += 8
-                
-            #Normalizzo un blocco da 16
-            hog16=np.array(hog16).reshape(np.size(hog16),1) #Converto hog16 da una lista di array ad un array colonna
-            tot=np.sqrt(np.sum(np.power(hog16,2)))
-            if tot != 0:
-                hog16=hog16/int(tot)
-            hog.append(hog16)
-            colonna += 8
-        riga += 8
-    hog=np.array(hog)
-    hog=hog.reshape(hog.shape[0]*hog.shape[1]) #hog è un vettore colonna di 15x5x36=2700
+def HOG(M,D):
+    riga, colonna = 0,0
+    lenght_hog=3*9 #Immagine divisa in 3 striscie
+    hog=np.zeros(lenght_hog)
+    i=0
+    while riga < M.shape[0]:
+        m,d=np.zeros((42,46)),np.zeros((42,46))
+        m=M[riga:riga +42,:].copy()
+        d=D[riga:riga +42,:].copy()
+        i_start=i*9
+        i_end=(i+1)*9
+        hog[i_start:i_end]=histogramHOG(m.flatten(),d.flatten())
+        i += 1
+        riga += 42
+#    while riga < M.shape[0]-7:
+#        colonna=0
+#        while colonna < M.shape[1]-7:
+#            
+#            m,d=np.zeros((8,8)),np.zeros((8,8))
+#            m=M[riga:riga +8,colonna:colonna+8].copy()
+#            d=D[riga:riga +8,colonna:colonna+8].copy()
+#            i_start=i*9
+#            i_end=(i+1)*9
+#            hog[i_start:i_end]=histogramHOG(m.flatten(),d.flatten())
+#            i += 1
+#            colonna += 1
+#        riga += 1
     return hog
+
+def calculateMagntiudeDirections(X):
+    riga,colonna=0,0   
+    new_shape=(X.shape[0]-2,X.shape[1]-2)
+    magnitude=np.zeros(new_shape,int)
+    directions=np.zeros(new_shape,int)
+    while riga < (X.shape[0]-2): 
+       colonna = 0
+       while colonna < (X.shape[1]-2):
+           w=np.zeros((3,3))
+           w=X[riga:riga+3,colonna:colonna+3].copy()
+           magn,direct=hog3x3window(w)
+           magnitude[riga,colonna]=magn
+           directions[riga,colonna]=direct
+           colonna += 1
+       riga += 1
+    return magnitude,directions
+
+
+#Hog3Channel riceve in ingresso un immagine RGB e restituisce 3 istogrammi hog, 1 per canale
+def Hog3Channel(X):
+#    m,d=[],[]
+#    for ch in range(3):
+#        mi,di=calculateMagntiudeDirections(X[:,:,ch])
+#        m.append(mi)
+#        d.append(di)
+#    
+#    m_max=m[0]
+#    direct=d[0]
+#    for i in [1,2]:
+#        for j in range(m_max.shape[0]):
+#            for k in range(m_max.shape[1]):
+#                if m[i][j,k] > m_max[j,k]:
+#                    m_max[j,k] = m[i][j,k]
+#                    direct[j,k] = d[i][j,k]
+#                
+#    return HOG(m_max, direct)
+#    return ft.hog(X,feature_vector=True,multichannel=True)
+    
+    h=np.zeros(3*27)    
+    i=0 
+    i_start=i*27
+    i_end=(i+1)*27
+    for ch in range(3):
+        mi,di=calculateMagntiudeDirections(X[:,:,ch])
+        h[i_start:i_end]=HOG(mi,di)
+        i += 1
+    return h
+        
+        
+
+def hog3x3window(w):
+    x_direction=np.abs(int(w[1,0])-int(w[1,2]))
+    y_direction=np.abs(int(w[0,1])-int(w[2,1]))
+    grad_mag=np.sqrt((x_direction**2)+(y_direction**2)) #calcolo la gradient magnitude (modulo) 
+    if y_direction == 0:        #np.arctan() di infinito da errore
+        grad_direction = 90   #calcolo la gradient direction (fase)
+    else:    
+        grad_direction=np.degrees((np.arctan(x_direction/y_direction))) #np.degrees converte in gradi
+    return round(grad_mag),round(grad_direction)
+    
+
 
 #Dato v una lista di liste di 2 elementi (magnitude,direction) restituisce un vettore di 9 righe.
 #Le righe indicano 0°,20°,40°,60°,80°,100°,120°,140°,160° e i valori le magnitude corrispondenti
 #Se la direction non è esattamente uno dei numeri sopracittati la corrispondente magnitude viene divisa
 #Es. d=35° m=20 -> 1/4 va in 20* e 3/4 in 40*      
-def histogramHOG(v):
-    h=np.zeros((9,))
-    for val in v:
-        m,d=val[0],val[1]
+def histogramHOG(magn,direct):
+    h=np.zeros(9)
+    for m,d in zip(magn,direct):
         if d == 0:
             h[0] += m
         elif d == 20:
@@ -116,57 +153,47 @@ def histogramHOG(v):
             h[0] += (1-(np.abs(d-180)/20))*m
     return h
 
-#Hog3Channel riceve in ingresso un immagine RGB e restituisce 3 istogrammi hog, 1 per canale
-def Hog3Channel(X):
-    Xr=X[:,:,0]
-    Xg=X[:,:,1] 
-    Xb=X[:,:,2]     
-    hog_xr=HOG(Xr)
-    hog_xg=HOG(Xg)
-    hog_xb=HOG(Xb)
-    #hog_tmp=np.maximum(hog_xr,hog_xg)
-    return [hog_xr,hog_xg,hog_xb]
 
 
 
 if __name__ == '__main__':
-        
-    #Prova HOG
-    #Prendo le prime n immagini di camA e per ciscuna confronto l'istogramma HOG
-    #con un numero m di immagini in camB. In result i TRUE indicano che ki>kj(ki->stessa persona,
-    #kj->persone diverse) dove k è l'indice di similarità ottenuto facendo la media tra i 3 k calcolati per i 3 canali.
-    n=5
-    m=20
-    for i in range(n):
-        Ai=camA[i]
-        Bi=camB[i]
-        hog_aR, hog_aG, hog_aB = Hog3Channel(Ai)
-        hog_bR, hog_bG, hog_bB = Hog3Channel(Bi)
+   
 
-        
-        kR=histogram_intersection(hog_aR,hog_bR)
-        kG=histogram_intersection(hog_aG,hog_bG)
-        kB=histogram_intersection(hog_aB,hog_bB)
-        
-        ki=(kR + kG + kB)/3
-        p=[]
-        
-        for j in range(m):
-            Bj=camB[j]
-            hog_bR_j, hog_bG_j, hog_bB_j = Hog3Channel(Bj)
-                
-            kR_j=histogram_intersection(hog_aR,hog_bR_j)
-            kG_j=histogram_intersection(hog_aG,hog_bG_j)
-            kB_j=histogram_intersection(hog_aB,hog_bB_j)
-            kj=(kR_j + kG_j + kB_j)/3
-            p.append(ki>kj)
     
-        print('True:' + str(p.count(True)))
-        print('False:' + str(p.count(False)))
-        print('#########################')
-
-#%%
-        A0=camA[0][:,:,0]
-        v=HOG(2*A0)
-       # v1,v2,v3=Hog3Channel(2*A)
+    A=camA[60]
+    h=Hog3Channel(A)
+    m,d=calculateMagntiudeDirections(A[:,:,0])
+#    h=HOG(m,d)
+#    print(len(h))
+#    
+#    h1=feature.hog(A[:,:,0])
     
+    
+    
+#    ho0,d0 = calculateMagntiudeDirections(A[:,:,0])
+#    ho1,d1 = calculateMagntiudeDirections(A[:,:,1])
+#    ho2,d2 = calculateMagntiudeDirections(A[:,:,2])
+#    
+#    h_max=np.maximum(np.maximum(ho0,ho1),ho2)
+#    
+#    lbp=LbpRGB(A)
+#    
+#    pl.subplot(1,3,1)
+#    pl.imshow(A)
+#    pl.subplot(1,3,2)
+#    pl.imshow(lbp)
+#    pl.subplot(1,3,3)
+#    pl.imshow(m)
+#    pl.show()
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   

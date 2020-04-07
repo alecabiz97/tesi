@@ -14,8 +14,7 @@ from skimage import feature
 
 #LBP() rieceve in input una matrice e restituisce la matrice LBP(Local Binary Pattern)
 def LBP(X):
-    riga,colonna,index=0,0,0
-    n_pix=(X.shape[0]*X.shape[1])-(2*X.shape[0] + (2*X.shape[1] - 4)) #(128*48)-(2*128+46+46) tutti i pixel tranne il bordo
+    riga,colonna=0,0
     matrixLbp=np.zeros((X.shape[0]-2,X.shape[1]-2),int) 
     while riga < (X.shape[0]-2): 
         colonna = 0
@@ -24,7 +23,6 @@ def LBP(X):
             w=X[riga:riga+3,colonna:colonna+3].copy()
             lbp_value=window3x3Value(w)
             matrixLbp[riga,colonna]=lbp_value 
-            index +=1
             colonna += 1
         riga += 1
     return matrixLbp
@@ -69,19 +67,19 @@ if __name__ == '__main__':
     
     
     start=time.time()
-    X=img
-  #  X=color.rgb2grey(camA[0])
-#    h=LBP(X)
-#    x=np.arange(0,256,1)
-#    
-#    pl.plot(x,h)
-    X2=LBP(X)
-    pl.imshow(X)
-    pl.show()
-    pl.imshow(X2)
-    pl.show()
     
+    A=camA[20]
+    Ag=color.rgb2grey(A)*10
+    X=LbpRGB(A)
+    X2=feature.local_binary_pattern(Ag,8,1)
     
+ 
+    
+#    pl.subplot(1,2,1)
+#    pl.imshow(X)
+#    pl.subplot(1,2,2)
+#    pl.imshow(X2)
+#    pl.show()
     
     end=time.time()
     tempo=end-start

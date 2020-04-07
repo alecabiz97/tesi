@@ -16,6 +16,7 @@ from Lbp import *
 from hog import *
 import random
 import time
+from skimage import feature
 
 def cmc(probes, id_probes, gallery, id_gallery):
     
@@ -24,27 +25,31 @@ def cmc(probes, id_probes, gallery, id_gallery):
     all_ranks=np.zeros((len(id_gallery),len(id_probes)))
     
     #Calcolo istogrammi colori
-#    hist_probes=[histogram_vector(p) for p in probes]
-#    hist_gallery=[histogram_vector(g) for g in gallery]
+    hist_probes=[histogram_vector(p) for p in probes]
+    hist_gallery=[histogram_vector(g) for g in gallery]
+    
     
     #Calcolo istogrammi LBP
-#    hist_probes=[histogram_vector(LbpRGB(p)) for p in probes]
-#    hist_gallery=[histogram_vector(LbpRGB(g)) for g in gallery]
+    hist_probes=[histogram_vector(LbpRGB(p)) for p in probes]
+    hist_gallery=[histogram_vector(LbpRGB(g)) for g in gallery]
     
-    #Fusion color e LBP 
+     #Calcolo istogrammi Hog
+    hist_probes=[Hog3Channel(p) for p in probes]
+    hist_gallery=[Hog3Channel(g) for g in gallery]
+    
+    #Fusion color, LBP
     #Calcolo istogrammi colori
-    hist_probes_color=[histogram_vector(p) for p in probes]
-    hist_gallery_color=[histogram_vector(g) for g in gallery]
+#    hist_probes_color=[histogram_vector(p) for p in probes]
+#    hist_gallery_color=[histogram_vector(g) for g in gallery]
+#    
+#    #Calcolo istogrammi LBP
+##    hist_probes_lbp=[histogram_vector(LbpRGB(p)) for p in probes]
+##    hist_gallery_lbp=[histogram_vector(LbpRGB(g)) for g in gallery]
+#        
+##   Color + LBP
+##    hist_probes=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_probes_color,hist_probes_lbp)]
+##    hist_gallery=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_gallery_color,hist_gallery_lbp)]
     
-    #Calcolo istogrammi LBP
-    hist_probes_lbp=[histogram_vector(LbpRGB(p)) for p in probes]
-    hist_gallery_lbp=[histogram_vector(LbpRGB(g)) for g in gallery]
-    
-    
-    hist_probes=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_probes_color,hist_probes_lbp)]
-    hist_gallery=[np.concatenate((h_color,h_lbp)) for h_color,h_lbp in zip(hist_gallery_color,hist_gallery_lbp)]
-    
-   
     
     print('Histogram computed')
     
