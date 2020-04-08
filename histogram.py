@@ -66,22 +66,34 @@ def histogram_plot(V):
         pl.hist(V[0],bins=256)  
         pl.show()
 
-#Prima bozza        
+        
 def histogram_intersection(A,B):    #A e B sono due vettori
     if len(A) == len(B):
         return np.sum(np.minimum(A,B))/np.sum(A) 
     else:
         return None
         
+def histogram_distance(A,B):
+    if len(A) == len(B):
+        return np.sum(np.abs(A-B))
+    else:
+        return None
      
 
 if __name__ == '__main__':
     
     start=time.time()
     
-    for A in camA:
-        v=histogram_vector(A)
-
+    
+    hA=[histogram_vector(i) for i in camA[0:10]]
+    hB=[histogram_vector(i) for i in camB]
+    
+    a=hA[1]
+    d1,d2=[],[]
+    for b in hB:
+        #k=histogram_intersection(a,b)
+        d=histogram_distance(a,b)
+        d1.append(d)
         
         
     end=time.time()
