@@ -16,47 +16,76 @@ from histogram import *
 from cmc import *
 from Lbp import *
 from hog import *
+from BayesianModel import *
 import time
 import random
 
-fileDir='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Python files'
-inDir='C:\\Users\\AleCabiz\\Desktop\\Tesi'
-newDir=os.path.join(inDir,'VIPeR')
-os.chdir(newDir)
-filt=glob.glob('cam*')
+#Load VIPeR
+#camA,idA,camB,idB=loadVIPeR()
 
-d_list=importBmpFiles(newDir,filt)
-#os.chdir(baseDir) #torno alla directory corrente
-camA_dict=d_list[0]
-camB_dict=d_list[1]
- 
-#Id
-Id_A=[i for i in camA_dict.keys()]
-Id_B=[i for i in camB_dict.keys()] 
-#Immagini
-camA=[p for p in camA_dict.values()]
-camB=[p for p in camB_dict.values()]
+#Load Market-1501
+gallery,ID=loadMarket_1501()
+test, train, query = gallery
+id_test, id_train, id_query = ID
 
-#Test 11 probe da camB e come gallery tutta camA
+print('Dataset importato')
+
 start=time.time()
+print('START')
 
-id_probes=[Id_B[i] for i in range(0,110,10)] 
-set_of_probes=[camB[i] for i in range(0,110,10)]
+#TEST
+#####################################
 
-id_gallery=Id_A
-gallery=camA
+test_random=np.random.permutation(id_test)
+query_random=np.random.permutation(id_query)
 
-print("START!")
+test_random,query_random=test_random[0:100],query_random[0:30]
 
-cmc_vector,positions= cmc(set_of_probes, id_probes, gallery, id_gallery)
-print('done!')
-plot_CMC(cmc_vector)
+#Feature vector
+gallery_test=[histogram_vector(test[i]) for i in test_random]
+query_test=[histogram_vector(query[i]) for i in query_random]
+#ID
+gallery_id_test=[id_test[i] for i in test_random]
+query_id_test=[id_query[i] for i in query_random]
 
+print('Test calcolato')
+#########################################
+
+
+#TRAINING
+#####################################
+
+i_random=np.random.permutation(id_train)
+query_index,train_index=np.split(i_random,2)
+#query_index,train_index=i_random[0:30],i_random[30:80]
+
+#Feature vector
+gallery_train=[histogram_vector(train[i]) for i in train_index]
+query_train=[histogram_vector(train[i]) for i in query_index]
+#ID
+gallery_id_train=[id_train[i] for i in train_index]
+query_id_train=[id_train[i] for i in query_index]
+
+print('Training calcolato')
+#########################################
+
+
+print('START BQE')
+
+B=BayesianModel()
+B.train(gallery_train,gallery_id_train,query_train,query_id_train) 
+
+r=[]
+for i in range(2):
+    rank=B.test(query_test,gallery_test)
+    query_test=queryExpansion(rank,gallery_test,query_test,B,5) 
+    r.append(rank[0])
 end=time.time()
 tempo=end-start
 print('Tempo:' + str(tempo)) 
 
  
+
 
    
 
