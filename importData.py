@@ -30,7 +30,7 @@ def importFiles(Dir,filesExt):
 
 def loadVIPeR():
     DircamA='C:\\Users\\AleCabiz\\Desktop\\Tesi\\VIPeR\\cam_a'
-    DircamB='C:\\Users\\AleCabiz\\Desktop\\Tesi\\VIPeR\\cam_a'
+    DircamB='C:\\Users\\AleCabiz\\Desktop\\Tesi\\VIPeR\\cam_b'
     
     galleryA, idA=importFiles(DircamA,'.bmp')
     galleryB, idB=importFiles(DircamB,'.bmp')

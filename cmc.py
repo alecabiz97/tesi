@@ -10,7 +10,7 @@ from PIL import Image
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
-from importBmp import *
+from importData import *
 from histogram import *
 from Lbp import *
 from hog import *
