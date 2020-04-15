@@ -19,64 +19,59 @@ import random
 
 class BayesianModel(object):
     
-    def __init__(self,K=50):
+    def __init__(self,K=10):
         self.K=K
         
-    def train(self,gallery_train,gallery_labels,query_train,query_labels,M=100):
-        gallery_labels=np.array(gallery_labels)
-        query_labels=np.array(query_labels)
+    def train(self,train,labels,M=100):
+        #Stimo P(lti==ltj) e P(lti!=ltj) 
+        n_id=len(set(labels))
+        labels_set=list(set(labels))
+        P=np.zeros(n_id)
+        i=0
+        for label in labels_set:
+            P[i]=(1/(len(train)-1))*(labels.count(label)-1)
+            i += 1
+        self.P_ltiEqualsltj=np.average(P)
+        self.P_ltiNotEqualsltj = 1 - self.P_ltiEqualsltj
+            
         
-        ranks=np.zeros((len(gallery_train),len(query_train)))
-        d_sameId,d_differenId=[],[]
-        column=0
-        for q,i in zip(query_train,range(len(query_train))):
-            d=np.zeros(len(gallery_train))
-            j=0
-            for h in gallery_train:
-                    d[j]=(1/(1+histogram_intersection(q,h)))  #Calcolo distanza
-                    j+= 1
-            sorted_id=np.argsort(d)
-            sorted_labels=gallery_labels[sorted_id]
-            
-            label_q=query_labels[i]
-            
-            #Distanze tra le immagini della stessa persona
-            for val in d[sorted_labels==label_q]:
-                d_sameId.append(val) 
-            #Distanze tra le immagini di persone diverse
-            for val in d[sorted_labels!=label_q]:
-                d_differenId.append(val)  
-            
-            ranks[:,column] = sorted_labels   
-            column += 1
+        d_sameId,d_differentId=[],[]
+        i=0
+        for xi,label_xi in zip(train,labels):
+            for xj,label_xj in zip(train[i::],labels[i::]):
+                if not np.array_equal(xi,xj):
+                    d=(1/(1+histogram_intersection(xi,xj)))  #Calcolo distanza
+                    if label_xi == label_xj:
+                        d_sameId.append(d)
+                    else:
+                        d_differentId.append(d)
+            i += 1 
+                        
+        d_sameId,d_differentId=np.array(d_sameId),np.array(d_differentId)
         
-        d_sameId,d_differenId=np.array(d_sameId),np.array(d_differenId)
         
         #np.histogram() restituisce una lista che contiene l'istgramma e un vettore con gli estremi dei bins
         self.hist_d_sameId=np.histogram(d_sameId,M) 
-        self.hist_d_differenId=np.histogram(d_differenId,M) 
+        self.hist_d_differentId=np.histogram(d_differentId,M) 
         
-        label_found=0
-        i=0
-        #Controllo quante volte la label-iesima si trova tra le prime K
-        for label in query_labels:
-            label_found += np.sum(ranks[0:self.K,i]==label)
-            i += 1
-    
-        self.P_ltiEqualsltj=label_found/len(query_labels)
-        self.P_ltiNotEqualsltj= 1-self.P_ltiEqualsltj
         
     def calculateP_d(self,distanza):
         h_sameId, bins_sameId = self.hist_d_sameId
         h_diffId, bins_diffId = self.hist_d_differenId
         
         #Calcolo P_d_lqEqualslg
-        distanza_index=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
+        if distanza < np.min(bins_sameId):
+            distanza_index=0
+        else:    
+            distanza_index=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
          
         P_d_lqEqualslg = h_sameId[distanza_index]/np.sum(h_sameId)
         
         #Calcolo P_d_lqNotEqualslg
-        distanza_index=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
+        if distanza < np.min(bins_diffId):
+            distanza_index=0
+        else:
+            distanza_index=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
 
         P_d_lqNotEqualslg = h_diffId[distanza_index]/np.sum(h_diffId)
         
@@ -88,7 +83,7 @@ class BayesianModel(object):
      
 
 
-def test(query,gallery,Bayes):
+def calculateRanks(query,gallery,Bayes):
     ranks=np.zeros((len(gallery),len(query)),int)
     ranks_probability=np.zeros((len(gallery),len(query)),float)
     column=0
@@ -125,45 +120,19 @@ def queryExpansion(ranking,gallery,query,K):
                 
 if __name__ == '__main__':
     
-#    gallery=[histogram_vector(camA[i]) for i in range(10)]
-#    query=[histogram_vector(camB[i]) for i in range(10)]
-#    
-#    r1,r2=ranking(query,gallery)
-    
-         
 
-    random_id=np.random.permutation(np.arange(0,len(camA[0:400])))
-    length_train=int(0.8*len(random_id))
-    train_index=random_id[0:length_train]
-    test_index=random_id[length_train::]
-    
-    gallery_train=[histogram_vector(camA[i]) for i in train_index]
-    query_train=[histogram_vector(camB[i]) for i in train_index]  
-    gallery_train_labels=[Id_A[i] for i in train_index]
-    query_train_labels=[Id_B[i] for i in train_index]
-    
-    gallery_test=[histogram_vector(camA[i]) for i in test_index]
-    query_test=[histogram_vector(camB[i]) for i in test_index]
-    y_test=[Id_B[i] for i in test_index]
+    print('START TRAINING')
 
-
-    
-    
     B=BayesianModel()
-    B.train(gallery_train,gallery_train_labels,query_train,query_train_labels) 
+    B.train(hist_of_train,labels)
+    print('TRAINING COMPLETE')
+    print((B.P_ltiEqualsltj,B.P_ltiNotEqualsltj)) 
     
+    pl.plot(B.hist_d_sameId[0])
+    pl.plot(B.hist_d_differenId[0]) 
 
-    print('Start test')
     
-
-    r=[]
-    for i in range(2):
-        ranks=test(query_test,gallery_test,B)
-        print('Ranks calcolato')
-        query_test=queryExpansion(ranks,gallery_test,query_test,20) 
-        print('Nuova query calcolata')
-
-        r.append(ranks[0])
+ 
         
                 
                 

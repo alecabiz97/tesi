@@ -20,65 +20,64 @@ from BayesianModel import *
 import time
 import random
 
+
+
 #Load VIPeR
-camA,Id_A,camB,Id_B=loadVIPeR()
+#camA,Id_A,camB,Id_B=loadVIPeR()
 
 #Load Market-1501
 #gallery,ID=loadMarket_1501()
+
+#Load DukeMTMC_reID
+#gallery,ID=loadDukeMTMC_reID()
+#
 #test, train, query = gallery
 #id_test, id_train, id_query = ID
-
-print('Dataset importato')
+##
+#print('Dataset importato')
 
 start=time.time()
+
+
 print('START')
 
-#TEST
-#####################################
+test, train, query = test0.copy(), train0.copy(), query0.copy()
+id_test, id_train, id_query = id_test0.copy(), id_train0.copy(), id_query0.copy()
 
-#test_random=np.random.permutation(id_test)
-#query_random=np.random.permutation(id_query)
-#
-#test_random,query_random=test_random[0:100],query_random[0:30]
-#
-##Feature vector
-#gallery_test=[histogram_vector(test[i]) for i in test_random]
-#query_test=[histogram_vector(query[i]) for i in query_random]
-##ID
-#gallery_id_test=[id_test[i] for i in test_random]
-#query_id_test=[id_query[i] for i in query_random]
-#
-#print('Test calcolato')
-##########################################
-#
-#
+    
 #TRAINING
-#####################################
-
-#i_random=np.random.permutation(id_train)
-#query_index,train_index=np.split(i_random,2)
-##query_index,train_index=i_random[0:30],i_random[30:80]
-#
-##Feature vector
-#gallery_train=[histogram_vector(train[i]) for i in train_index]
-#query_train=[histogram_vector(train[i]) for i in query_index]
-##ID
-#gallery_id_train=[id_train[i] for i in train_index]
-#query_id_train=[id_train[i] for i in query_index]
-#
-#print('Training calcolato')
-########################################
 
 
+print('HISTOGRAM COMPUTED')
+print('START TRAINING')
 
+B=BayesianModel()
+B.train(hist_train,id_train)
+print('TRAINING COMPLETE')
+print((B.P_ltiEqualsltj,B.P_ltiNotEqualsltj)) 
+
+pl.plot(B.hist_d_sameId[0],label='same',color='b')  
+pl.plot(B.hist_d_differentId[0],label='diff',color='r')
+pl.legend()
+
+print('START TEST')
+
+r=[]
+for i in range(2):
+    ranks=calculateRanks(query_test,gallery_test,B)
+    print('Ranks calcolato')
+    query_test=queryExpansion(ranks,gallery_test,query_test,3) 
+    print('Nuova query calcolata')
+
+    r.append(ranks[0])
 
 
 end=time.time()
 tempo=end-start
 print('Tempo:' + str(tempo)) 
 
- 
 
+ 
 
    
 

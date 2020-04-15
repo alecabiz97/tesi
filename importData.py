@@ -28,6 +28,7 @@ def importFiles(Dir,filesExt):
     return images,id_images
 
 
+
 def loadVIPeR():
     DircamA='C:\\Users\\AleCabiz\\Desktop\\Tesi\\VIPeR\\cam_a'
     DircamB='C:\\Users\\AleCabiz\\Desktop\\Tesi\\VIPeR\\cam_b'
@@ -47,26 +48,54 @@ def loadMarket_1501():
     
     return [(test,train,query),(id_test,id_train,id_query)]
 
+def loadDukeMTMC_reID():
+    Dir_test='C:\\Users\\AleCabiz\\Desktop\\Tesi\\DukeMTMC-reID\\bounding_box_test'
+    Dir_train='C:\\Users\\AleCabiz\\Desktop\\Tesi\\DukeMTMC-reID\\bounding_box_train'
+    Dir_query='C:\\Users\\AleCabiz\\Desktop\\Tesi\\DukeMTMC-reID\\query'
+    
+    test, id_test=t=importFiles(Dir_test,'.jpg')
+    train, id_train=t=importFiles(Dir_train,'.jpg')
+    query, id_query=importFiles(Dir_query,'.jpg')
+    
+    query1=[[] for i in range(max(id_query)+1)]
+    for i in range(len(id_query)):
+        query1[id_query[i]].append(query[i])
+
+    test1=[[] for i in range(max(id_test)+1)]
+    for i in range(len(id_test)):
+        test1[id_test[i]].append(test[i])
+        
+    train1=[[] for i in range(max(id_train)+1)]
+    for i in range(len(id_train)):
+        train1[id_train[i]].append(train[i])
+        
+    #id_test=sorted(set(id_test))
+    #id_train=sorted(set(id_train))
+    #id_query=sorted(set(id_query))
+    
+    return [(test,train,query),(id_test,id_train,id_query)]
 if __name__ == '__main__':            
     
     
     
     
-    inDir='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Market-1501\\'
-#    newDir=os.path.join(inDir,'')
-#    os.chdir(newDir)
-#    filt=glob.glob('cam*')
+    #Load VIPeR
+#   camA,Id_A,camB,Id_B=loadVIPeR()
     
-    dir_test=os.path.join(inDir,'bounding_box_test')
-    dir_train=os.path.join(inDir,'bounding_box_train')
-    dir_query=os.path.join(inDir,'query') 
-    fileExt='jpg'
-        
-    gallery_test, id_test=importFiles(dir_test,fileExt)
-    gallery_train, id_train=importFiles(dir_train,fileExt)
-    gallery_query, id_query=importFiles(dir_query,fileExt)
-       
+   #Load Market-1501
+    gallery,ID=loadMarket_1501()
     
+    #Load DukeMTMC_reID
+#    gallery,ID=loadDukeMTMC_reID()
     
+    test0, train0, query0 = gallery
+    id_test0, id_train0, id_query0 = ID
+    
+    test, train, query = test0.copy(), train0.copy(), query0.copy()
+    id_test, id_train, id_query = id_test0.copy(), id_train0.copy(), id_query0.copy()
+
+    
+    #
+    print('Dataset importato')
     
                     
