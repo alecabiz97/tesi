@@ -69,13 +69,13 @@ def histogram_plot(V):
         
 def histogram_intersection(A,B):    #A e B sono due vettori
     if len(A) == len(B):
-        return np.sum(np.minimum(A,B))/np.sum(A) 
+        return np.sum(np.minimum(A,B))/np.sum(A)
     else:
         return None
         
 def histogram_distance(A,B):
     if len(A) == len(B):
-        return np.sum(np.abs(A-B))
+        return np.sum(np.abs(A-B))/np.sum(A)
     else:
         return None
      
