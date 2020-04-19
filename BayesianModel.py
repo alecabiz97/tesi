@@ -31,28 +31,27 @@ class BayesianModel(object):
             i += 1
         self.P_ltiEqualsltj=np.average(P)
         self.P_ltiNotEqualsltj = 1 - self.P_ltiEqualsltj
-            
+        
         
         d_sameId,d_differentId=[],[]
-        i=0
-        for xi,label_xi in zip(train,labels):
-            for xj,label_xj in zip(train[i::],labels[i::]):
-                if not np.array_equal(xi,xj):
-                    #d=(1/(1+histogram_intersection(xi,xj)))  #Calcolo distanza
-                    d=histogram_distance(xi,xj)
-                    if label_xi == label_xj:
+        
+        for i in range(len(train)):
+            for j in range(len(train)):
+                if j > i:
+                    d=histogram_distance(train[i],train[j])
+                    #d=histogram_intersection(train[i],train[j])
+                    if labels[i] == labels[j]:
                         d_sameId.append(d)
                     else:
                         d_differentId.append(d)
-            i += 1 
-                        
+                       
         d_sameId,d_differentId=np.array(d_sameId),np.array(d_differentId)
         
         #np.histogram() restituisce una lista che contiene l'istogramma e un vettore con gli estremi degli intervalli
         hist_sameId,bins1=np.histogram(d_sameId,M)
         hist_differentId,bins2=np.histogram(d_differentId,M)
         
-        #Calcolo probabilità (normalizzo)
+        #Calcolo probabilità 
         hist_sameId=hist_sameId/np.sum(hist_sameId) 
         hist_differentId=hist_differentId/np.sum(hist_differentId)
         
@@ -126,30 +125,32 @@ def queryExpansion(ranking,gallery,query,K):
                 
 if __name__ == '__main__':
     
-
+    n=1000
+    H,ident=hist_train,id_t
+    x=H[0:n]
+    y=ident[0:n]
     print('START TRAINING')
-
-#    B=BayesianModel()
-#    B.train(hist_of_train,labels)
-#    print('TRAINING COMPLETE')
-#    print((B.P_ltiEqualsltj,B.P_ltiNotEqualsltj)) 
-    lab=[1,1,1,2,2,3,3]
-    tra=np.array([[10,10],[11,11],[12,12],[20,20],[21,21],[30,30],[31,31]])
+    
     B=BayesianModel()
-    B.train(tra,lab)
+    B.train(x,y,100)
+    print('TRAINING COMPLETE')
     
     h1,b1=B.hist_d_sameId
     h2,b2=B.hist_d_differentId 
-
-    range1=max(b1)-min(b1)
-    range2=max(b2)-min(b2)
-    x1=np.arange(min(b1),max(b1),range1/100)
-    x2=np.arange(min(b2),max(b2),range2/100)
     
-    pl.plot(x1,h1)
-    pl.plot(x2,h2)
-        
-                
+    x1=np.zeros_like(h1)
+    x2=np.zeros_like(h2)
+    for i in range(len(b1)-1):
+        x1[i]=(b1[i] + b1[i+1])/2
+        x2[i]=(b2[i] + b2[i+1])/2
+    
+    
+    
+    pl.plot(x1,h1,label='sameId',color='r')
+    pl.plot(x2,h2,label='differentId',color='b')
+     
+    pl.legend()
+    pl.show()  
                 
                 
                 

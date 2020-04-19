@@ -27,15 +27,11 @@ def cmc(probes, id_probes, gallery, id_gallery):
     #Calcolo istogrammi colori
     hist_probes=[histogram_vector(p) for p in probes]
     hist_gallery=[histogram_vector(g) for g in gallery]
-    
-    
+        
     #Calcolo istogrammi LBP
-    hist_probes=[histogram_vector(LbpRGB(p)) for p in probes]
-    hist_gallery=[histogram_vector(LbpRGB(g)) for g in gallery]
+#    hist_probes=[histogram_vector(LbpRGB(p)) for p in probes]
+#    hist_gallery=[histogram_vector(LbpRGB(g)) for g in gallery]
     
-     #Calcolo istogrammi Hog
-    hist_probes=[Hog3Channel(p) for p in probes]
-    hist_gallery=[Hog3Channel(g) for g in gallery]
     
     #Fusion color, LBP
     #Calcolo istogrammi colori
@@ -97,7 +93,7 @@ def cmc(probes, id_probes, gallery, id_gallery):
 def plot_CMC(cmc_vector):
     x=np.arange(len(cmc_vector))+1
     pl.plot(x,cmc_vector)
-    pl.title('Cumulative Match Characteristic (Color+LBP)')
+    pl.title('Cumulative Match Characteristic')
     pl.ylabel('Probability of Identification')
     pl.xlabel('Rank')
     pl.grid(True)

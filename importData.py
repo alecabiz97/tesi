@@ -12,35 +12,32 @@ import imageio
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
-
-
+import pickle
 
 
 def importFiles(Dir,filesExt):
     images,id_images=[],[]
-    os.chdir(Dir)
-    filt_files=glob.glob('*' + filesExt) 
-    for k in filt_files:
-        image=imageio.imread(k)
-        images.append(image)
-        image_id=int(k.split('_')[0])
-        id_images.append(image_id)      
+    for el in os.scandir(Dir):
+        if el.name.endswith(filesExt) and el.is_file():
+            image=imageio.imread(os.path.join(Dir,el.name))
+            images.append(image)
+            image_id=int(el.name.split('_')[0])
+            id_images.append(image_id)          
     return images,id_images
 
 
-
 def loadVIPeR():
-    DircamA='C:\\Users\\AleCabiz\\Desktop\\Tesi\\VIPeR\\cam_a'
-    DircamB='C:\\Users\\AleCabiz\\Desktop\\Tesi\\VIPeR\\cam_b'
+    DircamA='..\\VIPeR\\cam_a'
+    DircamB='..\\VIPeR\\cam_b'
     
     galleryA, idA=importFiles(DircamA,'.bmp')
     galleryB, idB=importFiles(DircamB,'.bmp')
     return galleryA,idA,galleryB,idB
 
 def loadMarket_1501():
-    Dir_test='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Market-1501\\bounding_box_test'
-    Dir_train='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Market-1501\\bounding_box_train'
-    Dir_query='C:\\Users\\AleCabiz\\Desktop\\Tesi\\Market-1501\\query'
+    Dir_test='..\\Market-1501\\bounding_box_test'
+    Dir_train='..\\Market-1501\\bounding_box_train'
+    Dir_query='..\\Market-1501\\query'
     
     test, id_test=t=importFiles(Dir_test,'.jpg')
     train, id_train=t=importFiles(Dir_train,'.jpg')
@@ -49,9 +46,9 @@ def loadMarket_1501():
     return [(test,train,query),(id_test,id_train,id_query)]
 
 def loadDukeMTMC_reID():
-    Dir_test='C:\\Users\\AleCabiz\\Desktop\\Tesi\\DukeMTMC-reID\\bounding_box_test'
-    Dir_train='C:\\Users\\AleCabiz\\Desktop\\Tesi\\DukeMTMC-reID\\bounding_box_train'
-    Dir_query='C:\\Users\\AleCabiz\\Desktop\\Tesi\\DukeMTMC-reID\\query'
+    Dir_test='..\\DukeMTMC-reID\\bounding_box_test'
+    Dir_train='..\\DukeMTMC-reID\\bounding_box_train'
+    Dir_query='..\\DukeMTMC-reID\\query'
     
     test, id_test=t=importFiles(Dir_test,'.jpg')
     train, id_train=t=importFiles(Dir_train,'.jpg')
@@ -74,27 +71,39 @@ def loadDukeMTMC_reID():
     #id_query=sorted(set(id_query))
     
     return [(test,train,query),(id_test,id_train,id_query)]
-if __name__ == '__main__':            
-    
-    
-    
-    
-    #Load VIPeR
-#   camA,Id_A,camB,Id_B=loadVIPeR()
-    
-   #Load Market-1501
-    gallery,ID=loadMarket_1501()
-    
-    #Load DukeMTMC_reID
-#    gallery,ID=loadDukeMTMC_reID()
-    
-    test0, train0, query0 = gallery
-    id_test0, id_train0, id_query0 = ID
-    
-    test, train, query = test0.copy(), train0.copy(), query0.copy()
-    id_test, id_train, id_query = id_test0.copy(), id_train0.copy(), id_query0.copy()
 
+def loadCNN(Dir):
+    featureCnn=[]
+    for el in os.scandir(Dir):
+        if el.name.endswith('.pkl') and el.is_file():
+            Dir_file=os.path.join(Dir,el.name)
+            file=open(Dir_file,'rb')
+            featureCnn.append(pickle.load(file))
+    return featureCnn  
+   
+if __name__ == '__main__': 
+
+    #Load VIPeR
+    #camA,Id_A,camB,Id_B=loadVIPeR() 
     
+    DirMarket = '..\\FeatureCNN\\Market-1501'
+    DirDuke = '..\\FeatureCNN\\DukeMTMC'
+##    
+    CnnMarket=loadCNN(DirMarket)
+    CnnDuke=loadCNN(DirDuke)
+#    
+#    
+#    
+#   #Load Market-1501
+    #gallery,ID=loadMarket_1501()
+#    
+#    #Load DukeMTMC_reID
+#    gallery,ID=loadDukeMTMC_reID()
+#    
+#    test0, train0, query0 = gallery
+#    id_test0, id_train0, id_query0 = ID
+#    
+  
     #
     print('Dataset importato')
     

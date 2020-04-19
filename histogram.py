@@ -32,7 +32,21 @@ def histogram_vector(img):
             histValRGB[i_start: i_stop ]=histVal  
         return histValRGB  
     
-    
+def histRGBLocale(img,n):
+    length=int(len(img)/n)
+    h=np.zeros(n*3*256)
+    i=0
+    i_start=i*3*256
+    i_stop=(i+1)*3*256
+    for j in range(n):
+        X=img[j*length:(j+1)*length,:,:]
+        h[i_start:i_stop]=histogram_vector(X)
+        i += 1
+#    imgUp=img[0:length,:,:]
+#    imgDown=img[length::,:,:]
+#    h1=histogram_vector(imgUp)
+#    h2=histogram_vector(imgDown)
+    return h
 
 def reshape_image(X):     #restituisco 3 array(in caso RGB)
     #r,g,b = img.split()    
@@ -69,19 +83,21 @@ def histogram_plot(V):
         
 def histogram_intersection(A,B):    #A e B sono due vettori
     if len(A) == len(B):
-        return np.sum(np.minimum(A,B))/np.sum(A)
+        return np.sum(np.minimum(A,B))
     else:
         return None
         
 def histogram_distance(A,B):
     if len(A) == len(B):
-        return np.sum(np.abs(A-B))/np.sum(A)
+         x=np.abs(A-B)
+         return np.sqrt(np.dot(x,x))
     else:
         return None
      
 
 if __name__ == '__main__':
     
+    a=histRGBLocale(img,2)
     start=time.time()
     
     

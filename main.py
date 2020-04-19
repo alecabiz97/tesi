@@ -26,7 +26,7 @@ import random
 #camA,Id_A,camB,Id_B=loadVIPeR()
 
 #Load Market-1501
-gallery,ID=loadMarket_1501()
+#gallery,ID=loadMarket_1501()
 
 #Load DukeMTMC_reID
 #gallery,ID=loadDukeMTMC_reID()
@@ -34,37 +34,21 @@ gallery,ID=loadMarket_1501()
 test, train, query = gallery
 id_test, id_train, id_query = ID
 ##
-#print('Dataset importato')
+print('Dataset importato')
 
 start=time.time()
 
-
 print('START')
-
     
 #TRAINING
 
-irand=np.random.permutation(range(len(train)))
+#indeces=np.random.permutation(range(len(train)))
+indeces=np.arange(0,len(query),1)
+n=2000
 
-#n=500
-
-#Training histogram color
-hist_train=[histogram_vector(train[i]) for i in irand[0::]]
-id_t=[id_train[i] for i in irand[0::]]
-
-
-
-#TEST
-#m=50
-#i_test=np.random.permutation(range(len(test)))
-#gallery_test=[histogram_vector(test[i]) for i in i_test[0:m]]
-#id_te=[id_test[i] for i in i_test[0:m]]
-#
-#n_query=3
-#i_query=np.random.permutation(range(len(query)))
-#query_test=[histogram_vector(query[i]) for i in i_query[0:n_query]]
-#id_q=[id_query[i] for i in i_query[0:n_query]]
-
+#Training histogram 
+hist_train=[histogram_vector(query[i]) for i in indeces[0:n]]
+id_t=[id_query[i] for i in indeces[0:n]]
 
 
 print('HISTOGRAM COMPUTED')
@@ -73,23 +57,27 @@ print('START TRAINING')
 B=BayesianModel()
 B.train(hist_train,id_t)
 print('TRAINING COMPLETE')
-print((B.P_ltiEqualsltj,B.P_ltiNotEqualsltj)) 
 
 h1,b1=B.hist_d_sameId
-h2,b2=B.hist_d_differentId 
+h2,b2=B.hist_d_differentId
 
 x1=np.zeros_like(h1)
 x2=np.zeros_like(h2)
 for i in range(len(b1)-1):
-    x1[i]=((b1[i] + b1[i+1])/2)
-    x2[i]=((b2[i] + b2[i+1])/2)
+    x1[i]=(b1[i] + b1[i+1])/2
+    x2[i]=(b2[i] + b2[i+1])/2
 
+width_binsSame=(max(b1)-min(b1))/100
+width_binsDiff=(max(b2)-min(b2))/100
 
-
-pl.plot(x1,h1,label='same',color='b')
-pl.plot(x2,h2,label='diff',color='r')
+pl.bar(x1,h1,width_binsSame,label='sameId',color='r')
+pl.bar(x2,h2,width_binsDiff,label='differentId',color='b')
+#pl.plot(x1,h1,label='sameId',color='r')
+#pl.plot(x2,h2,label='differentId',color='b')
  
 pl.legend()
+pl.xlabel('Distance')
+pl.ylabel('Probability')
 pl.show()
 
 
