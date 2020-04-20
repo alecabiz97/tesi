@@ -157,32 +157,7 @@ def queryExpansion(ranking,gallery,query,K):
                 
 if __name__ == '__main__':
     
-    n=1000
-    H,ident=hist_train,id_t
-    x=H[0:n]
-    y=ident[0:n]
-    print('START TRAINING')
     
-    B=BayesianModel()
-    B.train(x,y,100)
-    print('TRAINING COMPLETE')
-    
-    h1,b1=B.hist_d_sameId
-    h2,b2=B.hist_d_differentId 
-    
-    x1=np.zeros_like(h1)
-    x2=np.zeros_like(h2)
-    for i in range(len(b1)-1):
-        x1[i]=(b1[i] + b1[i+1])/2
-        x2[i]=(b2[i] + b2[i+1])/2
-    
-    
-    
-    pl.plot(x1,h1,label='sameId',color='r')
-    pl.plot(x2,h2,label='differentId',color='b')
-     
-    pl.legend()
-    pl.show()  
                 
     
 

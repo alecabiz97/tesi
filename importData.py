@@ -7,7 +7,7 @@ Created on Mon Mar  2 18:02:19 2020
 
 import os
 import glob
-#from PIL import Image
+from histogram import *
 import imageio
 import numpy as np
 from scipy import linalg
@@ -81,21 +81,22 @@ def loadCNN(Dir):
             featureCnn.append(pickle.load(file))
     test,query,train=featureCnn[0:4],featureCnn[4:8],featureCnn[8:12]
     return  test,query,train 
+
+def saveFile(filename,X):
+    with open(filename, 'wb') as f:
+        pickle.dump(X, f)
+        
+def loadFile(filename):
+    with open(filename, 'rb') as f:
+        X=pickle.load(f)         
+    return X
    
+    
 if __name__ == '__main__': 
 
     #Load VIPeR
-#    camA,Id_A,camB,Id_B=loadVIPeR() 
-    
-    DirMarket = '..\\FeatureCNN\\Market-1501'
-    DirDuke = '..\\FeatureCNN\\DukeMTMC'
-##    
+    CamA,Id_A,CamB,Id_B=loadVIPeR() 
 
-    test,query,train=loadCNN(DirDuke)
-    gallery_cams,gallery_cnn,gallery_id,gallery_desc=test
-    query_cams,query_cnn,query_id,query_desc=query
-    train_cams,train_cnn,train_id,train_desc=train
-#    
 #    
 #    
 #   #Load Market-1501
