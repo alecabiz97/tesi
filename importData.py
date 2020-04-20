@@ -79,23 +79,27 @@ def loadCNN(Dir):
             Dir_file=os.path.join(Dir,el.name)
             file=open(Dir_file,'rb')
             featureCnn.append(pickle.load(file))
-    return featureCnn  
+    test,query,train=featureCnn[0:4],featureCnn[4:8],featureCnn[8:12]
+    return  test,query,train 
    
 if __name__ == '__main__': 
 
     #Load VIPeR
-    #camA,Id_A,camB,Id_B=loadVIPeR() 
+#    camA,Id_A,camB,Id_B=loadVIPeR() 
     
     DirMarket = '..\\FeatureCNN\\Market-1501'
     DirDuke = '..\\FeatureCNN\\DukeMTMC'
 ##    
-    CnnMarket=loadCNN(DirMarket)
-    CnnDuke=loadCNN(DirDuke)
+
+    test,query,train=loadCNN(DirDuke)
+    gallery_cams,gallery_cnn,gallery_id,gallery_desc=test
+    query_cams,query_cnn,query_id,query_desc=query
+    train_cams,train_cnn,train_id,train_desc=train
 #    
 #    
 #    
 #   #Load Market-1501
-    #gallery,ID=loadMarket_1501()
+#    gallery,ID=loadMarket_1501()
 #    
 #    #Load DukeMTMC_reID
 #    gallery,ID=loadDukeMTMC_reID()

@@ -23,42 +23,48 @@ import random
 DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
-#CnnMarket=loadCNN(DirMarket)
-#CnnDuke=loadCNN(DirDuke)
+#testDuke,queryDuke,trainDuke=loadCNN(DirDuke)
+gallery_cams, gallery_cnn, gallery_id, gallery_desc = testDuke
+query_cams, query_cnn, query_id, query_desc = queryDuke
+train_cams, train_cnn, train_id, train_desc = trainDuke
 
-#Duke
-g_cams,g_feature,g_id=CnnMarket[0:3]
-q_cams,q_feature,q_id=CnnMarket[4:7]
+print('Feature importate')
+print('Start')
+n=8000
 
-
-indeces=np.arange(0,40000,1)
-n=5000
-y=[g_id[i] for i in indeces[0:n]]
-x=[g_feature[i] for i in indeces[0:n]]
-
-
-B=BayesianModel()
-B.train(x,y)
+#B=BayesianModel()
+#B.train(train_cnn[0:n],train_id[0:n])
 print('TRAINING COMPLETE')
 
-h1,b1=B.hist_d_sameId
-h2,b2=B.hist_d_differentId 
+print('START TEST')
 
-x1=np.zeros_like(h1)
-x2=np.zeros_like(h2)
-for i in range(len(b1)-1):
-    x1[i]=(b1[i] + b1[i+1])/2
-    x2[i]=(b2[i] + b2[i+1])/2
+t=10000
+test,t_id=gallery_cnn[0:t],gallery_id[0:t]
+query,q_id=query_cnn[0:20],query_id[0:20]
+
+t_id=np.array(t_id)
+
+print(q_id)
+
+
+r=[]
+for i in range(3):
+    ranks=calculateRanks(query,test,t_id,B)
+    print('Ranks calcolato')
     
-width_binsSame=(max(b1)-min(b1))/100
-width_binsDiff=(max(b2)-min(b2))/100
+    
+    query=queryExpansion(ranks,test,query,5) 
+    print('Nuova query calcolata')
 
-#pl.bar(x1,h1,width_binsSame,label='sameId',color='r')
-#pl.bar(x2,h2,width_binsDiff,label='differentId',color='b')
-pl.plot(x1,h1,label='sameId',color='r')
-pl.plot(x2,h2,label='differentId',color='b')
- 
-pl.legend()
-pl.xlabel('Distance')
-pl.ylabel('Probability')
-pl.show()
+    r.append(ranks[2])
+    
+r1=r[0]
+r2=r[1]
+r3=r[2]
+
+for i in range(len(q_id)):
+    q=q_id[i]
+    print((q,np.sum(q==r1[0:5,i]),np.sum(q==r2[0:5,i]),np.sum(q==r2[0:5,i])))
+    
+
+

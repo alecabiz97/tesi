@@ -26,7 +26,7 @@ import random
 #camA,Id_A,camB,Id_B=loadVIPeR()
 
 #Load Market-1501
-#gallery,ID=loadMarket_1501()
+gallery,ID=loadMarket_1501()
 
 #Load DukeMTMC_reID
 #gallery,ID=loadDukeMTMC_reID()
@@ -58,27 +58,7 @@ B=BayesianModel()
 B.train(hist_train,id_t)
 print('TRAINING COMPLETE')
 
-h1,b1=B.hist_d_sameId
-h2,b2=B.hist_d_differentId
 
-x1=np.zeros_like(h1)
-x2=np.zeros_like(h2)
-for i in range(len(b1)-1):
-    x1[i]=(b1[i] + b1[i+1])/2
-    x2[i]=(b2[i] + b2[i+1])/2
-
-width_binsSame=(max(b1)-min(b1))/100
-width_binsDiff=(max(b2)-min(b2))/100
-
-pl.bar(x1,h1,width_binsSame,label='sameId',color='r')
-pl.bar(x2,h2,width_binsDiff,label='differentId',color='b')
-#pl.plot(x1,h1,label='sameId',color='r')
-#pl.plot(x2,h2,label='differentId',color='b')
- 
-pl.legend()
-pl.xlabel('Distance')
-pl.ylabel('Probability')
-pl.show()
 
 
 #print('START TEST')
