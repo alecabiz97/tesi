@@ -43,26 +43,7 @@ def cmc(hist_probes, id_probes, hist_gallery, id_gallery):
         all_ranks[:,i]=sorted_id_gallery
         i += 1
         
-#    rank=np.zeros((len(id_gallery),1))
-#    position_id_matching=[]
-#    i=0
-#    for p_id in id_probes:
-#        position=1
-#        p_found=False
-#        rank_tmp=all_ranks[:,i]
-#        while(p_found == False):
-#            if p_id == rank_tmp[position-1]:
-#                p_found = True
-#            else:
-#                p_found = False
-#                position += 1
-#        rank[position-1] += 1
-#        position_id_matching.append(position)
-#        i +=1
-#    position_id_matching=np.array(position_id_matching)
-#    cmc=np.cumsum(rank)/len(id_probes)
-#    return np.array(cmc),position_id_matching     
-
+  
         val_cmc=np.sum(all_ranks==id_probes,1).cumsum()
     return val_cmc/len(id_probes)
 

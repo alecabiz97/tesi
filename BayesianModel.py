@@ -63,31 +63,31 @@ class BayesianModel(object):
         h_sameId, bins_sameId = self.hist_d_sameId
         h_diffId, bins_diffId = self.hist_d_differentId
         
-        #Calcolo P_d_lqEqualslg
-        if distanza >= np.min(bins_sameId) and distanza <= np.max(bins_sameId):
+        #Calcolo P_d_sameId
+        if distanza > np.min(bins_sameId) and distanza < np.max(bins_sameId):
             distanza_index=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
-        elif distanza < np.min(bins_sameId):
+        elif distanza <= np.min(bins_sameId):
             distanza_index=0
-        elif distanza > np.max(bins_sameId):
+        elif distanza >= np.max(bins_sameId):
             distanza_index=len(h_sameId) - 1    
          
-        P_d_lqEqualslg = h_sameId[distanza_index]
+        P_d_sameId = h_sameId[distanza_index]
         
-        #Calcolo P_d_lqNotEqualslg
-        if distanza >= np.min(bins_diffId) and distanza <= np.max(bins_diffId):    
+        #Calcolo P_d_diffId
+        if distanza > np.min(bins_diffId) and distanza < np.max(bins_diffId):    
             distanza_index=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
-        elif distanza < np.min(bins_diffId):
+        elif distanza <= np.min(bins_diffId):
             distanza_index=0
-        elif distanza > np.max(bins_diffId):
+        elif distanza >= np.max(bins_diffId):
             distanza_index=len(h_diffId) -1 
 
-        P_d_lqNotEqualslg = h_diffId[distanza_index]
+        P_d_diffId = h_diffId[distanza_index]
         
-        P_d=(P_d_lqEqualslg*self.P_ltiEqualsltj)+(P_d_lqNotEqualslg*self.P_ltiNotEqualsltj)
+        P_d=(P_d_sameId*self.P_ltiEqualsltj)+(P_d_diffId*self.P_ltiNotEqualsltj)
 
         #Teorema di Bayes
-        P_lqEqualslg_d=(P_d_lqEqualslg*self.P_ltiEqualsltj)/P_d
-        return P_lqEqualslg_d
+        P_sameId_d=(P_d_sameId*self.P_ltiEqualsltj)/P_d
+        return P_sameId_d
     
     def plotTrainingHistogram(self):
         h1,b1=self.hist_d_sameId
@@ -115,49 +115,45 @@ class BayesianModel(object):
         return None
      
 
-
 def calculateRanks(query,gallery,g_id,Bayes):
-    ranks=np.zeros((len(gallery),len(query)),int)
-    ranks2=np.zeros((len(gallery),len(query)),int)
+    ranks_index=np.zeros((len(gallery),len(query)),int)
+    ranks_label=np.zeros((len(gallery),len(query)),int)
     ranks_probability=np.zeros((len(gallery),len(query)),float)
     column=0
     for q in query:
-        d=np.zeros(len(gallery))
         p=np.zeros(len(gallery))
         i=0
         for g in gallery:
-            #d[i]=(1/(1+histogram_intersection(q,g)))
-            d[i]=histogram_distance(q,g)
-            p[i]=Bayes.calculateProbBayes(d[i])
+            d=histogram_distance(q,g)
+            p[i]=Bayes.calculateProbBayes(d)
             i+= 1
         sorted_i=np.argsort(-p)
-        ranks[:,column] = sorted_i
-        ranks2[:,column] = g_id[sorted_i]
+        ranks_index[:,column] = sorted_i
+        ranks_label[:,column] = [g_id[i] for i in sorted_i]
 
         ranks_probability[:,column]= -np.sort(-p)
         column += 1
-    return ranks,ranks_probability,ranks2 
+    return ranks_index,ranks_probability,ranks_label 
 
-def queryExpansion(ranking,gallery,query,K):
-    ranks_index,ranks_probability=ranking[0],ranking[1]
+def queryExpansion(ranks_index,ranks_probability,gallery,query,K):
     q_expansion=[]
     for i in range(len(query)):
         candidates_index=ranks_index[:,i][0:K]  #Prendo gli indici dei primi K
         candidates_probability=ranks_probability[:,i][0:K] #Prendo il prime K probibilità del rank
-        q_exp=0 #Query originale
+        q_exp=0 
         probability_sum=0
         for j in range(K):
-            probability_c=candidates_probability[j]
-            c_hist=gallery[candidates_index[j]] #Dalla gallery prendo il feature vector del candidato
-            q_exp=q_exp + probability_c*c_hist
-            probability_sum += probability_c 
+            probability=candidates_probability[j]
+            x=gallery[candidates_index[j]] #Dalla gallery prendo il feature vector del candidato
+            q_exp += probability*x
+            probability_sum += probability 
         q_exp=(q_exp +query[i])/(probability_sum +1)
         q_expansion.append(q_exp)    
     return q_expansion
                 
 if __name__ == '__main__':
     
-    
+    B=BayesianModel()
                 
     
 

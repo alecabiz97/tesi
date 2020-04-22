@@ -26,51 +26,47 @@ def importFiles(Dir,filesExt):
     return images,id_images
 
 
-def loadVIPeR():
-    DircamA='..\\VIPeR\\cam_a'
-    DircamB='..\\VIPeR\\cam_b'
-    
-    galleryA, idA=importFiles(DircamA,'.bmp')
-    galleryB, idB=importFiles(DircamB,'.bmp')
-    return galleryA,idA,galleryB,idB
-
-def loadMarket_1501():
-    Dir_test='..\\Market-1501\\bounding_box_test'
-    Dir_train='..\\Market-1501\\bounding_box_train'
-    Dir_query='..\\Market-1501\\query'
-    
-    test, id_test=t=importFiles(Dir_test,'.jpg')
-    train, id_train=t=importFiles(Dir_train,'.jpg')
-    query, id_query=importFiles(Dir_query,'.jpg')
-    
-    return [(test,train,query),(id_test,id_train,id_query)]
-
-def loadDukeMTMC_reID():
-    Dir_test='..\\DukeMTMC-reID\\bounding_box_test'
-    Dir_train='..\\DukeMTMC-reID\\bounding_box_train'
-    Dir_query='..\\DukeMTMC-reID\\query'
-    
-    test, id_test=t=importFiles(Dir_test,'.jpg')
-    train, id_train=t=importFiles(Dir_train,'.jpg')
-    query, id_query=importFiles(Dir_query,'.jpg')
-    
-    query1=[[] for i in range(max(id_query)+1)]
-    for i in range(len(id_query)):
-        query1[id_query[i]].append(query[i])
-
-    test1=[[] for i in range(max(id_test)+1)]
-    for i in range(len(id_test)):
-        test1[id_test[i]].append(test[i])
+def loadVIPeR(feature=True):
+    if feature:
+        filename='..\\VIPeR_histogramRGB.pkl'
+        return loadFile(filename)
+    else:
+        DircamA='..\\VIPeR\\cam_a'
+        DircamB='..\\VIPeR\\cam_b'
         
-    train1=[[] for i in range(max(id_train)+1)]
-    for i in range(len(id_train)):
-        train1[id_train[i]].append(train[i])
+        galleryA, idA=importFiles(DircamA,'.bmp')
+        galleryB, idB=importFiles(DircamB,'.bmp')
+        return galleryA,idA,galleryB,idB
+
+def loadMarket_1501(feature=True):
+     if feature:
+        filename='..\\Market-1501_histogramRGB.pkl'
+        return loadFile(filename)
+     else:
+        Dir_test='..\\Market-1501\\bounding_box_test'
+        Dir_train='..\\Market-1501\\bounding_box_train'
+        Dir_query='..\\Market-1501\\query'
         
-    #id_test=sorted(set(id_test))
-    #id_train=sorted(set(id_train))
-    #id_query=sorted(set(id_query))
-    
-    return [(test,train,query),(id_test,id_train,id_query)]
+        test, id_test=t=importFiles(Dir_test,'.jpg')
+        train, id_train=t=importFiles(Dir_train,'.jpg')
+        query, id_query=importFiles(Dir_query,'.jpg')
+        
+        return [(test,train,query),(id_test,id_train,id_query)]
+
+def loadDukeMTMC_reID(feature=True):
+     if feature:
+        filename='..\\DukeMTMC-reID_histogramRGB.pkl'
+        return loadFile(filename)
+     else:
+        Dir_test='..\\DukeMTMC-reID\\bounding_box_test'
+        Dir_train='..\\DukeMTMC-reID\\bounding_box_train'
+        Dir_query='..\\DukeMTMC-reID\\query'
+        
+        test, id_test=t=importFiles(Dir_test,'.jpg')
+        train, id_train=t=importFiles(Dir_train,'.jpg')
+        query, id_query=importFiles(Dir_query,'.jpg')
+
+        return [(test,train,query),(id_test,id_train,id_query)]
 
 def loadCNN(Dir):
     featureCnn=[]
