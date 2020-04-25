@@ -48,16 +48,16 @@ class BayesianModel(object):
         d_sameId,d_differentId=np.array(d_sameId),np.array(d_differentId)
         
         #np.histogram() restituisce una lista che contiene l'istogramma e un vettore con gli estremi degli intervalli
-        hist_sameId,bins1=np.histogram(d_sameId,M)
-        hist_differentId,bins2=np.histogram(d_differentId,M)
+        hist_sameId,bins_sameId=np.histogram(d_sameId,M)
+        hist_differentId,bins_diffId=np.histogram(d_differentId,M)
         
         #Calcolo probabilità 
-        hist_sameId=hist_sameId/np.sum(hist_sameId) 
-        hist_differentId=hist_differentId/np.sum(hist_differentId)
+#        hist_sameId=hist_sameId/np.sum(hist_sameId) 
+#        hist_differentId=hist_differentId/np.sum(hist_differentId)
         
-        self.hist_d_sameId=[hist_sameId,bins1]
-        self.hist_d_differentId=[hist_differentId,bins2]
-        
+        self.hist_d_sameId=[hist_sameId,bins_sameId]
+        self.hist_d_differentId=[hist_differentId,bins_diffId]
+                
         
     def calculateProbBayes(self,distanza):
         h_sameId, bins_sameId = self.hist_d_sameId
@@ -71,7 +71,7 @@ class BayesianModel(object):
         elif distanza >= np.max(bins_sameId):
             distanza_index=len(h_sameId) - 1    
          
-        P_d_sameId = h_sameId[distanza_index]
+        P_d_sameId = h_sameId[distanza_index]/np.sum(h_sameId)
         
         #Calcolo P_d_diffId
         if distanza > np.min(bins_diffId) and distanza < np.max(bins_diffId):    
@@ -81,7 +81,7 @@ class BayesianModel(object):
         elif distanza >= np.max(bins_diffId):
             distanza_index=len(h_diffId) -1 
 
-        P_d_diffId = h_diffId[distanza_index]
+        P_d_diffId = h_diffId[distanza_index]/np.sum(h_diffId)
         
         P_d=(P_d_sameId*self.P_ltiEqualsltj)+(P_d_diffId*self.P_ltiNotEqualsltj)
 
@@ -89,12 +89,15 @@ class BayesianModel(object):
         P_sameId_d=(P_d_sameId*self.P_ltiEqualsltj)/P_d
         return P_sameId_d
     
-    def plotTrainingHistogram(self):
+    def plotTrainingHistogram(self,norm=False):
         h1,b1=self.hist_d_sameId
         h2,b2=self.hist_d_differentId
-        
-        x1=np.zeros_like(h1)
-        x2=np.zeros_like(h2)
+        if norm==True:
+            h1=h1/np.sum(h1)
+            h2=h2/np.sum(h2)
+            
+        x1=np.zeros_like(h1,float)
+        x2=np.zeros_like(h2,float)
         for i in range(len(b1)-1):
             x1[i]=(b1[i] + b1[i+1])/2
             x2[i]=(b2[i] + b2[i+1])/2
@@ -153,9 +156,37 @@ def queryExpansion(ranks_index,ranks_probability,gallery,query,K):
                 
 if __name__ == '__main__':
     
-    B=BayesianModel()
-                
     
+    saveFile('prova',B_Market)
+    
+    
+    h1,b1=B.hist_d_sameId
+    h2,b2=B.hist_d_differentId
+                
+    x1=np.zeros_like(h1)
+    x2=np.zeros_like(h2)
+    for i in range(len(b1)-1):
+        x1[i]=(b1[i] + b1[i+1])/2
+        x2[i]=(b2[i] + b2[i+1])/2
+    
+    width_binsSame=(max(b1)-min(b1))/100
+    width_binsDiff=(max(b2)-min(b2))/100
+    
+    
+    tot=np.sum(h1)+np.sum(h2)
+    
+    h1=h1/tot
+    h2=h2/tot
+    
+    pl.bar(x1,h1,width_binsSame,label='sameId',color='r')
+    pl.bar(x2,h2,width_binsDiff,label='differentId',color='b')
+    #pl.plot(x1,h1,label='sameId',color='r')
+    #pl.plot(x2,h2,label='differentId',color='b')
+     
+    pl.legend()
+    pl.xlabel('Distance')
+    pl.ylabel('Probability')
+    pl.show()
 
     
 

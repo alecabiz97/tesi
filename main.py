@@ -30,7 +30,7 @@ DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
 #Load Duke
-testDuke,queryDuke,trainDuke=loadCNN(DirMarket)
+testDuke,queryDuke,trainDuke=loadCNN(DirDuke)
 gallery_cams_Duke, gallery_cnn_Duke, gallery_id_Duke, gallery_desc_Duke = testDuke
 query_cams_Duke, query_cnn_Duke, query_id_Duke, query_desc_Duke = queryDuke
 train_cams_Duke, train_cnn_Duke, train_id_Duke, train_desc_Duke = trainDuke
@@ -44,48 +44,84 @@ train_cams_Market, train_cnn_Market, train_id_Market, train_desc_Market = trainM
 print('Feature importate')
 
 train,train_id=train_cnn_Market,train_id_Market
-gallery,gallery_id=gallery_cnn_Market,gallery_id_Market
-query,query_id = query_cnn_Market[0:100], query_id_Market[0:100]
+gallery,gallery_id=gallery_cnn_Market[0:600],gallery_id_Market[0:600]
+query,query_id = query_cnn_Market[0:20], query_id_Market[0:20]
 
 
-print('START')
-#B=BayesianModel()
-#B.train(train,train_id)
+#print('START Duke')
+#B_Duke=BayesianModel()
+#B_Duke.train(train_cnn_Duke[0:1000],train_id_Duke[0:1000])
+#
+
+#print('START Market')
+#B_Market=BayesianModel()
+#B_Market.train(train_cnn_Market,train_id_Market)
 
 print('TRAINING COMPLETE')
+
+h1,b1=B_Market.hist_d_sameId.copy()
+h2,b2=B_Market.hist_d_differentId.copy()
+
+x1=np.zeros_like(h1,float)
+x2=np.zeros_like(h2,float)
+for i in range(len(b1)-1):
+    x1[i]=(b1[i] + b1[i+1])/2
+    x2[i]=(b2[i] + b2[i+1])/2
+
+width_binsSame=(max(b1)-min(b1))/100
+width_binsDiff=(max(b2)-min(b2))/100
+
+h1_n=(h1/np.sum(h1))/width_binsSame
+h2_n=(h2/np.sum(h2))/width_binsDiff
+
+#h1_n=h1/np.sum(h1)
+#h2_n=h2/np.sum(h2)
+
+pl.bar(x1,h1_n,width_binsSame,label='sameId',color='r')
+pl.bar(x2,h2_n,width_binsDiff,label='differentId',color='b')
+
+
+pl.legend()
+pl.xlabel('Distance')
+pl.show()
+
+
 print('START TEST')
 
-
-#Calcolo la somma del numero di immagini per ciscuna query nella gallery, la usa per la cmc.
-number_istance=0
-for y in query_id:
-    number_istance += gallery_id.count(y)
     
-    
+vettori_cmc=[]    
 for i in range(3):
-    ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
+    ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B_Market)
     print('Ranks calcolato')
     
     #Calcolo la cmc
-    val_cmc=np.sum(ranks_label==query_id,1).cumsum()
-    cmc_vector=val_cmc/number_istance
+    cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
     
-    plot_CMC(cmc_vector)
+    vettori_cmc.append(cmc_vector)
+    #plot_CMC(cmc_vector)
     
     query=queryExpansion(ranks_index,ranks_probability,gallery,query,5) 
     print('Nuova query calcolata')
     
-    
-
 end=time.time()
 tempo=end-start
 print(tempo)
 
 
+n,i=10,0
+for y in vettori_cmc:
+    x=np.arange(len(y[0:n]))+1
+    pl.plot(x,y[0:n],label='iterazione {}'.format(i))
+    i += 1
+pl.title('Cumulative Match Characteristic')
+pl.ylabel('Probability of Identification')
+pl.xlabel('Rank')
+pl.grid(True)
+pl.legend()
+pl.show()  
 
- 
 
-   
+
 
 
     

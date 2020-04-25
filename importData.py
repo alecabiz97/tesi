@@ -13,7 +13,7 @@ import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
 import pickle
-
+import shelve
 
 def importFiles(Dir,filesExt):
     images,id_images=[],[]
@@ -84,19 +84,25 @@ def saveFile(filename,X):
         
 def loadFile(filename):
     with open(filename, 'rb') as f:
-        X=pickle.load(f)         
+        X=pickle.load(f)     
     return X
    
     
 if __name__ == '__main__': 
 
+#    saveFile('B_Market_trained.pkl',B_Market)
+#
+#    database = shelve.open('B_Market_trained.db') 
+#    B=BayesianModel()
+#    database['B_Market_trained'] = B
+    
     #Load VIPeR
-    CamA,Id_A,CamB,Id_B=loadVIPeR() 
+#    camA,Id_A,camB,Id_B=loadVIPeR(False) 
 
 #    
 #    
 #   #Load Market-1501
-#    gallery,ID=loadMarket_1501()
+#    gallery,ID=loadMarket_1501(False)
 #    
 #    #Load DukeMTMC_reID
 #    gallery,ID=loadDukeMTMC_reID()
