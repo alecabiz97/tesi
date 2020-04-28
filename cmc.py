@@ -50,7 +50,7 @@ def cmc(hist_probes, id_probes, hist_gallery, id_gallery):
         position=1
         p_found=False
         rank_tmp=all_ranks[:,i]
-        while(p_found == False):
+        while(p_found == False) and (position-1)<len(rank_tmp):
             if p_id == rank_tmp[position-1]:
                 p_found = True
             else:
@@ -90,8 +90,7 @@ def calculateCmcFromRanks(ranks,id_probes):
             else:
                 p_found = False
                 j += 1
-        if j != len(rank_tmp):
-            rank[j] += 1
+        rank[j] += 1
         i +=1
     cmc=np.cumsum(rank)/len(id_probes)
     return np.array(cmc)     

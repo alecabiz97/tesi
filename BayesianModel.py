@@ -57,6 +57,9 @@ class BayesianModel(object):
         
         self.hist_d_sameId=[hist_sameId,bins_sameId]
         self.hist_d_differentId=[hist_differentId,bins_diffId]
+        
+        self.d_sameId=d_sameId
+        self.d_differentId=d_differentId
                 
         
     def calculateProbBayes(self,distanza):
@@ -92,10 +95,7 @@ class BayesianModel(object):
     def plotTrainingHistogram(self,norm=False):
         h1,b1=self.hist_d_sameId
         h2,b2=self.hist_d_differentId
-        if norm==True:
-            h1=h1/np.sum(h1)
-            h2=h2/np.sum(h2)
-            
+       
         x1=np.zeros_like(h1,float)
         x2=np.zeros_like(h2,float)
         for i in range(len(b1)-1):
@@ -104,6 +104,10 @@ class BayesianModel(object):
         
         width_binsSame=(max(b1)-min(b1))/100
         width_binsDiff=(max(b2)-min(b2))/100
+        
+        if norm==True:
+           h1=(h1/np.sum(h1))/width_binsSame
+           h2=(h2/np.sum(h2))/width_binsDiff
         
         pl.bar(x1,h1,width_binsSame,label='sameId',color='r')
         pl.bar(x2,h2,width_binsDiff,label='differentId',color='b')
@@ -124,11 +128,12 @@ def calculateRanks(query,gallery,g_id,Bayes):
     ranks_probability=np.zeros((len(gallery),len(query)),float)
     column=0
     for q in query:
+        d=np.zeros(len(gallery))
         p=np.zeros(len(gallery))
         i=0
         for g in gallery:
-            d=histogram_distance(q,g)
-            p[i]=Bayes.calculateProbBayes(d)
+            d[i]=histogram_distance(q,g)
+            p[i]=Bayes.calculateProbBayes(d[i])
             i+= 1
         sorted_i=np.argsort(-p)
         ranks_index[:,column] = sorted_i

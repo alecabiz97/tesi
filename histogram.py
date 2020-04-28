@@ -83,7 +83,7 @@ def histogram_plot(V):
         
 def histogram_intersection(A,B):    #A e B sono due vettori
     if len(A) == len(B):
-        return np.sum(np.minimum(A,B))
+        return np.sum(np.minimum(A,B))/np.sum(A)
     else:
         return None
         
