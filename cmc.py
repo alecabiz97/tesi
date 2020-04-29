@@ -94,6 +94,19 @@ def calculateCmcFromRanks(ranks,id_probes):
         i +=1
     cmc=np.cumsum(rank)/len(id_probes)
     return np.array(cmc)     
+
+def calculate_mAP(ranks,id_query,k):
+    AP=[]
+    pos=np.arange(1,len(ranks)+1)
+    i=0
+    for q in id_query:
+        rank_tmp=ranks[:,i]
+        n=np.sum(rank_tmp==q)
+        ap=np.cumsum(rank_tmp==q)*(rank_tmp==q)        
+        AP.append(np.sum(ap[0:k]/pos[0:k])/n)
+        i += 1
+    return np.mean(AP)
+
     
 def test_camB_vs_camA():
     

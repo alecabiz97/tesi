@@ -20,7 +20,7 @@ from BayesianModel import *
 import time
 import random
 
-def calculateRanks2(query,gallery,g_id):
+def calculateRanks2(query,gallery,g_id,B):
     ranks_index=np.zeros((len(gallery),len(query)),int)
     ranks_label=np.zeros((len(gallery),len(query)),int)
     ranks_similarity=np.zeros((len(gallery),len(query)),float)
@@ -30,14 +30,14 @@ def calculateRanks2(query,gallery,g_id):
         s=np.zeros(len(gallery))
         i=0
         for g in gallery:
-            #d[i]=histogram_distance(q,g)
-            s[i]=histogram_intersection(q,g)
+            d[i]=histogram_distance(q,g)
+            #s[i]=histogram_intersection(q,g)
             i+= 1
-        sorted_i=np.argsort(-s)
+        sorted_i=np.argsort(d)
         ranks_index[:,column] = sorted_i
         ranks_label[:,column] = [g_id[i] for i in sorted_i]
 
-        ranks_similarity[:,column]= -np.sort(-s)
+        ranks_similarity[:,column]= np.sort(d)
         column += 1
     return ranks_index,ranks_similarity,ranks_label 
 
@@ -60,47 +60,65 @@ def queryExpansion2(ranks_index,ranks_similarity,gallery,query,Bayes,K):
 
 if __name__ == '__main__':
     
-    Dir = '..\\distance_allId_training.pkl'
     DirMarket = '..\\FeatureCNN\\Market-1501'
     DirDuke = '..\\FeatureCNN\\DukeMTMC'
-
-    #gli elementi di distances contengono: id-distanze tra quegli id - distanze tra quegli id e altri
-    #distances=loadFile(Dir)
+    
     
     testData,queryData,trainingData=loadCNN(DirMarket)
+    #testData,queryData,trainingData=loadMarket_1501(feature=True)
+    
     test_cams, test_feature, test_id, test_desc = testData
     query_cams, query_feature, query_id, query_desc = queryData
     train_cams, train_feature, train_id, train_desc = trainingData
     
     #Load BayesianModel gia addestrato
     B=loadFile('..\\B_Market_trained')
+    #B=loadFile('..\\B_Duke_trained.pkl')
+    #B.plotTrainingHistogram(True)
     
     print('TRAINING COMPLETE')
     
-    
     gallery,gallery_id=test_feature,test_id
-    query,query_id = query_feature[0:300], query_id[0:300]
+    query,query_id = query_feature[0:30:5], query_id[0:30:5]
     print('START TEST')
-   
+       
     start=time.time()
     vettori_cmc,ranks=[],[]    
     for i in range(2):
-        ranks_index,ranks_similaritys,ranks_label =calculateRanks2(query,gallery,gallery_id)
+        ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
         print('Ranks calcolato')
         ranks.append(ranks_label)
         
         #Calcolo la cmc
         cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
         
+        #Calcolo mAP
+        mAP=calculate_mAP(ranks_label,query_id,100)
+        
         vettori_cmc.append(cmc_vector)
         r1,r5,r10,r20,r50=cmc_vector[[0,4,9,19,49]]
         print('Rank 1: {} - Rank 5: {} - Rank 10: {} - Rank 20: {} - Rank 50: {}  '.format(r1,r5,r10,r20,r50))
-        #plot_CMC(cmc_vector)
+        print('mAP: {}'.format(mAP))
         
-        query=queryExpansion2(ranks_index,ranks_similaritys,gallery,query,B,5) 
+        query=queryExpansion(ranks_index,ranks_probability,gallery,query,5) 
         print('Nuova query calcolata')
     
     end=time.time()
     tempo=end-start
     print(tempo)
- 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     

@@ -16,14 +16,18 @@ import pickle
 import shelve
 
 def importFiles(Dir,filesExt):
-    images,id_images=[],[]
+    images,id_images,cams_images,descriptor_images=[],[],[],[]
     for el in os.scandir(Dir):
         if el.name.endswith(filesExt) and el.is_file():
             image=imageio.imread(os.path.join(Dir,el.name))
             images.append(image)
             image_id=int(el.name.split('_')[0])
-            id_images.append(image_id)          
-    return images,id_images
+            image_cam=int(el.name.split('_c')[1][0])
+            image_descriptor=el.name
+            id_images.append(image_id)      
+            cams_images.append(image_cam)
+            descriptor_images.append(image_descriptor)
+    return cams_images,images,id_images,descriptor_images
 
 
 def loadVIPeR(feature=True):
@@ -44,14 +48,18 @@ def loadMarket_1501(feature=True):
         return loadFile(filename)
      else:
         Dir_test='..\\Market-1501\\bounding_box_test'
-        Dir_train='..\\Market-1501\\bounding_box_train'
         Dir_query='..\\Market-1501\\query'
+        Dir_train='..\\Market-1501\\bounding_box_train'
         
-        test, id_test=t=importFiles(Dir_test,'.jpg')
-        train, id_train=t=importFiles(Dir_train,'.jpg')
-        query, id_query=importFiles(Dir_query,'.jpg')
+        cams_test, images_test, id_test, descriptor_test = importFiles(Dir_test,'.jpg')
+        cams_query, images_query, id_query, descriptor_query = importFiles(Dir_query,'.jpg')
+        cams_train, images_train, id_train, descriptor_train = importFiles(Dir_train,'.jpg')
         
-        return [(test,train,query),(id_test,id_train,id_query)]
+        test=cams_test, images_test, id_test, descriptor_test
+        query=cams_query, images_query, id_query, descriptor_query
+        train=cams_train, images_train, id_train, descriptor_train
+        
+        return test,query,train
 
 def loadDukeMTMC_reID(feature=True):
      if feature:
@@ -59,14 +67,18 @@ def loadDukeMTMC_reID(feature=True):
         return loadFile(filename)
      else:
         Dir_test='..\\DukeMTMC-reID\\bounding_box_test'
-        Dir_train='..\\DukeMTMC-reID\\bounding_box_train'
         Dir_query='..\\DukeMTMC-reID\\query'
+        Dir_train='..\\DukeMTMC-reID\\bounding_box_train'
         
-        test, id_test=t=importFiles(Dir_test,'.jpg')
-        train, id_train=t=importFiles(Dir_train,'.jpg')
-        query, id_query=importFiles(Dir_query,'.jpg')
-
-        return [(test,train,query),(id_test,id_train,id_query)]
+        cams_test, images_test, id_test, descriptor_test = importFiles(Dir_test,'.jpg')
+        cams_query, images_query, id_query, descriptor_query = importFiles(Dir_query,'.jpg')
+        cams_train, images_train, id_train, descriptor_train = importFiles(Dir_train,'.jpg')
+        
+        test=cams_test, images_test, id_test, descriptor_test
+        query=cams_query, images_query, id_query, descriptor_query
+        train=cams_train, images_train, id_train, descriptor_train
+        
+        return test,query,train
 
 def loadCNN(Dir):
     featureCnn=[]
@@ -90,19 +102,36 @@ def loadFile(filename):
     
 if __name__ == '__main__': 
 
-#    saveFile('B_Market_trained.pkl',B_Market)
-#
-#    database = shelve.open('B_Market_trained.db') 
-#    B=BayesianModel()
-#    database['B_Market_trained'] = B
-    
     #Load VIPeR
 #    camA,Id_A,camB,Id_B=loadVIPeR(False) 
 
 #    
 #    
 #   #Load Market-1501
-#    gallery,ID=loadMarket_1501(False)
+    test,train,query=loadDukeMTMC_reID(False)
+    X=loadDukeMTMC_reID(True)
+    
+    test0,test0_id=X[0:2]
+    train0,train0_id=X[2:4]
+    query0,query0_id=X[4:6]
+    
+    test0_cams,test0_desc=test[0],test[3]
+    train0_cams,train0_desc=train[0],train[3]
+    query0_cams,query0_desc=query[0],query[3]
+    
+    t=[test0_cams,test0,test0_id,test0_desc]
+    tr=[train0_cams,train0,train0_id,train0_desc]
+    q=[query0_cams,query0,query0_id,query0_desc]
+    X1=(t,q,tr)
+    
+    
+    f=open('DukeMTMC-reID_histogramRGB.pkl','wb')
+    pickle.dump(X1,f)
+    f.close()
+
+
+
+
 #    
 #    #Load DukeMTMC_reID
 #    gallery,ID=loadDukeMTMC_reID()
