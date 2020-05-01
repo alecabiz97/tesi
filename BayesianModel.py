@@ -10,7 +10,7 @@ from scipy import linalg
 import matplotlib.pyplot as pl
 from importData import *
 from histogram import *
-from cmc import *
+from evaluation import *
 from Lbp import *
 from hog import *
 import time

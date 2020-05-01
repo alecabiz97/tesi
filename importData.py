@@ -29,6 +29,15 @@ def importFiles(Dir,filesExt):
             descriptor_images.append(image_descriptor)
     return cams_images,images,id_images,descriptor_images
 
+def importFiles2(Dir,filesExt):
+    images,id_images=[],[]
+    for el in os.scandir(Dir):
+        if el.name.endswith(filesExt) and el.is_file():
+            image=imageio.imread(os.path.join(Dir,el.name))
+            images.append(image)
+            image_id=int(el.name.split('_')[0])
+            id_images.append(image_id)          
+    return images,id_images
 
 def loadVIPeR(feature=True):
     if feature:
@@ -38,8 +47,8 @@ def loadVIPeR(feature=True):
         DircamA='..\\VIPeR\\cam_a'
         DircamB='..\\VIPeR\\cam_b'
         
-        galleryA, idA=importFiles(DircamA,'.bmp')
-        galleryB, idB=importFiles(DircamB,'.bmp')
+        galleryA, idA=importFiles2(DircamA,'.bmp')
+        galleryB, idB=importFiles2(DircamB,'.bmp')
         return galleryA,idA,galleryB,idB
 
 def loadMarket_1501(feature=True):

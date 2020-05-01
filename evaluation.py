@@ -136,14 +136,23 @@ def test_11B_vs_allA():
               
         
 if __name__ == '__main__':
-
-    start=time.time()
+    
+    r=np.array([1,1,2,2,3,4,3,4,3,2,1,2,3,4,3])
+    r=r.reshape((3,5))
+    q=[1,3,2,4,3]
+    cmc=calculateCmcFromRanks(r,q)
+    
+#    camA,Id_A,camB,Id_B=loadVIPeR(False)
+#    start=time.time()
 
     print("START!")
     
     #test_camB_vs_camA()
-    test_11B_vs_allA()
+#    test_11B_vs_allA()
     
+    
+    
+
     end=time.time()
     tempo=end-start
     print('Tempo:' + str(tempo)) 

@@ -13,7 +13,7 @@ from scipy import linalg
 import matplotlib.pyplot as pl
 from importData import *
 from histogram import *
-from cmc import *
+from evaluation import *
 from Lbp import *
 from hog import *
 from BayesianModel import *
@@ -60,52 +60,54 @@ def queryExpansion2(ranks_index,ranks_similarity,gallery,query,Bayes,K):
 
 if __name__ == '__main__':
     
-    DirMarket = '..\\FeatureCNN\\Market-1501'
-    DirDuke = '..\\FeatureCNN\\DukeMTMC'
     
     
-    testData,queryData,trainingData=loadCNN(DirMarket)
-    #testData,queryData,trainingData=loadMarket_1501(feature=True)
-    
-    test_cams, test_feature, test_id, test_desc = testData
-    query_cams, query_feature, query_id, query_desc = queryData
-    train_cams, train_feature, train_id, train_desc = trainingData
-    
-    #Load BayesianModel gia addestrato
-    B=loadFile('..\\B_Market_trained')
-    #B=loadFile('..\\B_Duke_trained.pkl')
-    #B.plotTrainingHistogram(True)
-    
-    print('TRAINING COMPLETE')
-    
-    gallery,gallery_id=test_feature,test_id
-    query,query_id = query_feature[0:30:5], query_id[0:30:5]
-    print('START TEST')
-       
-    start=time.time()
-    vettori_cmc,ranks=[],[]    
-    for i in range(2):
-        ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
-        print('Ranks calcolato')
-        ranks.append(ranks_label)
-        
-        #Calcolo la cmc
-        cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
-        
-        #Calcolo mAP
-        mAP=calculate_mAP(ranks_label,query_id,100)
-        
-        vettori_cmc.append(cmc_vector)
-        r1,r5,r10,r20,r50=cmc_vector[[0,4,9,19,49]]
-        print('Rank 1: {} - Rank 5: {} - Rank 10: {} - Rank 20: {} - Rank 50: {}  '.format(r1,r5,r10,r20,r50))
-        print('mAP: {}'.format(mAP))
-        
-        query=queryExpansion(ranks_index,ranks_probability,gallery,query,5) 
-        print('Nuova query calcolata')
-    
-    end=time.time()
-    tempo=end-start
-    print(tempo)
+#    DirMarket = '..\\FeatureCNN\\Market-1501'
+#    DirDuke = '..\\FeatureCNN\\DukeMTMC'
+#    
+#    
+#    testData,queryData,trainingData=loadCNN(DirMarket)
+#    #testData,queryData,trainingData=loadMarket_1501(feature=True)
+#    
+#    test_cams, test_feature, test_id, test_desc = testData
+#    query_cams, query_feature, query_id, query_desc = queryData
+#    train_cams, train_feature, train_id, train_desc = trainingData
+#    
+#    #Load BayesianModel gia addestrato
+#    B=loadFile('..\\B_Market_trained.pkl')
+#    #B=loadFile('..\\B_Duke_trained.pkl')
+#    #B.plotTrainingHistogram(True)
+#    
+#    print('TRAINING COMPLETE')
+#    
+#    gallery,gallery_id=test_feature,test_id
+#    query,query_id = query_feature[0:300:5], query_id[0:300:5]
+#    print('START TEST')
+#       
+#    start=time.time()
+#    vettori_cmc,ranks=[],[]    
+#    for i in range(2):
+#        ranks_index,ranks_probability,ranks_label =calculateRanks2(query,gallery,gallery_id,B)
+#        print('Ranks calcolato')
+#        ranks.append(ranks_label)
+#        
+#        #Calcolo la cmc
+#        cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
+#        
+#        #Calcolo mAP
+#        mAP=calculate_mAP(ranks_label,query_id,100)
+#        
+#        vettori_cmc.append(cmc_vector)
+#        r1,r5,r10,r20,r50=cmc_vector[[0,4,9,19,49]]
+#        print('Rank 1: {} - Rank 5: {} - Rank 10: {} - Rank 20: {} - Rank 50: {}  '.format(r1,r5,r10,r20,r50))
+#        print('mAP: {}'.format(mAP))
+#        
+#        query=queryExpansion(ranks_index,ranks_probability,gallery,query,5) 
+#        print('Nuova query calcolata')
+#    
+#    end=time.time()
+#    tempo=end-start
+#    print(tempo)
     
     
     

@@ -9,14 +9,14 @@ import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
 from histogram import *
-from cmc import *
+from evaluation import *
 from BayesianModel import *
 import time
 import random
 
 def calculateDistance(gallery,id_gallery):
     
-    distance=[]
+    distances=[]
         
     labels=sorted(list(set(id_gallery)))
     
@@ -34,9 +34,9 @@ def calculateDistance(gallery,id_gallery):
                        
         d_sameId,d_differentId=np.array(d_sameId),np.array(d_differentId)
         
-        distance.append([y,d_sameId,d_differentId])
+        distances.append([y,d_sameId,d_differentId])
         
-    return distance
+    return distances
 
 
 ##istogrammiDistanze() calcola i due istogrammi separatamente
