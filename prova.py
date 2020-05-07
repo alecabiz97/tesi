@@ -19,108 +19,54 @@ from hog import *
 from BayesianModel import *
 import time
 import random
+import pickle
 
-def calculateRanks2(query,gallery,g_id,B):
-    ranks_index=np.zeros((len(gallery),len(query)),int)
-    ranks_label=np.zeros((len(gallery),len(query)),int)
-    ranks_similarity=np.zeros((len(gallery),len(query)),float)
-    column=0
-    for q in query:
-        d=np.zeros(len(gallery))
-        s=np.zeros(len(gallery))
-        i=0
-        for g in gallery:
-            d[i]=histogram_distance(q,g)
-            #s[i]=histogram_intersection(q,g)
-            i+= 1
-        sorted_i=np.argsort(d)
-        ranks_index[:,column] = sorted_i
-        ranks_label[:,column] = [g_id[i] for i in sorted_i]
+#Dir='..//Risultati test//Duke_test_complete_withoutRanks.pkl'
+Dir='..//Risultati test//Market_test_complete_withoutRanks.pkl'
+        
+f=open(Dir,'rb')
+results=pickle.load(f)
+f.close()
 
-        ranks_similarity[:,column]= np.sort(d)
-        column += 1
-    return ranks_index,ranks_similarity,ranks_label 
+n_id,q_id,risultati=results
 
-def queryExpansion2(ranks_index,ranks_similarity,gallery,query,Bayes,K):
-    q_expansion=[]
-    for i in range(len(query)):
-        candidates_index=ranks_index[:,i][0:K]  #Prendo gli indici dei primi K
-        candidates_similarity=ranks_similarity[:,i][0:K] #Prendo il prime K distanze del rank
-        q_exp=0 
-        similarity_sum=0
-        for j in range(K):
-            similarity=candidates_similarity[j]
-            x=gallery[candidates_index[j]] #Dalla gallery prendo il feature vector del candidato
-            q_exp += similarity*x
-            similarity_sum += similarity 
-        q_exp=(q_exp +query[i])/(similarity_sum +1)
-        q_expansion.append(q_exp)    
-    return q_expansion
+#Mostra l'andamento di mAP e rank1 all variare delle iterazioni    
+for r in risultati:
+    k,n,vettori_cmc,vettore_mAP=r
+    x=np.arange(0,n+1)
+    rank1=[v[0] for v in vettori_cmc]
+    print(k)
+    pl.plot(x,vettore_mAP,'-o',label='mAP')
+    pl.plot(x,rank1,'-o',label='Rank1')
+    pl.legend()
+    pl.grid(True)
+    pl.ylabel('Probability')
+    pl.xlabel('Iterazioni')
+    
+    pl.show()        
 
-
-if __name__ == '__main__':
-    
-    
-    
-#    DirMarket = '..\\FeatureCNN\\Market-1501'
-#    DirDuke = '..\\FeatureCNN\\DukeMTMC'
-#    
-#    
-#    testData,queryData,trainingData=loadCNN(DirMarket)
-#    #testData,queryData,trainingData=loadMarket_1501(feature=True)
-#    
-#    test_cams, test_feature, test_id, test_desc = testData
-#    query_cams, query_feature, query_id, query_desc = queryData
-#    train_cams, train_feature, train_id, train_desc = trainingData
-#    
-#    #Load BayesianModel gia addestrato
-#    B=loadFile('..\\B_Market_trained.pkl')
-#    #B=loadFile('..\\B_Duke_trained.pkl')
-#    #B.plotTrainingHistogram(True)
-#    
-#    print('TRAINING COMPLETE')
-#    
-#    gallery,gallery_id=test_feature,test_id
-#    query,query_id = query_feature[0:300:5], query_id[0:300:5]
-#    print('START TEST')
-#       
-#    start=time.time()
-#    vettori_cmc,ranks=[],[]    
-#    for i in range(2):
-#        ranks_index,ranks_probability,ranks_label =calculateRanks2(query,gallery,gallery_id,B)
-#        print('Ranks calcolato')
-#        ranks.append(ranks_label)
-#        
-#        #Calcolo la cmc
-#        cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
-#        
-#        #Calcolo mAP
-#        mAP=calculate_mAP(ranks_label,query_id,100)
-#        
-#        vettori_cmc.append(cmc_vector)
-#        r1,r5,r10,r20,r50=cmc_vector[[0,4,9,19,49]]
-#        print('Rank 1: {} - Rank 5: {} - Rank 10: {} - Rank 20: {} - Rank 50: {}  '.format(r1,r5,r10,r20,r50))
-#        print('mAP: {}'.format(mAP))
-#        
-#        query=queryExpansion(ranks_index,ranks_probability,gallery,query,5) 
-#        print('Nuova query calcolata')
-#    
-#    end=time.time()
-#    tempo=end-start
-#    print(tempo)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     
+#Mostra la cmc per ogni iterazione
+for r in risultati:
+    k,n,vettori_cmc,vettori_mAP=r
+    i=0
+    print(k)
+    for y in vettori_cmc:
+        x1=np.arange(1,len(y)+1)
+        pl.plot(x1,y,label='Iterazione: {}'.format(i))
+        i += 1
+    pl.legend()
+    pl.grid(True)
+    pl.xlim([1,100])
+    pl.ylabel('Probability')
+    pl.xlabel('Rank')
+    pl.plot()
+    pl.show()        
+        
+        
+        
+        
+        
+        
+        
+        
+         

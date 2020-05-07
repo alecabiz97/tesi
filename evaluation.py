@@ -83,7 +83,10 @@ def calculateCmcFromRanks(ranks,id_probes):
     for p_id in id_probes:
         j=0
         p_found=False
-        rank_tmp=ranks[:,i]
+        if len(ranks.shape) == 1:
+            rank_tmp=ranks
+        else:
+            rank_tmp=ranks[:,i]
         while p_found == False and j<len(rank_tmp):
             if p_id == rank_tmp[j]:
                 p_found = True

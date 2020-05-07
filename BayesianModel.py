@@ -141,7 +141,26 @@ def calculateRanks(query,gallery,g_id,Bayes):
 
         ranks_probability[:,column]= -np.sort(-p)
         column += 1
-    return ranks_index,ranks_probability,ranks_label 
+    return ranks_index,ranks_probability,ranks_label
+
+def calculateRanks_Similarity(query,gallery,g_id,Bayes):
+    ranks_index=np.zeros((len(gallery),len(query)),int)
+    ranks_label=np.zeros((len(gallery),len(query)),int)
+    ranks_similarity=np.zeros((len(gallery),len(query)),float)
+    column=0
+    for q in query:
+        s=np.zeros(len(gallery))
+        i=0
+        for g in gallery:
+            s[i]=1/(1+histogram_distance(q,g))
+            i+= 1
+        sorted_i=np.argsort(-s)
+        ranks_index[:,column] = sorted_i
+        ranks_label[:,column] = [g_id[i] for i in sorted_i]
+
+        ranks_similarity[:,column]= -np.sort(-s)
+        column += 1
+    return ranks_index,ranks_similarity,ranks_label  
 
 def queryExpansion(ranks_index,ranks_probability,gallery,query,K):
     q_expansion=[]
@@ -151,6 +170,24 @@ def queryExpansion(ranks_index,ranks_probability,gallery,query,K):
         q_exp=0 
         probability_sum=0
         for j in range(K):
+            probability=candidates_probability[j]
+            x=gallery[candidates_index[j]] #Dalla gallery prendo il feature vector del candidato
+            q_exp += probability*x
+            probability_sum += probability 
+        q_exp=(q_exp +query[i])/(probability_sum +1)
+        q_expansion.append(q_exp)    
+    return q_expansion
+
+def queryExpansion_withRandomK(ranks_index,ranks_probability,gallery,query,K):
+    q_expansion=[]
+    for i in range(len(query)):
+        candidates_index=ranks_index[:,i][0:K]  #Prendo gli indici dei primi K
+        candidates_probability=ranks_probability[:,i][0:K] #Prendo il prime K probibilità del rank
+        q_exp=0 
+        probability_sum=0
+        k1=np.random.choice(np.arange(1,K)) #Prendo un numero k' di immagini invece di K, k' non può essere uguale a 0
+        random_j=np.random.permutation(K)[0:k1]
+        for j in random_j: 
             probability=candidates_probability[j]
             x=gallery[candidates_index[j]] #Dalla gallery prendo il feature vector del candidato
             q_exp += probability*x

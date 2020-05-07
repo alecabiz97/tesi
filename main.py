@@ -19,6 +19,7 @@ from hog import *
 from BayesianModel import *
 import time
 import random
+import pickle
 
 
 print('START')
@@ -41,16 +42,22 @@ train_cams, train_feature, train_id, train_desc = trainingData
 #Load BayesianModel gia addestrato
 B=loadFile('..\\B_Market_trained.pkl')
 #B=loadFile('..\\B_Duke_trained.pkl')
-
+B.plotTrainingHistogram(True)
 print('TRAINING COMPLETE')
 
 gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0:1000:20], query_id[0:1000:20]
-print('START TEST')
+query,query_id = query_feature[0::], query_id[0::]
+
    
 start=time.time()
-vettori_cmc,ranks,mAP_list=[],[],[]    
-for i in range(2):
+
+
+print('START TEST')
+
+n,k=3,10
+results=[]
+vettori_cmc,ranks,mAP_list=[],[],[] 
+for i in range(n+1):
     ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
     print('Ranks calcolato')
     ranks.append(ranks_label)
@@ -63,30 +70,54 @@ for i in range(2):
     mAP=calculate_mAP(ranks_label,query_id,len(ranks_label))
     mAP_list.append(mAP)
     
-    r1,r5,r10,r20,r50=cmc_vector[[0,4,9,19,49]]
-    print('Rank 1: {} - Rank 5: {} - Rank 10: {} - Rank 20: {} - Rank 50: {}  '.format(r1,r5,r10,r20,r50))
-    print('mAP: {}'.format(mAP))
+#    r1,r5,r10,r20,r50=cmc_vector[[0,4,9,19,49]]
+#    print('Rank 1: {} - Rank 5: {} - Rank 10: {} - Rank 20: {} - Rank 50: {}  '.format(r1,r5,r10,r20,r50))
+#    print('mAP: {}'.format(mAP))
     
-    query=queryExpansion(ranks_index,ranks_probability,gallery,query,5) 
-    print('Nuova query calcolata')
+    query=queryExpansion_withRandomK(ranks_index,ranks_probability,gallery,query,k)
+    
+    #print('Nuova query calcolata')
+k_n_ranks_cmc_mAP=[k,n,ranks,vettori_cmc,mAP_list]
+results.append(k_n_ranks_cmc_mAP)
+print('####################à')
+    
 
+f=open('testMarket_complete_randomK10.pkl','wb')
+pickle.dump(results,f)
+f.close()
+
+#Mostra l'andamento di mAP e rank1 all variare delle iterazioni 
+for r in results:
+    k,n,ranks,vettori_cmc,vettore_mAP=r
+    x=np.arange(0,n+1)
+    rank1=[v[0] for v in vettori_cmc]
+    pl.plot(x,vettore_mAP,'-o',label='mAP')
+    pl.plot(x,rank1,'-o',label='Rank1')
+    pl.legend()
+    pl.grid(True)
+    pl.ylabel('Probability')
+    pl.xlabel('Iterazioni')
+    
+    pl.show()  
+
+    
 end=time.time()
 tempo=end-start
 print(tempo)
 #
 #
 
-n,i=200,0
-for y in vettori_cmc:
-    x=np.arange(len(y[0:n]))+1
-    pl.plot(x,y[0:n],label='iterazione {}'.format(i))
-    i += 1
-pl.title('Cumulative Match Characteristic')
-pl.ylabel('Probability of Identification')
-pl.xlabel('Rank')
-pl.grid(True)
-pl.legend()
-pl.show()  
+#n,i=20,0
+#for y in vettori_cmc:
+#    x=np.arange(len(y[0:n]))+1
+#    pl.plot(x,y[0:n],label='iterazione {}'.format(i))
+#    i += 1
+#pl.title('Cumulative Match Characteristic')
+#pl.ylabel('Probability of Identification')
+#pl.xlabel('Rank')
+#pl.grid(True)
+#pl.legend()
+#pl.show()  
 
 
 
