@@ -24,7 +24,7 @@ import pickle
 
 
 #Mostra l'andamento di mAP e rank1 all variare di k
-def Rank1_mAP_functionOfK(risultati):
+def Rank1_mAP_functionOfK(risultati,title=''):
     if len(risultati[0]) == 4:
         k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
     elif len(risultati[0]) == 5:
@@ -52,10 +52,11 @@ def Rank1_mAP_functionOfK(risultati):
     pl.grid(True)
     pl.ylabel('Probability')
     pl.xlabel('K')
+    pl.title(title)
     pl.show()
  
 #Mostra l'andamento di mAP e rank1 all variare di n    
-def Rank1_mAP_functionOfn(risultati):
+def Rank1_mAP_functionOfn(risultati,title=''):
     if len(risultati[0]) == 4:
         k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
     elif len(risultati[0]) == 5:
@@ -77,10 +78,11 @@ def Rank1_mAP_functionOfn(risultati):
         pl.grid(True)
         pl.ylabel('Probability')
         pl.xlabel('Iteration(n)')
+        pl.title(title)
         pl.show()
 
 #Mostra la cmc per ogni iterazione
-def plotCMC_forEachIteration(risultati):
+def plotCMC_forEachIteration(risultati,title=''):
     for r in risultati:
         if len(r) == 4:
             k,n,vettori_cmc,vettore_mAP=r
@@ -99,8 +101,26 @@ def plotCMC_forEachIteration(risultati):
         pl.xlim([1,100])
         pl.ylabel('Probability')
         pl.xlabel('Rank')
+        pl.title(title)
         pl.plot()
         pl.show()     
+        
+def evaluation_forEachIdentity(all_ranks,id_query):
+    resultati_totali=[]
+    id_query=np.array(id_query)
+    labels=list(set(id_query))
+    for q in labels:
+        results=[q]
+        rank1,mAP=[],[]
+        for rank in all_ranks:
+            colonne=np.array(id_query==q)
+            rank_tmp=rank[:,colonne]
+            rank1.append(calculateCmcFromRanks(rank_tmp,[q])[0]) #Calcolo rank1
+            mAP.append(calculate_mAP(rank_tmp,[q],len(rank_tmp)))
+        results.append(rank1)
+        results.append(mAP)
+        resultati_totali.append(results)
+    return resultati_totali
         
         
 if __name__ == '__main__':
@@ -109,33 +129,50 @@ if __name__ == '__main__':
     #Dir='..//Risultati test//Duke_results_100Id_withoutRanks.pkl'
     #Dir='..//Risultati test//Duke_test_complete.pkl'
     #Dir='..//Risultati test//Duke_test_complete_withoutRanks.pkl'
-    Dir='..//Risultati test//Duke_test_complete_Similarity.pkl'
-    #
-    #
     #Dir='..//Risultati test//Duke_test_complete_randomK5.pkl'
     #Dir='..//Risultati test//Duke_test_complete_randomK10.pkl'
+    #Dir='..//Risultati test//Duke_test_complete_Similarity.pkl'
+
     #
     #Dir='..//Risultati test//Market_results_100Id.pkl'
-    #Dir='..//Risultati test//Market_results_100Id_withoutRanks.pkl'
+    # Dir='..//Risultati test//Market_results_100Id_withoutRanks.pkl'
     #Dir='..//Risultati test//Market_test_complete.pkl'
     #Dir='..//Risultati test//Market_test_complete_withoutRanks.pkl'
-    #Dir='..//Risultati test//Market_test_complete_randomK10.pkl''
-    #Dir='..//Risultati test//Market_test_complete_Similarity.pkl'
     #Dir='..//Risultati test//Market_test_complete_randomK5.pkl'
-    #Dir='..//Risultati test//Market_test_complete_randomK10.pkl'
+    # Dir='..//Risultati test//Market_test_complete_randomK10.pkl'
+    Dir='..//Risultati test//Market_test_complete_Similarity.pkl'
+
     
     f=open(Dir,'rb')
     results=pickle.load(f)
     f.close()
     
+
     n_id,q_id,risultati=results
-
-
-    #Rank1_mAP_functionOfK(risultati)
-
-    Rank1_mAP_functionOfn(risultati)
     
-#    plotCMC_forEachIteration(risultati)
+    #title='Market-1501'
+    title='DukeMTMC-reID '
+    Rank1_mAP_functionOfK(risultati,title)
+
+    Rank1_mAP_functionOfn(risultati,title)
+    
+    # plotCMC_forEachIteration(risultati,title)
+    
+    if len(risultati[0]) == 5:
+        ranks=risultati[0][2]
+        X=evaluation_forEachIdentity(ranks,q_id)
+        
+        X2_cmc,X2_mAP=[],[]
+        for x in X:
+            q,r1,mAP=x
+            if r1[0] < 1:
+                X2_cmc.append([q,r1])
+                mAP2=[round(v,3) for v in mAP]
+                X2_mAP.append([q,mAP2])
+        
+        
+
+            
 
 
 
