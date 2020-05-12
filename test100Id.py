@@ -45,17 +45,13 @@ B=loadFile('..\\B_Duke_trained.pkl')
 
 print('TRAINING COMPLETE')
 
-#query,query_id = query_feature[0:800:20], query_id[0:800:20]
 
-#Seleziono 50 identità a caso
+#Seleziono 100 identità a caso
 labels=np.random.permutation(list(set(query_id)))[0:100]
     
-query_first,query_ids=[],[]
-for i in range(len(query_id)):
-    x=query_id[i]
-    if x in labels:
-        query_first.append(query_feature[i])
-        query_ids.append(query_id[i])
+        
+query_first=[query_feature[i] for i in range(len(query_id)) if query_id[i] in labels]  
+query_ids=[query_id[i] for i in range(len(query_id)) if query_id[i] in labels]  
    
 start=time.time()
     
@@ -64,7 +60,6 @@ query,query_id=query_first,query_ids
 
 
 print('START TEST')
-print(len(query_ids))
 
 
 #Calcolo primo rank
@@ -84,7 +79,6 @@ risultatiTest.append(query_id)
 risultatiTest_withoutRanks.append(len(labels))
 risultatiTest_withoutRanks.append(query_id)
 for k in [1,2,3,4,5,15,25,35,45,55]: 
-    #query,query_id = query_feature[0:800:20], query_id[0:800:20]
     query,query_id=query_first,query_ids 
     ranks_index,ranks_probability,ranks_label = first_ranks_index,first_ranks_probability,first_ranks_label 
     vettori_cmc,ranks,mAP_list=[],[],[] 
@@ -125,8 +119,6 @@ f.close()
 f=open('results_Duke100Id_withoutRanks.pkl','wb')
 pickle.dump(risultatiTest_withoutRanks,f)
 f.close()
-
-
 
     
 end=time.time()

@@ -7,7 +7,6 @@ Created on Tue Mar  3 14:36:45 2020
 
 import os
 import glob
-from PIL import Image
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
@@ -44,14 +43,13 @@ train_cams, train_feature, train_id, train_desc = trainingData
 #Load BayesianModel gia addestrato
 B=loadFile('..\\B_Market_trained.pkl')
 #B=loadFile('..\\B_Duke_trained.pkl')
-B.plotTrainingHistogram(True)
-
 
 
 gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0::], query_id[0::]
+query,query_id = query_feature[0:3], query_id[0:3]
 
-   
+
+    
 start=time.time()
 
 
@@ -62,8 +60,8 @@ results=[]
 vettori_cmc,ranks,mAP_list=[],[],[] 
 for i in range(n+1):
     ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
-    print('Ranks calcolato')
     ranks.append(ranks_label)
+    print('Ranks calcolato')
     
     #Calcolo la cmc
     cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
@@ -73,36 +71,20 @@ for i in range(n+1):
     mAP=calculate_mAP(ranks_label,query_id,len(ranks_label))
     mAP_list.append(mAP)
     
-#    r1,r5,r10,r20,r50=cmc_vector[[0,4,9,19,49]]
-#    print('Rank 1: {} - Rank 5: {} - Rank 10: {} - Rank 20: {} - Rank 50: {}  '.format(r1,r5,r10,r20,r50))
-#    print('mAP: {}'.format(mAP))
     
+    #Calcolo la nuova query    
     query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
+    print('Nuova query calcolata')
     
-    #print('Nuova query calcolata')
 k_n_ranks_cmc_mAP=[k,n,ranks,vettori_cmc,mAP_list]
 results.append(k_n_ranks_cmc_mAP)
 print('####################à')
      
-Rank1_mAP_functionOfn(results)
     
 end=time.time()
 tempo=end-start
 print(tempo)
-#
-#
 
-#n,i=20,0
-#for y in vettori_cmc:
-#    x=np.arange(len(y[0:n]))+1
-#    pl.plot(x,y[0:n],label='iterazione {}'.format(i))
-#    i += 1
-#pl.title('Cumulative Match Characteristic')
-#pl.ylabel('Probability of Identification')
-#pl.xlabel('Rank')
-#pl.grid(True)
-#pl.legend()
-#pl.show()  
 
 
 

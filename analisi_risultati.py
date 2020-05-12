@@ -8,7 +8,6 @@ Created on Sun May  3 18:49:32 2020
 
 import os
 import glob
-from PIL import Image
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
@@ -27,20 +26,14 @@ import pickle
 def Rank1_mAP_functionOfK(risultati,title=''):
     if len(risultati[0]) == 4:
         k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
-    elif len(risultati[0]) == 5:
-        k,n_iteration,ranks,vettori_cmc,vettore_mAP=risultati[0]
     else:
         print('ERROR')
         
     r1_first=vettori_cmc[0][0]
     mAP_first=vettore_mAP[0]    
     x,rank1,mAP=[0],[r1_first],[mAP_first]
-    for r in risultati:
-        if len(r) == 4:
-            k,n,vettori_cmc,vettore_mAP=r
-        elif len(r) == 5:
-            k,n,ranks,vettori_cmc,vettore_mAP=r
-            
+    for r in risultati: 
+        k,n,vettori_cmc,vettore_mAP=r           
         x.append(k)
         r1=vettori_cmc[1][0] #Rank1 dopo la prima iterazione
         rank1.append(r1)
@@ -59,17 +52,12 @@ def Rank1_mAP_functionOfK(risultati,title=''):
 def Rank1_mAP_functionOfn(risultati,title=''):
     if len(risultati[0]) == 4:
         k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
-    elif len(risultati[0]) == 5:
-        k,n_iteration,ranks,vettori_cmc,vettore_mAP=risultati[0]
     else:
         print('ERROR')
         
     x=np.arange(n_iteration+1)
     for r in risultati:
-        if len(r) == 4:
-            k,n,vettori_cmc,vettore_mAP=r
-        elif len(r) == 5:
-            k,n,ranks,vettori_cmc,vettore_mAP=r
+        k,n,vettori_cmc,vettore_mAP=r           
         print(k)
         rank1=[v[0] for v in vettori_cmc]
         pl.plot(x,vettore_mAP,'-o',label='mAP')
@@ -86,10 +74,9 @@ def plotCMC_forEachIteration(risultati,title=''):
     for r in risultati:
         if len(r) == 4:
             k,n,vettori_cmc,vettore_mAP=r
-        elif len(r) == 5:
-            k,n,ranks,vettori_cmc,vettore_mAP=r
         else:
-            print('ERROR')    
+            print('ERROR')
+            
         i=0
         print(k)
         for y in vettori_cmc:
@@ -125,24 +112,24 @@ def evaluation_forEachIdentity(all_ranks,id_query):
         
 if __name__ == '__main__':
     
-    #Dir='..//Risultati test//Duke_results_100Id.pkl'
-    #Dir='..//Risultati test//Duke_results_100Id_withoutRanks.pkl'
-    #Dir='..//Risultati test//Duke_test_complete.pkl'
-    #Dir='..//Risultati test//Duke_test_complete_withoutRanks.pkl'
-    #Dir='..//Risultati test//Duke_test_complete_randomK5.pkl'
-    #Dir='..//Risultati test//Duke_test_complete_randomK10.pkl'
-    #Dir='..//Risultati test//Duke_test_complete_Similarity.pkl'
-
-    #
-    #Dir='..//Risultati test//Market_results_100Id.pkl'
-    # Dir='..//Risultati test//Market_results_100Id_withoutRanks.pkl'
-    #Dir='..//Risultati test//Market_test_complete.pkl'
-    #Dir='..//Risultati test//Market_test_complete_withoutRanks.pkl'
-    #Dir='..//Risultati test//Market_test_complete_randomK5.pkl'
-    # Dir='..//Risultati test//Market_test_complete_randomK10.pkl'
-    Dir='..//Risultati test//Market_test_complete_Similarity.pkl'
+#    Dir='..//Risultati test//Duke_results_100Id_ranks.pkl'
+#    Dir='..//Risultati test//Duke_results_100Id_withoutRanks.pkl'
+#    Dir='..//Risultati test//Duke_test_complete_ranks.pkl'
+    Dir='..//Risultati test//Duke_test_complete_withoutRanks.pkl'
+#    Dir='..//Risultati test//Duke_test_complete_randomK5_ranks.pkl'
+#    Dir='..//Risultati test//Duke_test_complete_randomK10_ranks.pkl'
+#    Dir='..//Risultati test//Duke_test_complete_Similarity_ranks.pkl'
 
     
+#    Dir='..//Risultati test//Market_results_100Id_ranks.pkl'
+#    Dir='..//Risultati test//Market_results_100Id_withoutRanks.pkl'
+#    Dir='..//Risultati test//Market_test_complete_ranks.pkl'
+#    Dir='..//Risultati test//Market_test_complete_withoutRanks.pkl'
+#    Dir='..//Risultati test//Market_test_complete_randomK5_ranks.pkl'
+#    Dir='..//Risultati test//Market_test_complete_randomK10_ranks.pkl'
+#    Dir='..//Risultati test//Market_test_complete_Similarity_ranks.pkl'
+
+
     f=open(Dir,'rb')
     results=pickle.load(f)
     f.close()
@@ -152,26 +139,12 @@ if __name__ == '__main__':
     
     #title='Market-1501'
     title='DukeMTMC-reID '
+    
     Rank1_mAP_functionOfK(risultati,title)
-
     Rank1_mAP_functionOfn(risultati,title)
     
-    # plotCMC_forEachIteration(risultati,title)
-    
-    if len(risultati[0]) == 5:
-        ranks=risultati[0][2]
-        X=evaluation_forEachIdentity(ranks,q_id)
-        
-        X2_cmc,X2_mAP=[],[]
-        for x in X:
-            q,r1,mAP=x
-            if r1[0] < 1:
-                X2_cmc.append([q,r1])
-                mAP2=[round(v,3) for v in mAP]
-                X2_mAP.append([q,mAP2])
-        
-        
-
+    plotCMC_forEachIteration(risultati,title)
+  
             
 
 

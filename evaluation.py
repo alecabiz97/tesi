@@ -16,7 +16,6 @@ from Lbp import *
 from hog import *
 import random
 import time
-from skimage import feature
 
 #Cmc riceve direttamente i vettori delle feature
 def cmc(hist_probes, id_probes, hist_gallery, id_gallery):

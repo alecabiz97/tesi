@@ -7,8 +7,6 @@ Created on Sun Mar 15 10:55:51 2020
 import numpy as np
 from histogram import *
 import time
-from skimage import color
-from skimage import feature
 
 
 

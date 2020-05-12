@@ -5,7 +5,6 @@ Created on Sun Mar 15 10:53:42 2020
 @author: AleCabiz
 """
 import numpy as np
-from skimage import feature as ft 
 from histogram import *
 
 def HOG(M,D):

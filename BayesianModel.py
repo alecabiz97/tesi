@@ -195,6 +195,21 @@ def queryExpansion_withRandomK(ranks_index,ranks_probability,gallery,query,K):
         q_exp=(q_exp +query[i])/(probability_sum +1)
         q_expansion.append(q_exp)    
     return q_expansion
+
+def wrongFeedback(all_ranks,query_id,k):
+    ranks=all_ranks.copy()
+    i=0
+    for q in query_id:
+        rank=ranks[0:k,i]
+        for j in range(len(rank)):
+            index=np.random.choice(len(rank))
+            if rank[index] != q:
+                rank[index] = q #Cambio l'etichetta di proposito per simulare un errore
+                break
+        i += 1
+    return ranks
+        
+    
                 
 if __name__ == '__main__':
     
