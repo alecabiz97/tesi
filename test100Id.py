@@ -17,6 +17,8 @@ from evaluation import *
 from Lbp import *
 from hog import *
 from BayesianModel import *
+from queryExpansion import *
+
 import time
 import random
 import pickle

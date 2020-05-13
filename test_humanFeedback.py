@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar  3 14:36:45 2020
+Created on Tue May 12 19:07:27 2020
 
-@author: AleCabiz
+@author: aleca
 """
 
 import os
@@ -22,7 +22,7 @@ import time
 import random
 import pickle
 
-
+    
 
 print('START')
 
@@ -31,7 +31,7 @@ DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirMarket)
+testData,queryData,trainingData=loadCNN(DirDuke)
 
 #istogrammi RGB
 #testData,queryData,trainingData=loadMarket_1501(feature=True)
@@ -42,12 +42,12 @@ train_cams, train_feature, train_id, train_desc = trainingData
 
     
 #Load BayesianModel gia addestrato
-B=loadFile('..\\B_Market_trained.pkl')
-#B=loadFile('..\\B_Duke_trained.pkl')
+#B=loadFile('..\\B_Market_trained.pkl')
+B=loadFile('..\\B_Duke_trained.pkl')
 
 
 gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0::], query_id[0::]
+query,query_id = query_feature[0:3], query_id[0:3]
 
 
     
@@ -56,7 +56,7 @@ start=time.time()
 
 print('START TEST')
 
-n,k=3,5
+n,k=3,10
 results=[]
 vettori_cmc,ranks,mAP_list=[],[],[] 
 for i in range(n+1):
@@ -73,24 +73,25 @@ for i in range(n+1):
     mAP_list.append(mAP)
     
     
-    #Calcolo la nuova query    
-    query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
+    #Calcolo la nuova query 
+#    query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
+
+    #Calcolo la nuova query simulando il feedback da parte di un utente
+    query=queryExpansion_withFeedback(ranks_index,ranks_probability,ranks_label,gallery,query,query_id,k,True)
     print('Nuova query calcolata')
-k_n_ranks_cmc_mAP=[k,n,ranks,vettori_cmc,mAP_list]
-results.append(k_n_ranks_cmc_mAP)
+    
+
+#Senza i ranks
+results=[]
+k_n_cmc_mAP=[k,n,vettori_cmc,mAP_list]
+results.append(k_n_cmc_mAP)
+ranks2=ranks
 print('####################à')
      
-    
+rank1_mAP_functionOfn(results)    
+      
 end=time.time()
 tempo=end-start
 print(tempo)
-
-
-
-
-
-    
-
-
 
 

@@ -11,6 +11,7 @@ import matplotlib.pyplot as pl
 from histogram import *
 from evaluation import *
 from BayesianModel import *
+from queryExpansion import *
 import time
 import random
 

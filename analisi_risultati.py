@@ -23,7 +23,7 @@ import pickle
 
 
 #Mostra l'andamento di mAP e rank1 all variare di k
-def Rank1_mAP_functionOfK(risultati,title=''):
+def rank1_mAP_functionOfK(risultati,title=''):
     if len(risultati[0]) == 4:
         k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
     else:
@@ -49,7 +49,7 @@ def Rank1_mAP_functionOfK(risultati,title=''):
     pl.show()
  
 #Mostra l'andamento di mAP e rank1 all variare di n    
-def Rank1_mAP_functionOfn(risultati,title=''):
+def rank1_mAP_functionOfn(risultati,title=''):
     if len(risultati[0]) == 4:
         k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
     else:
@@ -115,14 +115,14 @@ if __name__ == '__main__':
 #    Dir='..//Risultati test//Duke_results_100Id_ranks.pkl'
 #    Dir='..//Risultati test//Duke_results_100Id_withoutRanks.pkl'
 #    Dir='..//Risultati test//Duke_test_complete_ranks.pkl'
-    Dir='..//Risultati test//Duke_test_complete_withoutRanks.pkl'
+#    Dir='..//Risultati test//Duke_test_complete_withoutRanks.pkl'
 #    Dir='..//Risultati test//Duke_test_complete_randomK5_ranks.pkl'
 #    Dir='..//Risultati test//Duke_test_complete_randomK10_ranks.pkl'
 #    Dir='..//Risultati test//Duke_test_complete_Similarity_ranks.pkl'
 
     
 #    Dir='..//Risultati test//Market_results_100Id_ranks.pkl'
-#    Dir='..//Risultati test//Market_results_100Id_withoutRanks.pkl'
+    Dir='..//Risultati test//Market_results_100Id_withoutRanks.pkl'
 #    Dir='..//Risultati test//Market_test_complete_ranks.pkl'
 #    Dir='..//Risultati test//Market_test_complete_withoutRanks.pkl'
 #    Dir='..//Risultati test//Market_test_complete_randomK5_ranks.pkl'
@@ -137,13 +137,13 @@ if __name__ == '__main__':
 
     n_id,q_id,risultati=results
     
-    #title='Market-1501'
-    title='DukeMTMC-reID '
+    title='Market-1501'
+#    title='DukeMTMC-reID '
     
-    Rank1_mAP_functionOfK(risultati,title)
-    Rank1_mAP_functionOfn(risultati,title)
+#    rank1_mAP_functionOfK(risultati,title)
+    rank1_mAP_functionOfn(risultati,title)
     
-    plotCMC_forEachIteration(risultati,title)
+#    plotCMC_forEachIteration(risultati,title)
   
             
 
