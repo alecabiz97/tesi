@@ -137,4 +137,15 @@ for i in range(len(names)):
     f.close()         
         
         
-         
+#    f=open(Dir3,'rb')
+#    results=pickle.load(f)
+#    f.close()
+#    
+#
+#    n_id,q_id,risultati=results
+#
+#    X=[n_id,q_id,[risultati]]
+#    
+#    f=open(Dir3,'wb')
+#    pickle.dump(X,f)
+#    f.close()         

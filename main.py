@@ -47,7 +47,7 @@ B=loadFile('..\\B_Market_trained.pkl')
 
 
 gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0::], query_id[0::]
+query,query_id = query_feature[0:2], query_id[0:2]
 
 
     

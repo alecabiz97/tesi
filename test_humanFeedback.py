@@ -31,38 +31,37 @@ DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirDuke)
+testData,queryData,trainingData=loadCNN(DirMarket)
 
 #istogrammi RGB
 #testData,queryData,trainingData=loadMarket_1501(feature=True)
 
 test_cams, test_feature, test_id, test_desc = testData
-query_cams, query_feature, query_id, query_desc = queryData
+query_cams, query_feature, query_id1, query_desc = queryData
 train_cams, train_feature, train_id, train_desc = trainingData
 
     
 #Load BayesianModel gia addestrato
-#B=loadFile('..\\B_Market_trained.pkl')
-B=loadFile('..\\B_Duke_trained.pkl')
+B=loadFile('..\\B_Market_trained.pkl')
+#B=loadFile('..\\B_Duke_trained.pkl')
 
 
 gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0:3], query_id[0:3]
+query,query_id = query_feature[0::], query_id1[0::]
 
 
-    
 start=time.time()
 
 
 print('START TEST')
+print(len(set(query_id)))
 
-n,k=3,10
-results=[]
+n,k=3,25
 vettori_cmc,ranks,mAP_list=[],[],[] 
 for i in range(n+1):
     ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
     ranks.append(ranks_label)
-    print('Ranks calcolato')
+    #print('Ranks calcolato')
     
     #Calcolo la cmc
     cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
@@ -77,18 +76,31 @@ for i in range(n+1):
 #    query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
 
     #Calcolo la nuova query simulando il feedback da parte di un utente
-    query=queryExpansion_withFeedback(ranks_index,ranks_probability,ranks_label,gallery,query,query_id,k,True)
-    print('Nuova query calcolata')
+    query=queryExpansion_withFeedback(ranks_index,ranks_probability,ranks_label,gallery,query,query_id,k,False)
+    #print('Nuova query calcolata')
     
 
 #Senza i ranks
-results=[]
+results=[len(set(query_id)),query_id]
 k_n_cmc_mAP=[k,n,vettori_cmc,mAP_list]
-results.append(k_n_cmc_mAP)
-ranks2=ranks
-print('####################à')
-     
-rank1_mAP_functionOfn(results)    
+results.append([k_n_cmc_mAP])
+
+#Solo i ranks
+results_ranks=[len(set(query_id)),query_id]
+k_n_ranks=[k,n,ranks]
+results_ranks.append([k_n_ranks])
+
+
+
+f=open('..//Risultati test//Market_test_complete_HumanFeedback_Prob_k25.pkl','wb') 
+pickle.dump(results,f)
+f.close()
+
+f=open('..//Risultati test//Ranks-Market_test_complete_HumanFeedback_Prob_k25.pkl','wb') 
+pickle.dump(results_ranks,f)
+f.close()
+  
+
       
 end=time.time()
 tempo=end-start

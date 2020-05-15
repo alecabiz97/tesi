@@ -112,33 +112,55 @@ def evaluation_forEachIdentity(all_ranks,id_query):
         
 if __name__ == '__main__':
     
-#    Dir='..//Risultati test//Duke_results_100Id_ranks.pkl'
-#    Dir='..//Risultati test//Duke_results_100Id_withoutRanks.pkl'
-#    Dir='..//Risultati test//Duke_test_complete_ranks.pkl'
-#    Dir='..//Risultati test//Duke_test_complete_withoutRanks.pkl'
-#    Dir='..//Risultati test//Duke_test_complete_randomK5_ranks.pkl'
-#    Dir='..//Risultati test//Duke_test_complete_randomK10_ranks.pkl'
-#    Dir='..//Risultati test//Duke_test_complete_Similarity_ranks.pkl'
+
+#Duke
+#    Dir='..//Risultati test//Duke//Duke_test_complete.pkl'
+#    Dir='..//Risultati test//Duke//Duke_results_100Id.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_randomK5.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_randomK10.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_Similarity.pkl'
+    
+    #Feedback   
+    
+#    Dir='..//Risultati test//Duke//Duke_results_100Id_HumanFeedback_Prob.pkl'
+#    Dir='..//Risultati test//Duke//Duke_results_100Id_HumanFeedback_Prob1.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k10.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k25.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob1_k55.pkl'
+    
+    
+##############################################
+#Market  
+#    Dir='..//Risultati test//Market//Market_test_complete.pkl'
+#    Dir='..//Risultati test//Market//Market_results_100Id.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_randomK5.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_randomK10.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_Similarity.pkl'
+
+    #Feedback   
+
+#    Dir='..//Risultati test//Market//Market_results_100Id_HumanFeedback_Prob.pkl'
+#    Dir='..//Risultati test//Market//Market_results_100Id_HumanFeedback_Prob1.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k10.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k25.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k35.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob1_k55.pkl'
 
     
-#    Dir='..//Risultati test//Market_results_100Id_ranks.pkl'
-    Dir='..//Risultati test//Market_results_100Id_withoutRanks.pkl'
-#    Dir='..//Risultati test//Market_test_complete_ranks.pkl'
-#    Dir='..//Risultati test//Market_test_complete_withoutRanks.pkl'
-#    Dir='..//Risultati test//Market_test_complete_randomK5_ranks.pkl'
-#    Dir='..//Risultati test//Market_test_complete_randomK10_ranks.pkl'
-#    Dir='..//Risultati test//Market_test_complete_Similarity_ranks.pkl'
-
-
+#################################################
+    
     f=open(Dir,'rb')
     results=pickle.load(f)
     f.close()
     
 
     n_id,q_id,risultati=results
+    print(Dir)
+    print(len(risultati[0]))
     
     title='Market-1501'
-#    title='DukeMTMC-reID '
+#    title='DukeMTMC-reID'
+    
     
 #    rank1_mAP_functionOfK(risultati,title)
     rank1_mAP_functionOfn(risultati,title)
