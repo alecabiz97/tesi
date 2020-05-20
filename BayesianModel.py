@@ -128,20 +128,20 @@ def calculateRanks(query,gallery,g_id,Bayes):
     ranks_probability=np.zeros((len(gallery),len(query)),float)
     column=0
     for q in query:
-        d=np.zeros(len(gallery))
         p=np.zeros(len(gallery))
         i=0
         for g in gallery:
-            d[i]=histogram_distance(q,g)
-            p[i]=Bayes.calculateProbBayes(d[i])
+            d=histogram_distance(q,g)
+            p[i]=Bayes.calculateProbBayes(d)
             i+= 1
         sorted_i=np.argsort(-p)
         ranks_index[:,column] = sorted_i
         ranks_label[:,column] = [g_id[i] for i in sorted_i]
-
         ranks_probability[:,column]= -np.sort(-p)
         column += 1
     return ranks_index,ranks_probability,ranks_label
+
+
 
 def calculateRanks_Similarity(query,gallery,g_id,Bayes):
     ranks_index=np.zeros((len(gallery),len(query)),int)
@@ -157,7 +157,6 @@ def calculateRanks_Similarity(query,gallery,g_id,Bayes):
         sorted_i=np.argsort(-s)
         ranks_index[:,column] = sorted_i
         ranks_label[:,column] = [g_id[i] for i in sorted_i]
-
         ranks_similarity[:,column]= -np.sort(-s)
         column += 1
     return ranks_index,ranks_similarity,ranks_label  

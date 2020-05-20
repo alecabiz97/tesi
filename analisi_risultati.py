@@ -91,24 +91,8 @@ def plotCMC_forEachIteration(risultati,title=''):
         pl.title(title)
         pl.plot()
         pl.show()     
-        
-def evaluation_forEachIdentity(all_ranks,id_query):
-    resultati_totali=[]
-    id_query=np.array(id_query)
-    labels=list(set(id_query))
-    for q in labels:
-        results=[q]
-        rank1,mAP=[],[]
-        for rank in all_ranks:
-            colonne=np.array(id_query==q)
-            rank_tmp=rank[:,colonne]
-            rank1.append(calculateCmcFromRanks(rank_tmp,[q])[0]) #Calcolo rank1
-            mAP.append(calculate_mAP(rank_tmp,[q],len(rank_tmp)))
-        results.append(rank1)
-        results.append(mAP)
-        resultati_totali.append(results)
-    return resultati_totali
-        
+                    
+    
         
 if __name__ == '__main__':
     
@@ -124,10 +108,12 @@ if __name__ == '__main__':
     
 #    Dir='..//Risultati test//Duke//Duke_results_100Id_HumanFeedback_Prob.pkl'
 #    Dir='..//Risultati test//Duke//Duke_results_100Id_HumanFeedback_Prob1.pkl'
-#    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k10.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k25.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob1_k55.pkl'
-    
+#    Dir='..//Risultati test//Duke//Duke_test_complete_WrongHumanFeedback_Prob_k25.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_WrongHumanFeedback_Prob1_k55.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_Similarity_HumanFeedback_Prob_k25.pkl'
+#    Dir='..//Risultati test//Duke//Duke_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'    
     
 ##############################################
 #Market  
@@ -141,13 +127,15 @@ if __name__ == '__main__':
 
 #    Dir='..//Risultati test//Market//Market_results_100Id_HumanFeedback_Prob.pkl'
 #    Dir='..//Risultati test//Market//Market_results_100Id_HumanFeedback_Prob1.pkl'
-#    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k10.pkl'
 #    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k25.pkl'
-#    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k35.pkl'
 #    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob1_k55.pkl'
-
+#    Dir='..//Risultati test//Market//Market_test_complete_WrongHumanFeedback_Prob_k25.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_WrongHumanFeedback_Prob1_k55.pkl'
+    Dir='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob_k25.pkl'
+#    Dir='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'
     
 #################################################
+        
     
     f=open(Dir,'rb')
     results=pickle.load(f)
@@ -155,14 +143,12 @@ if __name__ == '__main__':
     
 
     n_id,q_id,risultati=results
-    print(Dir)
-    print(len(risultati[0]))
+
     
     title='Market-1501'
 #    title='DukeMTMC-reID'
-    
-    
-#    rank1_mAP_functionOfK(risultati,title)
+        
+    rank1_mAP_functionOfK(risultati,title)
     rank1_mAP_functionOfn(risultati,title)
     
 #    plotCMC_forEachIteration(risultati,title)
@@ -172,12 +158,6 @@ if __name__ == '__main__':
 
 
   
-
-
-
-
-
-
 
 
 

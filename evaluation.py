@@ -97,6 +97,7 @@ def calculateCmcFromRanks(ranks,id_probes):
     cmc=np.cumsum(rank)/len(id_probes)
     return np.array(cmc)     
 
+#Prende in ingresso i ranks e calcola mAP. 
 def calculate_mAP(ranks,id_query,k):
     AP=[]
     pos=np.arange(1,len(ranks)+1)

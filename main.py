@@ -31,7 +31,7 @@ DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirMarket)
+testData,queryData,trainingData=loadCNN(DirDuke)
 
 #istogrammi RGB
 #testData,queryData,trainingData=loadMarket_1501(feature=True)
@@ -39,28 +39,27 @@ testData,queryData,trainingData=loadCNN(DirMarket)
 test_cams, test_feature, test_id, test_desc = testData
 query_cams, query_feature, query_id, query_desc = queryData
 train_cams, train_feature, train_id, train_desc = trainingData
-
     
+
+
 #Load BayesianModel gia addestrato
-B=loadFile('..\\B_Market_trained.pkl')
-#B=loadFile('..\\B_Duke_trained.pkl')
+Bayes=loadFile('..\\Bayes_Market_trained.pkl')
+#Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
 
 
 gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0:2], query_id[0:2]
+query,query_id = query_feature[0::], query_id[0::]
 
-
-    
+        
 start=time.time()
 
 
 print('START TEST')
 
 n,k=3,5
-results=[]
 vettori_cmc,ranks,mAP_list=[],[],[] 
 for i in range(n+1):
-    ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
+    ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,Bayes)
     ranks.append(ranks_label)
     print('Ranks calcolato')
     
@@ -76,9 +75,25 @@ for i in range(n+1):
     #Calcolo la nuova query    
     query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
     print('Nuova query calcolata')
-k_n_ranks_cmc_mAP=[k,n,ranks,vettori_cmc,mAP_list]
-results.append(k_n_ranks_cmc_mAP)
-print('####################à')
+    
+
+#Cmc e mAP
+results=[len(set(query_id)),query_id]
+k_n_cmc_mAP=[k,n,vettori_cmc,mAP_list]
+results.append([k_n_cmc_mAP])
+
+#Solo i ranks
+results_ranks=[len(set(query_id)),query_id]
+k_n_ranks=[k,n,ranks]
+results_ranks.append([k_n_ranks])
+    
+#f=open('..//Risultati test//Duke_test_complete.pkl','wb') 
+#pickle.dump(results,f)
+#f.close()
+#
+#f=open('..//Risultati test//Ranks-Duke_test_complete.pkl','wb') 
+#pickle.dump(results_ranks,f)
+#f.close()
      
     
 end=time.time()
