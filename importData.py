@@ -109,47 +109,26 @@ def loadFile(filename):
     return X
    
     
-if __name__ == '__main__': 
+if __name__ == '__main__':
+    
 
-    #Load VIPeR
-#    camA,Id_A,camB,Id_B=loadVIPeR(False) 
+    DirMarket = '..\\FeatureCNN\\Market-1501'
+    DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
-#    
-#    
-#   #Load Market-1501
-    test,train,query=loadDukeMTMC_reID(False)
-    X=loadDukeMTMC_reID(True)
+	#Feature CNN
+#	testData,queryData,trainingData=loadCNN(DirDuke)
+	
+#	test_cams, test_feature, test_id, test_desc = testData
+#	query_cams, query_feature, query_id, query_desc = queryData
+#	train_cams, train_feature, train_id, train_desc = trainingData
+    a=2
+    X=loadCNN(DirMarket)
+
     
-    test0,test0_id=X[0:2]
-    train0,train0_id=X[2:4]
-    query0,query0_id=X[4:6]
-    
-    test0_cams,test0_desc=test[0],test[3]
-    train0_cams,train0_desc=train[0],train[3]
-    query0_cams,query0_desc=query[0],query[3]
-    
-    t=[test0_cams,test0,test0_id,test0_desc]
-    tr=[train0_cams,train0,train0_id,train0_desc]
-    q=[query0_cams,query0,query0_id,query0_desc]
-    X1=(t,q,tr)
-    
-    
-    f=open('DukeMTMC-reID_histogramRGB.pkl','wb')
-    pickle.dump(X1,f)
+    f=open('Market_feature.pkl','wb')
+    pickle.dump(X,f)
     f.close()
 
 
-
-
-#    
-#    #Load DukeMTMC_reID
-#    gallery,ID=loadDukeMTMC_reID()
-#    
-#    test0, train0, query0 = gallery
-#    id_test0, id_train0, id_query0 = ID
-#    
-  
-    #
-    print('Dataset importato')
     
                     

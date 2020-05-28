@@ -18,7 +18,7 @@ import time
 import random
 
 
-def queryExpansion(ranks_index,ranks_probability,gallery,query,K):
+def queryExpansion(ranks_index,ranks_probability,gallery,query,K,AQE=False,soglia=0):
     q_expansion=[]
     for i in range(len(query)):
         candidates_index=ranks_index[:,i][0:K]  #Prendo gli indici dei primi K
@@ -26,10 +26,14 @@ def queryExpansion(ranks_index,ranks_probability,gallery,query,K):
         q_exp=0 
         probability_sum=0
         for j in range(K):
-            probability=candidates_probability[j]
-            x=gallery[candidates_index[j]] #Dalla gallery prendo il feature vector del candidato
-            q_exp += probability*x
-            probability_sum += probability 
+            if AQE:
+                probability=1
+            else:
+                probability=candidates_probability[j]
+            if probability > soglia:
+                x=gallery[candidates_index[j]] #Dalla gallery prendo il feature vector del candidato
+                q_exp += probability*x
+                probability_sum += probability 
         q_exp=(q_exp +query[i])/(probability_sum +1)
         q_expansion.append(q_exp)    
     return q_expansion

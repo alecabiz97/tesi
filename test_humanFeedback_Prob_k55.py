@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar  3 14:36:45 2020
+Created on Tue May 12 19:07:27 2020
 
-@author: AleCabiz
+@author: aleca
 """
 
 import os
@@ -22,7 +22,7 @@ import time
 import random
 import pickle
 
-
+    
 
 print('START')
 
@@ -39,11 +39,8 @@ testData,queryData,trainingData=loadCNN(DirDuke)
 test_cams, test_feature, test_id, test_desc = testData
 query_cams, query_feature, query_id, query_desc = queryData
 train_cams, train_feature, train_id, train_desc = trainingData
-    
-print(len(test_id))
-print(len(query_id))
-print(len(train_id))
 
+    
 #Load BayesianModel gia addestrato
 #Bayes=loadFile('..\\Bayes_Market_trained.pkl')
 Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
@@ -52,13 +49,14 @@ Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
 gallery,gallery_id=test_feature,test_id
 query,query_id = query_feature[0::], query_id[0::]
 
-        
+
 start=time.time()
 
 
 print('START TEST')
+print(len(set(query_id)))
 
-n,k=3,5
+n,k=3,55
 vettori_cmc,ranks,mAP_list=[],[],[] 
 for i in range(n+1):
     ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,Bayes)
@@ -74,12 +72,15 @@ for i in range(n+1):
     mAP_list.append(mAP)
     
     
-    #Calcolo la nuova query    
-    query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
+    #Calcolo la nuova query 
+#    query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
+
+    #Calcolo la nuova query simulando il feedback da parte di un utente
+    query=queryExpansion_withFeedback(ranks_index,ranks_probability,ranks_label,gallery,query,query_id,k,False)
     print('Nuova query calcolata')
     
 
-#Cmc e mAP
+#Senza i ranks
 results=[len(set(query_id)),query_id]
 k_n_cmc_mAP=[k,n,vettori_cmc,mAP_list]
 results.append([k_n_cmc_mAP])
@@ -89,28 +90,20 @@ results_ranks=[len(set(query_id)),query_id]
 k_n_ranks=[k,n,ranks]
 results_ranks.append([k_n_ranks])
 
-rank1_mAP_functionOfn(results[2])
 
-    
-#f=open('..//Risultati test//Duke_test_complete.pkl','wb') 
-#pickle.dump(results,f)
-#f.close()
-#
-#f=open('..//Risultati test//Ranks-Duke_test_complete.pkl','wb') 
-#pickle.dump(results_ranks,f)
-#f.close()
-     
-    
+
+f=open('Duke_test_complete_HumanFeedback_Prob_k55.pkl','wb') 
+pickle.dump(results,f)
+f.close()
+
+f=open('..//Risultati test//Ranks-Duke_test_complete_HumanFeedback_Prob_k55.pkl','wb') 
+pickle.dump(results_ranks,f)
+f.close()
+  
+
+      
 end=time.time()
 tempo=end-start
 print(tempo)
-
-
-
-
-
-    
-
-
 
 

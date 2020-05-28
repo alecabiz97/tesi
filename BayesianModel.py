@@ -66,23 +66,39 @@ class BayesianModel(object):
         h_sameId, bins_sameId = self.hist_d_sameId
         h_diffId, bins_diffId = self.hist_d_differentId
         
-        #Calcolo P_d_sameId
-        if distanza > np.min(bins_sameId) and distanza < np.max(bins_sameId):
-            distanza_index=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
-        elif distanza <= np.min(bins_sameId):
-            distanza_index=0
-        elif distanza >= np.max(bins_sameId):
-            distanza_index=len(h_sameId) - 1    
+#        #Calcolo P_d_sameId
+#        if distanza > np.min(bins_sameId) and distanza < np.max(bins_sameId):
+#            distanza_index=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
+#        elif distanza <= np.min(bins_sameId):
+#            distanza_index=0
+#        elif distanza >= np.max(bins_sameId):
+#            distanza_index=len(h_sameId) - 1  
+            
+        #Alternativa 
+        distanza_index=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
+        if distanza_index<0:
+            distanza_index += 1
+        elif distanza_index == len(h_sameId):
+            distanza_index -= 1
+            
          
         P_d_sameId = h_sameId[distanza_index]/np.sum(h_sameId)
         
-        #Calcolo P_d_diffId
-        if distanza > np.min(bins_diffId) and distanza < np.max(bins_diffId):    
-            distanza_index=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
-        elif distanza <= np.min(bins_diffId):
-            distanza_index=0
-        elif distanza >= np.max(bins_diffId):
-            distanza_index=len(h_diffId) -1 
+#        #Calcolo P_d_diffId
+#        if distanza > np.min(bins_diffId) and distanza < np.max(bins_diffId):    
+#            distanza_index=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
+#        elif distanza <= np.min(bins_diffId):
+#            distanza_index=0
+#        elif distanza >= np.max(bins_diffId):
+#            distanza_index=len(h_diffId) -1 
+            
+        #Alternativa 
+        distanza_index=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
+        if distanza_index<0:
+            distanza_index += 1
+        elif distanza_index == len(h_diffId):
+            distanza_index -= 1
+    
 
         P_d_diffId = h_diffId[distanza_index]/np.sum(h_diffId)
         
@@ -163,49 +179,89 @@ def calculateRanks_Similarity(query,gallery,g_id,Bayes):
 
 
 
-        
+
     
                 
 if __name__ == '__main__':
     
     
-    saveFile('prova',B_Market)
+    
+    DirMarket = '..\\FeatureCNN\\Market-1501'
+    DirDuke = '..\\FeatureCNN\\DukeMTMC'
+    
+    #Feature CNN
+    testData,queryData,trainingData=loadCNN(DirMarket)
+    
+    #istogrammi RGB
+    #testData,queryData,trainingData=loadMarket_1501(feature=True)
+    
+    test_cams, test_feature, test_id, test_desc = testData
+    query_cams, query_feature, query_id, query_desc = queryData
+    train_cams, train_feature, train_id, train_desc = trainingData
+        
+    print('START')
+    
+    #Load BayesianModel gia addestrato
+    Bayes=loadFile('..\\Bayes_Market_trained.pkl')
+#    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+    B=BayesianModel()
+    B.train(train_feature,train_id)
+    print('TRAINING COMPLETE')
+    
+    gallery,g_id=test_feature,test_id
+    query,q_id = query_feature[0:2000:100], query_id[0:2000:100]
+
+    r1,r2,r3=calculateRanks(query,gallery,g_id,Bayes)
+    rr1,rr2,rr3=calculateRanks(query,gallery,g_id,B)
+
+    rrr1,rrr2,rrr3=calculateRanks_Similarity(query,gallery,g_id,Bayes)
     
     
-    h1,b1=B.hist_d_sameId
-    h2,b2=B.hist_d_differentId
-                
-    x1=np.zeros_like(h1)
-    x2=np.zeros_like(h2)
-    for i in range(len(b1)-1):
-        x1[i]=(b1[i] + b1[i+1])/2
-        x2[i]=(b2[i] + b2[i+1])/2
+    print('mAP')
+    print(calculate_mAP(r3,q_id,r3.shape[0]))
+    print(calculate_mAP(rr3,q_id,rr3.shape[0]))
+    print('Rank1')
+    print(calculateCmcFromRanks(r3,q_id))
+    print(calculateCmcFromRanks(rr3,q_id))
+
     
-    width_binsSame=(max(b1)-min(b1))/100
-    width_binsDiff=(max(b2)-min(b2))/100
-    
-    
-    tot=np.sum(h1)+np.sum(h2)
-    
-    h1=h1/tot
-    h2=h2/tot
-    
-    pl.bar(x1,h1,width_binsSame,label='sameId',color='r')
-    pl.bar(x2,h2,width_binsDiff,label='differentId',color='b')
-    #pl.plot(x1,h1,label='sameId',color='r')
-    #pl.plot(x2,h2,label='differentId',color='b')
-     
-    pl.legend()
-    pl.xlabel('Distance')
-    pl.ylabel('Probability')
-    pl.show()
+#    saveFile('prova',B_Market)
+#    
+#    
+#    h1,b1=B.hist_d_sameId
+#    h2,b2=B.hist_d_differentId
+#                
+#    x1=np.zeros_like(h1)
+#    x2=np.zeros_like(h2)
+#    for i in range(len(b1)-1):
+#        x1[i]=(b1[i] + b1[i+1])/2
+#        x2[i]=(b2[i] + b2[i+1])/2
+#    
+#    width_binsSame=(max(b1)-min(b1))/100
+#    width_binsDiff=(max(b2)-min(b2))/100
+#    
+#    
+#    tot=np.sum(h1)+np.sum(h2)
+#    
+#    h1=h1/tot
+#    h2=h2/tot
+#    
+#    pl.bar(x1,h1,width_binsSame,label='sameId',color='r')
+#    pl.bar(x2,h2,width_binsDiff,label='differentId',color='b')
+#    #pl.plot(x1,h1,label='sameId',color='r')
+#    #pl.plot(x2,h2,label='differentId',color='b')
+#     
+#    pl.legend()
+#    pl.xlabel('Distance')
+#    pl.ylabel('Probability')
+#    pl.show()
 
     
 
+            
                 
                 
-                
-                
+    
                 
                 
         
