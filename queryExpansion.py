@@ -17,9 +17,8 @@ from hog import *
 import time
 import random
 
-
 def queryExpansion(ranks_index,ranks_probability,gallery,query,K,AQE=False,soglia=0):
-    q_expansion=[]
+    q_expansion=np.zeros_like(query)
     for i in range(len(query)):
         candidates_index=ranks_index[:,i][0:K]  #Prendo gli indici dei primi K
         candidates_probability=ranks_probability[:,i][0:K] #Prendo il prime K probibilità del rank
@@ -35,11 +34,12 @@ def queryExpansion(ranks_index,ranks_probability,gallery,query,K,AQE=False,sogli
                 q_exp += probability*x
                 probability_sum += probability 
         q_exp=(q_exp +query[i])/(probability_sum +1)
-        q_expansion.append(q_exp)    
+        q_expansion[i]=q_exp
     return q_expansion
 
+
 def queryExpansion_withFeedback(ranks_index,ranks_probability,ranks_labels,gallery,query,query_id,K,probEquals1=False,wrongFeed=False):
-    q_expansion=[]
+    q_expansion=np.zeros_like(query)
     for i in range(len(query)):
         q_id=query_id[i]
         candidates_index=ranks_index[:,i][0:K]  #Prendo gli indici dei primi K
@@ -71,11 +71,11 @@ def queryExpansion_withFeedback(ranks_index,ranks_probability,ranks_labels,galle
                 cnt_distractor += 1
                 
         q_exp=(q_exp + query[i])/(probability_sum +1)
-        q_expansion.append(q_exp)    
+        q_expansion[i]=q_exp
     return q_expansion
 
 def queryExpansion_withRandomK(ranks_index,ranks_probability,gallery,query,K):
-    q_expansion=[]
+    q_expansion=np.zeros_like(query)
     for i in range(len(query)):
         candidates_index=ranks_index[:,i][0:K]  #Prendo gli indici dei primi K
         candidates_probability=ranks_probability[:,i][0:K] #Prendo il prime K probibilità del rank
@@ -89,9 +89,8 @@ def queryExpansion_withRandomK(ranks_index,ranks_probability,gallery,query,K):
             q_exp += probability*x
             probability_sum += probability 
         q_exp=(q_exp +query[i])/(probability_sum +1)
-        q_expansion.append(q_exp)    
+        q_expansion[i]=q_exp    
     return q_expansion
-
 
 
 

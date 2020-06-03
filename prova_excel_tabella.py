@@ -66,7 +66,7 @@ directory_300Market=[Dir17,Dir18,Dir24,Dir25]
 
 rows_baseline=[]
 rows=[]
-for Dir in directory_300Market:
+for Dir in directory_duke2:
     #Open file
     f=open(Dir,'rb')
     results=pickle.load(f)
@@ -77,19 +77,18 @@ for Dir in directory_300Market:
 
     for r in risultati:
         k,n,vettori_cmc,vettore_mAP=r
-        if ('withFeedback' in Dir and k==55) or ('withoutFeedback' in Dir and k==5):
-            vettori_cmc=[v.round(3)*100 for v in vettori_cmc]
-            vettore_mAP=[round(i,3)*100 for i in vettore_mAP]
-            for i in np.arange(1,n+1):
-                riga=[]
-                riga.append(Dir.split('//')[-1])
-                riga.append(i)
-                riga.append(vettore_mAP[i])
-                riga.append(vettori_cmc[i][0])
-                riga.append(vettori_cmc[i][4])
-                riga.append(vettori_cmc[i][9])
-                riga.append(vettori_cmc[i][19])
-                rows.append(riga)
+        vettori_cmc=[v.round(4)*100 for v in vettori_cmc]
+        vettore_mAP=[round(i,4)*100 for i in vettore_mAP]
+        for i in np.arange(1,n+1):
+            riga=[]
+            riga.append(Dir.split('//')[-1])
+            riga.append(i)
+            riga.append(vettore_mAP[i])
+            riga.append(vettori_cmc[i][0])
+            riga.append(vettori_cmc[i][4])
+            riga.append(vettori_cmc[i][9])
+            riga.append(vettori_cmc[i][19])
+            rows.append(riga)
             #Baseline
             rows_baseline.append(['Baseline',None,vettore_mAP[0],vettori_cmc[0][0],
                                vettori_cmc[0][4],vettori_cmc[0][9],vettori_cmc[0][19]])
@@ -121,4 +120,4 @@ ws = wb.active
 for r in dataframe_to_rows(df,index=False):
     ws.append(r)
     
-wb.save('..//Risultati test//tab_market2.xlsx')
+wb.save('..//Risultati test//tab_duke.xlsx')

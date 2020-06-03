@@ -31,7 +31,7 @@ DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirDuke)
+testData,queryData,trainingData=loadCNN(DirMarket)
 
 #istogrammi RGB
 #testData,queryData,trainingData=loadMarket_1501(feature=True)
@@ -45,8 +45,8 @@ print(len(query_id))
 print(len(train_id))
 
 #Load BayesianModel gia addestrato
-#Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+Bayes=loadFile('..\\Bayes_Market_trained.pkl')
+#Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
 
 
 gallery,gallery_id=test_feature,test_id
@@ -89,7 +89,7 @@ results_ranks=[len(set(query_id)),query_id]
 k_n_ranks=[k,n,ranks]
 results_ranks.append([k_n_ranks])
 
-rank1_mAP_functionOfn(results[2])
+#rank1_mAP_functionOfn(results[2])
 
     
 #f=open('..//Risultati test//Duke_test_complete.pkl','wb') 

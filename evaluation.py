@@ -95,9 +95,21 @@ def calculateCmcFromRanks(ranks,id_probes):
         rank[j] += 1
         i +=1
     cmc=np.cumsum(rank)/len(id_probes)
-    return np.array(cmc)     
+    return np.array(cmc) 
+
+#Prende in ingresso i ranks e calcola la cmc.
+def calculateCmcFromRanks2(ranks,id_probes):
+    cmc=np.zeros((len(ranks)))
+    i=0
+    for p_id in id_probes:
+        cmc += ((ranks[:,i]==p_id).cumsum()) >= 1 
+        i += 1
+    return cmc/len(id_probes)
+        
+     
 
 #Prende in ingresso i ranks e calcola mAP. 
+#Il paramentro k indica l'ultima posizione in cui calcolo AP.
 def calculate_mAP(ranks,id_query,k):
     AP=[]
     pos=np.arange(1,len(ranks)+1)
@@ -143,7 +155,8 @@ if __name__ == '__main__':
     r=np.array([1,1,2,2,3,4,3,4,3,2,1,2,3,4,3])
     r=r.reshape((3,5))
     q=[1,3,2,4,3]
-    cmc=calculateCmcFromRanks(r,q)
+    print(calculateCmcFromRanks(r,q))
+    print(calculateCmcFromRanks2(r,q))
     
 #    camA,Id_A,camB,Id_B=loadVIPeR(False)
 #    start=time.time()
@@ -154,11 +167,7 @@ if __name__ == '__main__':
 #    test_11B_vs_allA()
     
     
-    
 
-    end=time.time()
-    tempo=end-start
-    print('Tempo:' + str(tempo)) 
     
     
     

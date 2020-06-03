@@ -77,7 +77,7 @@ def plot_rank1_functionOfK(directory,testname,title):
     pl.show()   
 
 #Mostra l'andamento di rank1 all variare di n per i diversi metodi
-def plot_rank1_functionOfn(directory,testname,title,K):
+def plot_rank1_functionOfn(directory,testname,title):
     for Dir,name in zip(directory,testname):
         f=open(Dir,'rb')
         results=pickle.load(f)
@@ -89,12 +89,12 @@ def plot_rank1_functionOfn(directory,testname,title,K):
 
         for r in risultati: 
             k,n,vettori_cmc,vettore_mAP=r 
-            if k == K:
+            if ('withFeedback' in Dir and k==55) or ('withoutFeedback' in Dir and k==5):
                 x=np.arange(n+1)
                 rank1=[v[0] for v in vettori_cmc] #Rank1 dopo la prima iterazione
                 pl.plot(x,np.array(rank1)*100,'-o',label=name)
-    pl.ylim(0,100)
-    pl.legend()
+    pl.ylim(70,100)
+    pl.legend(loc='lower right')
     pl.grid(True)
     pl.ylabel('rank1(%)')
     pl.xlabel('n')
@@ -102,7 +102,7 @@ def plot_rank1_functionOfn(directory,testname,title,K):
     pl.show() 
 
 #Mostra l'andamento di mAP all variare di n per i diversi metodi
-def plot_mAP_functionOfn(directory,testname,title,K):
+def plot_mAP_functionOfn(directory,testname,title):
     for Dir,name in zip(directory,testname):
         f=open(Dir,'rb')
         results=pickle.load(f)
@@ -114,11 +114,11 @@ def plot_mAP_functionOfn(directory,testname,title,K):
 
         for r in risultati: 
             k,n,vettori_cmc,vettore_mAP=r 
-            if k == K:
+            if ('withFeedback' in Dir and k==55) or ('withoutFeedback' in Dir and k==5):
                 x=np.arange(n+1)
                 pl.plot(x,np.array(vettore_mAP)*100,'-o',label=name)
-    pl.ylim(0,100)
-    pl.legend()
+    pl.ylim(70,100)
+    pl.legend(loc='lower right')
     pl.grid(True)
     pl.ylabel('mAP(%)')
     pl.xlabel('n')
@@ -126,54 +126,6 @@ def plot_mAP_functionOfn(directory,testname,title,K):
     pl.show()     
     
     
-##Mostra l'andamento di mAP e rank1 all variare di k
-#def rank1_mAP_functionOfK(risultati,title=''):
-#    if len(risultati[0]) == 4:
-#        k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
-#    else:
-#        print('ERROR')
-#        
-#    r1_first=vettori_cmc[0][0]
-#    mAP_first=vettore_mAP[0]    
-#    x,rank1,mAP=[0],[r1_first],[mAP_first]
-#    for r in risultati: 
-#        k,n,vettori_cmc,vettore_mAP=r           
-#        x.append(k)
-#        r1=vettori_cmc[1][0] #Rank1 dopo la prima iterazione
-#        rank1.append(r1)
-#        mAP.append(vettore_mAP[1])
-#    
-#    pl.plot(x,mAP,'-o',label='mAP')
-#    pl.plot(x,rank1,'-o',label='Rank1')
-#    pl.ylim(0.5,1)
-#    pl.legend()
-#    pl.grid(True)
-#    pl.ylabel('Probability')
-#    pl.xlabel('K')
-#    pl.title(title)
-#    pl.show()
-# 
-##Mostra l'andamento di mAP e rank1 all variare di n    
-#def rank1_mAP_functionOfn(risultati,title=''):
-#    if len(risultati[0]) == 4:
-#        k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
-#    else:
-#        print('ERROR')
-#        
-#    x=np.arange(n_iteration+1)
-#    for r in risultati:
-#        k,n,vettori_cmc,vettore_mAP=r  
-#        print(k)
-#        rank1=[v[0] for v in vettori_cmc]
-#        pl.plot(x,vettore_mAP,'-o',label='mAP')
-#        pl.plot(x,rank1,'-o',label='Rank1')
-#        pl.legend()
-#        pl.grid(True)
-#        pl.ylim(0.5,1)
-#        pl.ylabel('Probability')
-#        pl.xlabel('Iteration(n)')
-#        pl.title(title)
-#        pl.show()
 
 #Mostra la cmc per ogni iterazione
 def plotCMC_forEachIteration(risultati,title=''):
@@ -198,9 +150,26 @@ def plotCMC_forEachIteration(risultati,title=''):
         pl.plot()
         pl.show()     
 
+def evaluation_forEachIdentity(ranks,id_query):
+    resultati_totali=[]
+    id_query=np.array(id_query)
+    labels=list(set(id_query))
+    for q in labels:
+        colonne=np.array(id_query==q)
+        rank_tmp=ranks[:,colonne]
+        rank1=calculateCmcFromRanks(rank_tmp,[q])[0] #Calcolo rank1
+        mAP=(calculate_mAP(rank_tmp,[q],len(rank_tmp)))
+        if rank1 < 0.9:  
+            results=[q]
+            results.append(rank1)
+            results.append(mAP)
+            resultati_totali.append(results)
+    return resultati_totali
                   
 if __name__ == '__main__':
-    
+
+
+          
 #Duke
 #    Dir='..//Risultati test//Duke//Duke_test_complete.pkl'
 #    Dir='..//Risultati test//Duke//Duke_results_100Id.pkl'
@@ -246,32 +215,34 @@ if __name__ == '__main__':
     
 #################################################
     
-    f=open(Dir,'rb')
-    results=pickle.load(f)
-    f.close()
-    
-    n_id,q_id,risultati=results
+#    f=open(Dir,'rb')
+#    results=pickle.load(f)
+#    f.close()
+#    
+#    n_id,q_id,risultati=results
     
 #    title='Market-1501'
-    title='DukeMTMC-reID'
+#    title='DukeMTMC-reID'
         
 #    rank1_mAP_functionOfK(risultati,title)
-    print(Dir)
-    rank1_mAP_functionOfn(risultati,title)
+#    print(Dir)
+#    rank1_mAP_functionOfn(risultati,title)
     
 #    plotCMC_forEachIteration(risultati,title)
     
-#    directory_duke=[Dir1,Dir2,Dir3,Dir4]
-#    directory_market=[Dir5,Dir6,Dir7,Dir8]
-#    testname=['AQE','BQE','Feedback pesato','Feedback non pesato']
-#    title_duke='DukeMTMC-reID'
-#    title_market='Market-1501'
+    directory_duke=[Dir1,Dir2,Dir3,Dir4]
+    nuova_cartella='C://Users//aleca//Desktop//Nuova cartella//'
+    directory_duke2=[nuova_cartella +d.split('//')[-1] for d in directory_duke]
+    directory_market=[Dir5,Dir6,Dir7,Dir8]
+    testname=['AQE','BQE','Feedback pesato','Feedback non pesato']
+    title_duke='DukeMTMC-reID'
+    title_market='Market-1501'
 
 #    plot_mAP_functionOfK(directory_market,testname,title)
 #    plot_rank1_functionOfK(directory_duke,testname,title_duke)
     
-#    plot_rank1_functionOfn(directory_duke,testname,title_duke,55)
-#    plot_mAP_functionOfn(directory_duke,testname,title_duke,55)
+    plot_rank1_functionOfn(directory_duke2,testname,title_duke)
+    plot_mAP_functionOfn(directory_duke2,testname,title_duke)
 
     
     
