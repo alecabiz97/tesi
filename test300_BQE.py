@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 22 11:22:12 2020
+Created on Fri Jun  5 17:55:36 2020
 
 @author: aleca
 """
 
-
 import os
-import glob
-from PIL import Image
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
@@ -19,51 +16,45 @@ from Lbp import *
 from hog import *
 from BayesianModel import *
 from queryExpansion import *
-
-import time
-import random
 import pickle
-
 
 #Test con 300 immagini per studiare le prestazioni al variare delle iterazioni e k.
 #n=10 e k varia tra 5,15,25,35,45,55
 #Niente feedback e per la probabilità la soglia è 0,5
 #Dataset Market e Duke
 
+#Scelta dataset
+Dataset='Duke'
+#Dataset='Market'
+if Dataset == 'Duke':
+    DirCNN= '..\\FeatureCNN\\DukeMTMC'
+    DirBayes='..\\Bayes_Duke_trained.pkl'
+elif Dataset == 'Market':
+    DirCNN= '..\\FeatureCNN\\Market-1501'
+    DirBayes='..\\Bayes_Market_trained.pkl'
+else:
+    print('ERRORE')
+
 print('START')
 
-    
-DirMarket = '..\\FeatureCNN\\Market-1501'
-DirDuke = '..\\FeatureCNN\\DukeMTMC'
-
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirDuke)
-
-#istogrammi RGB
-#testData,queryData,trainingData=loadMarket_1501(feature=True)
+testData,queryData,trainingData=loadCNN(DirCNN)
 
 test_cams, test_feature, test_id, test_desc = testData
 query_cams, query_feature, query_id, query_desc = queryData
 train_cams, train_feature, train_id, train_desc = trainingData
-
-    
+ 
 #Load BayesianModel gia addestrato
-#Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+Bayes=loadFile(DirBayes)
 
 print('TRAINING COMPLETE')
-
-   
-start=time.time()
-    
+     
 gallery,gallery_id=test_feature,test_id
 query,query_id=query_feature[0:300],query_id[0:300] 
 
 query_first=query
 
-
 print('START TEST')
-
 
 #Calcolo primo rank
 first_ranks_index,first_ranks_probability,first_ranks_label =calculateRanks(query,gallery,gallery_id,Bayes)
@@ -114,15 +105,10 @@ for k in [5,15,25,35,45,55]:
 risultatiTest.append(results)  
 risultatiTest_Ranks.append(results_Ranks)
     
-f=open('Duke_300pics_k_n_withoutFeedback_soglia0,5.pkl','wb')
+f=open(Dataset + '_300pics_k_n_withoutFeedback_soglia0,5.pkl','wb')
 pickle.dump(risultatiTest,f)
 f.close()
 
-f=open('Ranks-Duke_300pics_k_n_withoutFeedback_soglia0,5.pkl.pkl','wb')
+f=open('Ranks-'+ Dataset + '_300pics_k_n_withoutFeedback_soglia0,5.pkl','wb')
 pickle.dump(risultatiTest_Ranks,f)
 f.close()
-
-    
-end=time.time()
-tempo=end-start
-print(tempo)

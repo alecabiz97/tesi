@@ -126,7 +126,7 @@ def plot_mAP_functionOfn(directory,testname,title):
     pl.show()     
     
     
-
+#BOZZE
 #Mostra la cmc per ogni iterazione
 def plotCMC_forEachIteration(risultati,title=''):
     for r in risultati:
@@ -209,11 +209,13 @@ if __name__ == '__main__':
     Dir7='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob.pkl'
     Dir8='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob1.pkl' 
 #    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55.pkl'
-    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'    
+#    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'    
 #    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob1_k55.pkl'
 #    Dir='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'
     
 #################################################
+    
+
     
 #    f=open(Dir,'rb')
 #    results=pickle.load(f)
@@ -233,16 +235,17 @@ if __name__ == '__main__':
     directory_duke=[Dir1,Dir2,Dir3,Dir4]
     nuova_cartella='C://Users//aleca//Desktop//Nuova cartella//'
     directory_duke2=[nuova_cartella +d.split('//')[-1] for d in directory_duke]
+    
     directory_market=[Dir5,Dir6,Dir7,Dir8]
     testname=['AQE','BQE','Feedback pesato','Feedback non pesato']
     title_duke='DukeMTMC-reID'
     title_market='Market-1501'
 
-#    plot_mAP_functionOfK(directory_market,testname,title)
-#    plot_rank1_functionOfK(directory_duke,testname,title_duke)
+    plot_mAP_functionOfK(directory_duke2,testname,title_duke)
+    plot_rank1_functionOfK(directory_duke2,testname,title_duke)
     
-    plot_rank1_functionOfn(directory_duke2,testname,title_duke)
-    plot_mAP_functionOfn(directory_duke2,testname,title_duke)
+#    plot_rank1_functionOfn(directory_duke2,testname,title_duke)
+#    plot_mAP_functionOfn(directory_duke2,testname,title_duke)
 
     
     

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 26 16:07:21 2020
+Created on Fri Jun  5 17:32:36 2020
 
 @author: aleca
 """
-
 import os
-import glob
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
@@ -16,44 +14,36 @@ from evaluation import *
 from Lbp import *
 from hog import *
 from BayesianModel import *
-from analisi_risultati import *
 from queryExpansion import *
-import time
-import random
 import pickle
 
+#Test AQE con n=3 e k=5
 
+#Scelta dataset
+Dataset='Duke'
+#Dataset='Market'
+if Dataset == 'Duke':
+    DirCNN= '..\\FeatureCNN\\DukeMTMC'
+    DirBayes='..\\Bayes_Duke_trained.pkl'
+elif Dataset == 'Market':
+    DirCNN= '..\\FeatureCNN\\Market-1501'
+    DirBayes='..\\Bayes_Market_trained.pkl'
+else:
+    print('ERRORE')
 
 print('START')
-
-    
-DirMarket = '..\\FeatureCNN\\Market-1501'
-DirDuke = '..\\FeatureCNN\\DukeMTMC'
-
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirDuke)
-
-#istogrammi RGB
-#testData,queryData,trainingData=loadMarket_1501(feature=True)
-
-test_cams, test_feature, test_ids, test_desc = testData
-query_cams, query_feature, query_ids, query_desc = queryData
-train_cams, train_feature, train_ids, train_desc = trainingData
-    
-print(len(test_id))
-print(len(query_id))
-print(len(train_id))
+testData,queryData,trainingData=loadCNN(DirCNN)
 
 #Load BayesianModel gia addestrato
-#Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+Bayes=loadFile(DirBayes)
 
+test_cams, test_feature, test_id, test_desc = testData
+query_cams, query_feature, query_id, query_desc = queryData
+train_cams, train_feature, train_id, train_desc = trainingData
 
 gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0::], query_ids[0::]
-
-        
-start=time.time()
+query,query_id = query_feature[0::], query_id[0::]
 
 
 print('START TEST')
@@ -89,19 +79,13 @@ results_ranks=[len(set(query_id)),query_id]
 k_n_ranks=[k,n,ranks]
 results_ranks.append([k_n_ranks])
 
-rank1_mAP_functionOfn(results[2])
 
-    
-f=open('..//Risultati test//Duke_test_complete_AQE.pkl','wb') 
+f=open(Dataset + '_test_complete_AQE.pkl','wb') 
 pickle.dump(results,f)
 f.close()
 
-f=open('..//Risultati test//Ranks-Duke_test_complete_AQE.pkl','wb') 
+f=open('Ranks-' + Dataset + '_test_complete_AQE.pkl','wb') 
 pickle.dump(results_ranks,f)
 f.close()
-     
-    
-end=time.time()
-tempo=end-start
-print(tempo)
 
+print('Fine')

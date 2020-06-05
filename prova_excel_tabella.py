@@ -15,58 +15,85 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 
 #Duke
-#    Dir='..//Risultati test//Duke//Duke_test_complete.pkl'
 
-Dir5='..//Risultati test//Duke//Duke_300pics_k_n_withoutFeedback_AQE.pkl'
-Dir6='..//Risultati test//Duke//Duke_300pics_k_n_withoutFeedback_soglia0,5.pkl'
-Dir7='..//Risultati test//Duke//Duke_test_complete_AQE.pkl'
-Dir8='..//Risultati test//Duke//Duke_test_complete_AQE_Similarity.pkl'
-Dir9='..//Risultati test//Duke//Duke_test_complete_soglia0,5.pkl'    
-Dir10='..//Risultati test//Duke//Duke_test_complete_Similarity.pkl'
+Dir1='..//Risultati test//Duke//Duke_300pics_k_n_withoutFeedback_AQE.pkl'
+Dir2='..//Risultati test//Duke//Duke_300pics_k_n_withoutFeedback_soglia0,5.pkl'
+Dir3='..//Risultati test//Duke//Duke_test_complete_AQE.pkl'
+Dir4='..//Risultati test//Duke//Duke_test_complete_AQE_Similarity.pkl'
+Dir5='..//Risultati test//Duke//Duke_test_complete_soglia0,5.pkl'    
+Dir6='..//Risultati test//Duke//Duke_test_complete_Similarity.pkl'
     
 #    Feedback   
      
-Dir11='..//Risultati test//Duke//Duke_300pics_k_n_withFeedback_Prob.pkl'
-Dir12='..//Risultati test//Duke//Duke_300pics_k_n_withFeedback_Prob1.pkl'
-Dir13='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k55.pkl'
-Dir14='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'  
-Dir15='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob1_k55.pkl'   
-Dir16='..//Risultati test//Duke//Duke_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'    
+Dir7='..//Risultati test//Duke//Duke_300pics_k_n_withFeedback_Prob.pkl'
+Dir8='..//Risultati test//Duke//Duke_300pics_k_n_withFeedback_Prob1.pkl'
+Dir9='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k55.pkl'
+Dir10='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'  
+Dir11='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob1_k55.pkl'   
+Dir12='..//Risultati test//Duke//Duke_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'    
 
     
 #############################################
 #Market  
 
-Dir17='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_AQE.pkl'
-Dir18='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_soglia0,5.pkl' 
-Dir19='..//Risultati test//Market//Market_test_complete.pkl'
-Dir20='..//Risultati test//Market//Market_test_complete_Similarity.pkl'    
-Dir21='..//Risultati test//Market//Market_test_complete_AQE.pkl'
-Dir22='..//Risultati test//Market//Market_test_complete_AQE_Similarity.pkl'
-Dir23='..//Risultati test//Market//Market_test_complete_soglia0,5.pkl'    
+Dir13='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_AQE.pkl'
+Dir14='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_soglia0,5.pkl' 
+Dir15='..//Risultati test//Market//Market_test_complete_Similarity.pkl'    
+Dir16='..//Risultati test//Market//Market_test_complete_AQE.pkl'
+Dir17='..//Risultati test//Market//Market_test_complete_AQE_Similarity.pkl'
+Dir18='..//Risultati test//Market//Market_test_complete_soglia0,5.pkl'    
 
 #    Feedback   
 
-Dir24='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob.pkl'
-Dir25='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob1.pkl' 
-Dir26='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55.pkl'
-Dir27='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'    
-Dir28='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob1_k55.pkl'
-Dir29='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'
+Dir19='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob.pkl'
+Dir20='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob1.pkl' 
+Dir21='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55.pkl'
+Dir22='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'    
+Dir23='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob1_k55.pkl'
+Dir24='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'
 
-directory_duke=[Dir7,Dir9,Dir13,Dir15]
-directory_duke_similarity=[Dir8,Dir10,Dir14,Dir16]
+#CrossDataset
+Dir25='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_AQE.pkl'
+Dir26='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_soglia0,5.pkl'
+Dir27='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_HumanFeedback_Prob_k55.pkl'
+Dir28='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_HumanFeedback_Prob1_k55.pkl'
 
-directory_market=[Dir21,Dir23,Dir26,Dir28]
-directory_market_similarity=[Dir22,Dir20,Dir27,Dir29]
+Dir29='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_AQE_Similarity.pkl'
+Dir30='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_soglia0,5_Similarity.pkl'
+Dir31='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'
+Dir32='..//Risultati test//MarketFromDuke//MarketFromDuke_test_complete_HumanFeedback_Prob1_k55_Similarity.pkl'
+
+#Duke
+Dir33='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_AQE.pkl'
+Dir34='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_soglia0,5.pkl'
+Dir35='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_HumanFeedback_Prob_k55.pkl'
+Dir36='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_HumanFeedback_Prob1_k55.pkl'
+
+Dir37='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_AQE_Similarity.pkl'
+Dir38='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_soglia0,5_Similarity.pkl'
+Dir39='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'
+Dir40='..//Risultati test//DukeFromMarket//DukeFromMarket_test_complete_HumanFeedback_Prob1_k55_Similarity.pkl'
 
 
-directory_300Duke=[Dir5,Dir6,Dir11,Dir12]
-directory_300Market=[Dir17,Dir18,Dir24,Dir25]
+directory_duke=[Dir3,Dir5,Dir9,Dir11]
+directory_duke_similarity=[Dir4,Dir6,Dir10,Dir12]
+directory_DukeFromMarket=[Dir33,Dir34,Dir35,Dir36]
+directory_DukeFromMarket_Similarity=[Dir37,Dir38,Dir39,Dir40]
+
+
+directory_market=[Dir16,Dir18,Dir21,Dir23]
+directory_market_similarity=[Dir17,Dir15,Dir22,Dir24]
+
+directory_MarketFromDuke=[Dir25,Dir26,Dir27,Dir28]
+directory_MarketFromDuke_Similarity=[Dir29,Dir30,Dir31,Dir32]
+
+
+#directory_300Duke=[Dir1,Dir2,Dir7,Dir8]
+#directory_300Market=[Dir13,Dir14,Dir19,Dir20]
 
 rows_baseline=[]
 rows=[]
-for Dir in directory_duke2:
+for Dir in directory_MarketFromDuke_Similarity:
     #Open file
     f=open(Dir,'rb')
     results=pickle.load(f)
@@ -120,4 +147,4 @@ ws = wb.active
 for r in dataframe_to_rows(df,index=False):
     ws.append(r)
     
-wb.save('..//Risultati test//tab_duke.xlsx')
+wb.save('..//Risultati test//tab.xlsx')

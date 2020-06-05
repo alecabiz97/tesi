@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 22 11:33:38 2020
+Created on Fri Jun  5 18:01:15 2020
 
 @author: aleca
 """
 
 import os
-import glob
-from PIL import Image
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
@@ -18,45 +16,41 @@ from Lbp import *
 from hog import *
 from BayesianModel import *
 from queryExpansion import *
-
-import time
-import random
 import pickle
-
 
 #Test con 300 immagini per studiare le prestazioni al variare delle iterazioni e k.
 #n=10 e k varia tra 5,15,25,35,45,55
-#Con feedback pesando con le rispettive probabilità
+#Feedback pesato
 #Dataset Market e Duke
+
+#Scelta dataset
+Dataset='Duke'
+#Dataset='Market'
+if Dataset == 'Duke':
+    DirCNN= '..\\FeatureCNN\\DukeMTMC'
+    DirBayes='..\\Bayes_Duke_trained.pkl'
+elif Dataset == 'Market':
+    DirCNN= '..\\FeatureCNN\\Market-1501'
+    DirBayes='..\\Bayes_Market_trained.pkl'
+else:
+    print('ERRORE')
 
 print('START')
 
-    
-DirMarket = '..\\FeatureCNN\\Market-1501'
-DirDuke = '..\\FeatureCNN\\DukeMTMC'
-
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirDuke)
+testData,queryData,trainingData=loadCNN(DirCNN)
 
-#istogrammi RGB
-#testData,queryData,trainingData=loadMarket_1501(feature=True)
-
-test_cams, test_feature, test_ids, test_desc = testData
-query_cams, query_feature, query_ids, query_desc = queryData
-train_cams, train_feature, train_ids, train_desc = trainingData
-
-    
+test_cams, test_feature, test_id, test_desc = testData
+query_cams, query_feature, query_id, query_desc = queryData
+train_cams, train_feature, train_id, train_desc = trainingData
+ 
 #Load BayesianModel gia addestrato
-#Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+Bayes=loadFile(DirBayes)
 
 print('TRAINING COMPLETE')
-
-   
-start=time.time()
-    
-gallery,gallery_id=test_feature,test_ids
-query,query_id=query_feature[0:300],query_ids[0:300] 
+     
+gallery,gallery_id=test_feature,test_id
+query,query_id=query_feature[0:300],query_id[0:300] 
 
 query_first=query
 
@@ -75,8 +69,8 @@ first_mAP=calculate_mAP(first_ranks_label,query_id,first_ranks_label.shape[0])
 n=10
 results,results_Ranks=[],[]
 
-risultatiTest=[len(labels),query_id]
-risultatiTest_Ranks=[len(labels),query_id]
+risultatiTest=[len(set(query_id)),query_id]
+risultatiTest_Ranks=[len(set(query_id)),query_id]
 for k in [5,15,25,35,45,55]: 
     query=query_first
     ranks_index,ranks_probability,ranks_label = first_ranks_index,first_ranks_probability,first_ranks_label 
@@ -112,15 +106,12 @@ for k in [5,15,25,35,45,55]:
 risultatiTest.append(results)  
 risultatiTest_Ranks.append(results_Ranks)
     
-f=open('Duke_300pics_k_n_withFeedback_Prob.pkl','wb')
+f=open(Dataset + '_300pics_k_n_FeedbackPesato.pkl','wb')
 pickle.dump(risultatiTest,f)
 f.close()
 
-f=open('Ranks-Duke_300pics_k_n_withFeedback_Prob.pkl','wb')
+f=open('Ranks-'+ Dataset + '_300pics_k_n_FeedbackPesato.pkl','wb')
 pickle.dump(risultatiTest_Ranks,f)
 f.close()
 
-    
-end=time.time()
-tempo=end-start
-print(tempo)
+print('Fine')

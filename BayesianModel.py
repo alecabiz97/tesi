@@ -194,35 +194,34 @@ if __name__ == '__main__':
     query_cams, query_feature, query_id, query_desc = queryData
     train_cams, train_feature, train_id, train_desc = trainingData
     
-
+      
     print('START')
     
     #Load BayesianModel gia addestrato
-    Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-#    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+#    Bayes=loadFile('..\\Bayes_Market_trained.pkl')
+    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
     print('TRAINING COMPLETE')
     
-    gallery,g_id=test_feature,test_id
-    query,q_id = query_feature[0:2000:10], query_id[0:2000:10]
-
-    #r1,r2,r3=calculateRanks_Similarity(query,gallery,g_id,Bayes)
-    n,k=1,5
+#    gallery,g_id=test_feature,test_id
+#    query,q_id = query_feature[0:100], query_id[0:100]
+    
+    n,k=0,5
     q1,q2=query,query
     for i in range(n+1):
-        r1,r2,r3=calculateRanks(q1,gallery,g_id,Bayes)
+        #r1,r2,r3=calculateRanks(q1,gallery,g_id,Bayes)
         rr1,rr2,rr3=calculateRanks_Similarity(q2,gallery,g_id,Bayes)
 
         #Probabilità
-        mAP=calculate_mAP(r3,q_id,r3.shape[0])
-        rank1=calculateCmcFromRanks2(r3,q_id)[0]
-        print(('Prob',mAP,rank1))
+#        mAP=calculate_mAP(r3,q_id,r3.shape[0])
+#        rank1=calculateCmcFromRanks2(r3,q_id)[0]
+#        print(('Prob',mAP,rank1))
         
         #Similarità
         mAP=calculate_mAP(rr3,q_id,rr3.shape[0])
         rank1=calculateCmcFromRanks2(rr3,q_id)[0]
         print(('Sim',mAP,rank1))
     
-        q1=queryExpansion(r1,r2,gallery,query,k,AQE=False,soglia=0)
+        #q1=queryExpansion(r1,r2,gallery,query,k,AQE=False,soglia=0)
         q2=queryExpansion(rr1,rr2,gallery,query,k,AQE=False,soglia=0)
     
         print('\n')
@@ -244,14 +243,36 @@ if __name__ == '__main__':
 #    pl.grid()
 #    pl.show()
         
+#    Dir9='..//FeatureCrossDataset//dukeMTMCfrommarket1501_gallery_descriptors.pkl'
+#    Dir10='..//FeatureCrossDataset//dukeMTMCfrommarket1501_query_descriptors.pkl'
+#    Dir11='..//FeatureCrossDataset//market1501fromdukeMTMC_gallery_descriptors.pkl'
+#    Dir12='..//FeatureCrossDataset//market1501fromdukeMTMC_query_descriptors.pkl'
+#    
+#    f=open(Dir9,'rb')
+#    dukeFromMarket_gallery=pickle.load(f)
+#    f.close()
+#    
+#    f=open(Dir10,'rb')
+#    dukeFromMarket_query=pickle.load(f)
+#    f.close()
+#    
+#    f=open(Dir11,'rb')
+#    marketFromDuke_gallery=pickle.load(f)
+#    f.close()
+#    
+#    f=open(Dir12,'rb')
+#    marketFromDuke_query=pickle.load(f)
+#    f.close() 
 
 
-
-    
+        #Cross dataset
+#    gallery,g_id=dukeFromMarket_gallery,test_id
+#    query,q_id = dukeFromMarket_query[0:100], query_id[0:100]
+#
 
             
                 
-                
+             
     
                 
                 

@@ -1,72 +1,83 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr 28 11:13:17 2020
+Created on Thu Jun  4 11:14:11 2020
 
-@author: AleCabiz
+@author: aleca
 """
 
-import os
-import glob
-import numpy as np
-from scipy import linalg
-import matplotlib.pyplot as pl
-from importData import *
-from histogram import *
-from evaluation import *
-from Lbp import *
-from hog import *
+
 from BayesianModel import *
-import time
-import random
 import pickle
 
-DirDuke = '..\\FeatureCNN\\DukeMTMC'
+#Market  
 
-#Feature CNN
-testData,queryData,trainingData=loadCNN(DirDuke)
+Dir13='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_AQE.pkl'
+Dir14='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_soglia0,5.pkl' 
+Dir15='..//Risultati test//Market//Market_test_complete_Similarity.pkl'    
+Dir16='..//Risultati test//Market//Market_test_complete_AQE.pkl'
+Dir17='..//Risultati test//Market//Market_test_complete_AQE_Similarity.pkl'
+Dir18='..//Risultati test//Market//Market_test_complete_soglia0,5.pkl'    
 
-#istogrammi RGB
-#testData,queryData,trainingData=loadMarket_1501(feature=True)
+#    Feedback   
 
-test_cams, test_feature, test_id, test_desc = testData
-query_cams, query_feature, query_id, query_desc = queryData
-train_cams, train_feature, train_id, train_desc = trainingData
+Dir19='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob.pkl'
+Dir20='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob1.pkl' 
+Dir21='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55.pkl'
+Dir22='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'    
+Dir23='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob1_k55.pkl'
+Dir24='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'
+
+nuova_cartella='C://Users//aleca//Desktop//Nuova cartella//Market//Ranks-'
+
+#directory_market=[Dir16,Dir18,Dir21,Dir23]
+#directory_market_similarity=[Dir17,Dir15,Dir22,Dir24]
+#
+#directory_market2=[nuova_cartella +d.split('//')[-1] for d in directory_market]
+dir_ranks='..//Risultati test//Market//Ranks//Ranks-'
+#directory_market3=[dir_ranks +d.split('//')[-1] for d in directory_market_similarity]
+
+dir_prova=[nuova_cartella +Dir16.split('//')[-1],dir_ranks +Dir17.split('//')[-1]]
+
+X=[]
+for Dir in dir_prova:
+    #Open file
+    f=open(Dir,'rb')
+    results=pickle.load(f)
+    f.close()
+
+    n_id,query_id,risultati=results
+    x=[]
+    x.append(Dir.split('//')[-1])
+    for r in risultati:
+        k,n,ranks=r
+        somma=np.sum(ranks[0][,:]==query_id)
+        index_false=np.where(ranks[0][0,:]!=query_id)
+        x.append(index_false)
+        x.append(somma)
+        print(somma)
+    X.append(x)
+    
+    
+        
 
     
-#Load BayesianModel gia addestrato
-#B=loadFile('..\\B_Market_trained.pkl')
-B=loadFile('..\\B_Duke_trained.pkl')
-
-
-gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0:20], query_id[0:20]
- 
-start=time.time()
-
-ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,B)
-end=time.time()
-tempo1=end-start
-print('v1: {}'.format(tempo1))
-
-start=time.time()
-ranks_index2,ranks_probability2,ranks_label2 =calculateRanks2(query,gallery,gallery_id,B)
-end=time.time()
-tempo2=end-start
-print('v2: {}'.format(tempo2))
-
-
-
-
-
-
-ds=B.d_sameId
-dd=B.d_differentId
-print(len(ds))
-s=0
-for i in tr:
-    cnt=train_id.count(i)
-    s += (cnt*(cnt-1))/2
-
-print(s)
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
