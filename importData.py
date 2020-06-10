@@ -13,7 +13,7 @@ import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
 import pickle
-import shelve
+
 
 def importFiles(Dir,filesExt):
     images,id_images,cams_images,descriptor_images=[],[],[],[]
@@ -116,6 +116,19 @@ def loadFile(filename):
     with open(filename, 'rb') as f:
         X=pickle.load(f)     
     return X
+        
+def loadFiles(Dir):
+    filesname,X=[],[]
+    for el in os.scandir(Dir):
+        if el.name.endswith('.pkl') and el.is_file():
+            Dir_file=os.path.join(Dir,el.name)
+            file=open(Dir_file,'rb')
+            X.append(pickle.load(file))
+            filesname.append(el.name)
+    return filesname,X
+            
+
+
    
     
 if __name__ == '__main__':

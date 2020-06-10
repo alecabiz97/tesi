@@ -8,7 +8,6 @@ Created on Tue Mar  3 14:36:45 2020
 import os
 import glob
 import numpy as np
-from scipy import linalg
 import matplotlib.pyplot as pl
 from importData import *
 from histogram import *
@@ -21,12 +20,10 @@ from queryExpansion import *
 import time
 import random
 import pickle
+#import ml_metrics as metrics
 
 
 
-print('START')
-
-    
 DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
@@ -35,82 +32,37 @@ testData,queryData,trainingData=loadCNN(DirMarket)
 
 #istogrammi RGB
 #testData,queryData,trainingData=loadMarket_1501(feature=True)
+Bayes=loadFile('..\\Bayes_Market_trained.pkl')
 
 test_cams, test_feature, test_id, test_desc = testData
 query_cams, query_feature, query_id, query_desc = queryData
 train_cams, train_feature, train_id, train_desc = trainingData
-    
-print(len(test_id))
-print(len(query_id))
-print(len(train_id))
+
+gallery,g_id=test_feature,test_id
+query,q_id=query_feature[0:20],query_id[0:20]
+
+r1,r2,r3=calculateRanks_Similarity(query,gallery,g_id,Bayes)
+x1=calculateCmcFromRanks(r3,q_id)
+m1=calculate_mAP(r3,q_id,len(r3))
+
+
+
 
 #Load BayesianModel gia addestrato
-Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-#Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
-
-
-gallery,gallery_id=test_feature,test_id
-query,query_id = query_feature[0::], query_id[0::]
-
-        
-start=time.time()
-
-
-print('START TEST')
-
-n,k=3,5
-vettori_cmc,ranks,mAP_list=[],[],[] 
-for i in range(n+1):
-    ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,Bayes)
-    ranks.append(ranks_label)
-    print('Ranks calcolato')
-    
-    #Calcolo la cmc
-    cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
-    vettori_cmc.append(cmc_vector)
-
-    #Calcolo mAP
-    mAP=calculate_mAP(ranks_label,query_id,len(ranks_label))
-    mAP_list.append(mAP)
-    
-    
-    #Calcolo la nuova query    
-    query=queryExpansion(ranks_index,ranks_probability,gallery,query,k)
-    print('Nuova query calcolata')
-    
-
-#Cmc e mAP
-results=[len(set(query_id)),query_id]
-k_n_cmc_mAP=[k,n,vettori_cmc,mAP_list]
-results.append([k_n_cmc_mAP])
-
-#Solo i ranks
-results_ranks=[len(set(query_id)),query_id]
-k_n_ranks=[k,n,ranks]
-results_ranks.append([k_n_ranks])
-
-#rank1_mAP_functionOfn(results[2])
-
-    
-#f=open('..//Risultati test//Duke_test_complete.pkl','wb') 
-#pickle.dump(results,f)
-#f.close()
+#Bayes=loadFile('..\\Bayes_Market_trained.pkl')
+##Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+#Bayes.calculateProbBayes(0.19)
+#print(min(Bayes.d_differentId))
+#print('TRAINING COMPLETE')
+##Bayes.plotTrainingHistogram(True)
+#d=np.arange(0,3,0.005)
+#s=[1/(1+i) for i in d]
+#p=[Bayes.calculateProbBayes(i) for i in d]
+#X=np.array([d,s,p])
 #
-#f=open('..//Risultati test//Ranks-Duke_test_complete.pkl','wb') 
-#pickle.dump(results_ranks,f)
-#f.close()
-     
-    
-end=time.time()
-tempo=end-start
-print(tempo)
-
-
-
-
-
-    
-
-
-
-
+#pl.plot(d,s,label='Similarità')
+#pl.plot(d,p,label='Probabilità sameId')
+#pl.title('Market')
+#pl.legend()
+#pl.grid()
+#pl.show()

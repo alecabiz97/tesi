@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jun  5 17:32:36 2020
+Created on Fri Jun  5 21:51:01 2020
 
 @author: aleca
 """
 import os
+import glob
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
@@ -14,19 +15,30 @@ from evaluation import *
 from Lbp import *
 from hog import *
 from BayesianModel import *
+from analisi_risultati import *
 from queryExpansion import *
+import time
+import random
 import pickle
 
-#Test AQE con n=3 e k=5
 
+#Test AQE con n=3 e k=5 cross dataset
 
-def test_AQE(Dataset):
-    if Dataset == 'Duke':
+#Scelta dataset
+#Dataset='DukeFromMarket'
+#Dataset='MarketFromDuke'
+def test_AQE_CrossDataset(Dataset):
+    if Dataset == 'DukeFromMarket':
         DirCNN= '..\\FeatureCNN\\DukeMTMC'
-        DirBayes='..\\Bayes_Duke_trained.pkl'
-    elif Dataset == 'Market':
-        DirCNN= '..\\FeatureCNN\\Market-1501'
+        #Cross Dataset
+        DirCross='..\\FeatureCNN\\CrossDataset\\DukeFromMarket_feature.pkl'
         DirBayes='..\\Bayes_Market_trained.pkl'
+        
+    elif Dataset == 'MarketFromDuke':
+        DirCNN= '..\\FeatureCNN\\Market-1501'
+        #Cross Dataset
+        DirCross='..\\FeatureCNN\\CrossDataset\\MarketFromDuke_feature.pkl'
+        DirBayes='..\\Bayes_Duke_trained.pkl'
     else:
         print('ERRORE')
     
@@ -41,8 +53,16 @@ def test_AQE(Dataset):
     query_cams, query_feature, query_id, query_desc = queryData
     train_cams, train_feature, train_id, train_desc = trainingData
     
+    #Cross dataset
+    f=open(DirCross,'rb')
+    test_feature, query_feature=pickle.load(f)
+    f.close()
+    
     gallery,gallery_id=test_feature,test_id
     query,query_id = query_feature[0::], query_id[0::]
+    
+            
+    start=time.time()
     
     
     print('START TEST')
@@ -79,6 +99,7 @@ def test_AQE(Dataset):
     results_ranks.append([k_n_ranks])
     
     
+        
     f=open(Dataset + '_test_complete_AQE.pkl','wb') 
     pickle.dump(results,f)
     f.close()

@@ -11,9 +11,6 @@ import matplotlib.pyplot as pl
 from importData import *
 from histogram import *
 from evaluation import *
-from Lbp import *
-from hog import *
-from queryExpansion import *
 import time
 import random
 
@@ -69,32 +66,30 @@ class BayesianModel(object):
         h_diffId, bins_diffId = self.hist_d_differentId
         
         #Calcolo P_d_sameId
-        distanza_index=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
-        if distanza_index<0:
-            distanza_index += 1
-            P_d_sameId = h_sameId[distanza_index]/np.sum(h_sameId)
-        if distanza_index == len(h_sameId):
-            distanza_index -= 1
+        distanza_index_sameId=np.sum(distanza>bins_sameId)-1 #è l'indice dell'intervallo in cui cade distanza
+        if distanza_index_sameId<0:
+            distanza_index_sameId += 1
+            P_d_sameId = h_sameId[distanza_index_sameId]/np.sum(h_sameId)
+        if distanza_index_sameId == len(h_sameId):
             P_d_sameId=0
         else:
-            P_d_sameId = h_sameId[distanza_index]/np.sum(h_sameId)
+            P_d_sameId = h_sameId[distanza_index_sameId]/np.sum(h_sameId)
             
         #Calcolo P_d_diffId
-        distanza_index=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
-        if distanza_index<0:
-            distanza_index += 1
+        distanza_index_diffId=np.sum(distanza>bins_diffId)-1 #è l'indice dell'intervallo dell'istogramma in cui cade distanza
+        if distanza_index_diffId<0:
             P_d_diffId = 0
-        elif distanza_index == len(h_diffId):
-            distanza_index -= 1
-            P_d_diffId = h_diffId[distanza_index]/np.sum(h_diffId)
+        elif distanza_index_diffId == len(h_diffId):
+            distanza_index_diffId -= 1
+            P_d_diffId = h_diffId[distanza_index_diffId]/np.sum(h_diffId)
         else:
-            P_d_diffId = h_diffId[distanza_index]/np.sum(h_diffId)
+            P_d_diffId = h_diffId[distanza_index_diffId]/np.sum(h_diffId)
                 
         #Calcolo P_d    
         P_d=(P_d_sameId*self.P_ltiEqualsltj)+(P_d_diffId*self.P_ltiNotEqualsltj)
         if P_d == 0:
             #Se P_d== 0 (d circa 0.2) quindi prendo il valore di probabilità adiacente
-            P_d_sameId = h_sameId[distanza_index-1]/np.sum(h_sameId)
+            P_d_sameId = h_sameId[distanza_index_sameId-1]/np.sum(h_sameId)
             P_d=(P_d_sameId*self.P_ltiEqualsltj)+(P_d_diffId*self.P_ltiNotEqualsltj)
 
             
@@ -173,6 +168,23 @@ def calculateRanks_Similarity(query,gallery,g_id,Bayes):
         column += 1
     return ranks_index,ranks_similarity,ranks_label  
 
+def calculateRanks_Distance(query,gallery,g_id,Bayes):
+    ranks_index=np.zeros((len(gallery),len(query)),int)
+    ranks_label=np.zeros((len(gallery),len(query)),int)
+    ranks_similarity=np.zeros((len(gallery),len(query)),float)
+    column=0
+    for q in query:
+        d=np.zeros(len(gallery))
+        i=0
+        for g in gallery:
+            d[i]=histogram_distance(q,g)
+            i+= 1
+        #sorted_i=np.argsort(-s)
+        #ranks_index[:,column] = sorted_i
+        #ranks_label[:,column] = [g_id[i] for i in sorted_i]
+        ranks_similarity[:,column]= d
+        column += 1
+    return np.transpose(ranks_similarity)  
 
 
 
@@ -198,51 +210,50 @@ if __name__ == '__main__':
     print('START')
     
     #Load BayesianModel gia addestrato
-#    Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
-    print('TRAINING COMPLETE')
+    Bayes=loadFile('..\\Bayes_Market_trained.pkl')
+#    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+#    Bayes.calculateProbBayes(0.19)
+#    print(min(Bayes.d_differentId))
+#    print('TRAINING COMPLETE')
+#    #Bayes.plotTrainingHistogram(True)
+#    d=np.arange(0,3,0.005)
+#    s=[1/(1+i) for i in d]
+#    p=[Bayes.calculateProbBayes(i) for i in d]
+#    X=np.array([d,s,p])
+#    
+#    pl.plot(d,s,label='Similarità')
+#    pl.plot(d,p,label='Probabilità sameId')
+#    pl.title('Market')
+#    pl.legend()
+#    pl.grid()
+#    pl.show()
     
-#    gallery,g_id=test_feature,test_id
-#    query,q_id = query_feature[0:100], query_id[0:100]
+    gallery,g_id=test_feature,test_id
+    query,q_id = query_feature[0:400], query_id[0:400]
     
     n,k=0,5
     q1,q2=query,query
     for i in range(n+1):
-        #r1,r2,r3=calculateRanks(q1,gallery,g_id,Bayes)
-        rr1,rr2,rr3=calculateRanks_Similarity(q2,gallery,g_id,Bayes)
+        r1,r2,r3=calculateRanks(q1,gallery,g_id,Bayes)
 
         #Probabilità
-#        mAP=calculate_mAP(r3,q_id,r3.shape[0])
-#        rank1=calculateCmcFromRanks2(r3,q_id)[0]
-#        print(('Prob',mAP,rank1))
+        mAP=calculate_mAP(r3,q_id,r3.shape[0])
+        rank1=calculateCmcFromRanks(r3,q_id)[0]
+        print(('Prob',mAP,rank1))
         
+        rr1,rr2,rr3=calculateRanks_Similarity(q2,gallery,g_id,Bayes)
+
         #Similarità
         mAP=calculate_mAP(rr3,q_id,rr3.shape[0])
-        rank1=calculateCmcFromRanks2(rr3,q_id)[0]
+        rank1=calculateCmcFromRanks(rr3,q_id)[0]
         print(('Sim',mAP,rank1))
-    
-        #q1=queryExpansion(r1,r2,gallery,query,k,AQE=False,soglia=0)
-        q2=queryExpansion(rr1,rr2,gallery,query,k,AQE=False,soglia=0)
-    
-        print('\n')
-    
-    #Load BayesianModel gia addestrato
-#    Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-#    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
 #    
-#    Bayes.plotTrainingHistogram(True)
-#    d=np.arange(0,3,0.005)
-#    s=[1/(1+i) for i in d]
-#    p=[Bayes.calculateProbBayes(i)[0] for i in d]
-#    p2=[Bayes.calculateProbBayes(i)[1] for i in d]
+#        q1=queryExpansion(r1,r2,gallery,query,k,AQE=False,soglia=0)
+#        q2=queryExpansion(rr1,rr2,gallery,query,k,AQE=False,soglia=0)
 #    
-#    pl.plot(d,s,label='Similarità')
-#    pl.plot(d,p,label='Probabilità sameId')
-#    pl.plot(d,p2,label='Probabilità differentId')
-#    pl.legend()
-#    pl.grid()
-#    pl.show()
-        
+#        print('\n')
+#    
+     
 #    Dir9='..//FeatureCrossDataset//dukeMTMCfrommarket1501_gallery_descriptors.pkl'
 #    Dir10='..//FeatureCrossDataset//dukeMTMCfrommarket1501_query_descriptors.pkl'
 #    Dir11='..//FeatureCrossDataset//market1501fromdukeMTMC_gallery_descriptors.pkl'
