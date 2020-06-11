@@ -89,11 +89,11 @@ def plot_rank1_functionOfn(directory,testname,title):
 
         for r in risultati: 
             k,n,vettori_cmc,vettore_mAP=r 
-            if ('withFeedback' in Dir and k==55) or ('withoutFeedback' in Dir and k==5):
+            if ('Feedback' in Dir and k==55) or (('AQE' in Dir or 'BQE' in Dir) and k==5):
                 x=np.arange(n+1)
                 rank1=[v[0] for v in vettori_cmc] #Rank1 dopo la prima iterazione
                 pl.plot(x,np.array(rank1)*100,'-o',label=name)
-    pl.ylim(70,100)
+    pl.ylim(50,100)
     pl.legend(loc='lower right')
     pl.grid(True)
     pl.ylabel('rank1(%)')
@@ -114,10 +114,10 @@ def plot_mAP_functionOfn(directory,testname,title):
 
         for r in risultati: 
             k,n,vettori_cmc,vettore_mAP=r 
-            if ('withFeedback' in Dir and k==55) or ('withoutFeedback' in Dir and k==5):
+            if ('Feedback' in Dir and k==55) or (('AQE' in Dir or 'BQE' in Dir) and k==5):
                 x=np.arange(n+1)
                 pl.plot(x,np.array(vettore_mAP)*100,'-o',label=name)
-    pl.ylim(70,100)
+    pl.ylim(50,100)
     pl.legend(loc='lower right')
     pl.grid(True)
     pl.ylabel('mAP(%)')
@@ -169,6 +169,7 @@ def evaluation_forEachIdentity(ranks,id_query):
 if __name__ == '__main__':
 
 
+
           
 #Duke
 #    Dir='..//Risultati test//Duke//Duke_test_complete.pkl'
@@ -176,8 +177,8 @@ if __name__ == '__main__':
 #    Dir='..//Risultati test//Duke//Duke_test_complete_randomK5.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_randomK10.pkl'
 
-    Dir1='..//Risultati test//Duke//Duke_300pics_k_n_withoutFeedback_AQE.pkl'
-    Dir2='..//Risultati test//Duke//Duke_300pics_k_n_withoutFeedback_soglia0,5.pkl'
+    Dir1='..//Risultati test//Duke300//Duke_300pics_k_n_AQE.pkl'
+    Dir2='..//Risultati test//Duke300//Duke_300pics_k_n_BQE.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_AQE.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_AQE_Similarity.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_soglia0,5.pkl'    
@@ -185,8 +186,8 @@ if __name__ == '__main__':
     
     #Feedback   
      
-    Dir3='..//Risultati test//Duke//Duke_300pics_k_n_withFeedback_Prob.pkl'
-    Dir4='..//Risultati test//Duke//Duke_300pics_k_n_withFeedback_Prob1.pkl'
+    Dir3='..//Risultati test//Duke300//Duke_300pics_k_n_FeedbackPesato.pkl'
+    Dir4='..//Risultati test//Duke300//Duke_300pics_k_n_Feedback_NonPesato.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k55.pkl'
 #    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'  
 #    Dir='..//Risultati test//Duke//Duke_test_complete_HumanFeedback_Prob1_k55.pkl'   
@@ -196,8 +197,8 @@ if __name__ == '__main__':
 ##############################################
 #Market  
 
-    Dir5='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_AQE.pkl'
-    Dir6='..//Risultati test//Market//Market_300pics_k_n_withoutFeedback_soglia0,5.pkl' 
+    Dir5='..//Risultati test//Market300//Market_300pics_k_n_AQE.pkl'
+    Dir6='..//Risultati test//Market300//Market_300pics_k_n_BQE.pkl' 
 #    Dir='..//Risultati test//Market//Market_test_complete.pkl'
 #    Dir='..//Risultati test//Market//Market_test_complete_Similarity.pkl'    
 #    Dir='..//Risultati test//Market//Market_test_complete_AQE.pkl'
@@ -206,8 +207,8 @@ if __name__ == '__main__':
 
     #Feedback   
 
-    Dir7='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob.pkl'
-    Dir8='..//Risultati test//Market//Market_300pics_k_n_withFeedback_Prob1.pkl' 
+    Dir7='..//Risultati test//Market300//Market_300pics_k_n_FeedbackPesato.pkl'
+    Dir8='..//Risultati test//Market300//Market_300pics_k_n_Feedback_NonPesato.pkl' 
 #    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55.pkl'
 #    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob_k55_Similarity.pkl'    
 #    Dir='..//Risultati test//Market//Market_test_complete_HumanFeedback_Prob1_k55.pkl'
@@ -233,19 +234,17 @@ if __name__ == '__main__':
 #    plotCMC_forEachIteration(risultati,title)
     
     directory_duke=[Dir1,Dir2,Dir3,Dir4]
-    nuova_cartella='C://Users//aleca//Desktop//Nuova cartella//'
-    directory_duke2=[nuova_cartella +d.split('//')[-1] for d in directory_duke]
     
     directory_market=[Dir5,Dir6,Dir7,Dir8]
     testname=['AQE','BQE','Feedback pesato','Feedback non pesato']
     title_duke='DukeMTMC-reID'
     title_market='Market-1501'
 
-    plot_mAP_functionOfK(directory_duke2,testname,title_duke)
-    plot_rank1_functionOfK(directory_duke2,testname,title_duke)
+    plot_mAP_functionOfK(directory_market,testname,title_market)
+    plot_rank1_functionOfK(directory_market,testname,title_market)
     
-#    plot_rank1_functionOfn(directory_duke2,testname,title_duke)
-#    plot_mAP_functionOfn(directory_duke2,testname,title_duke)
+    plot_rank1_functionOfn(directory_market,testname,title_market)
+    plot_mAP_functionOfn(directory_market,testname,title_market)
 
     
     

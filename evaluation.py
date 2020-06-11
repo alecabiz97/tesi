@@ -122,7 +122,7 @@ def calculate_mAP(ranks_index,ranks_label,query_ids,gallery_cams,query_cams):
 
 
 
-
+#VECCHIE FUNZIONI
 
 #Prende in ingresso i ranks e calcola la cmc.
 #def calculateCmcFromRanks(ranks,id_probes):
@@ -133,14 +133,9 @@ def calculate_mAP(ranks_index,ranks_label,query_ids,gallery_cams,query_cams):
 #        cmc += ((ranks[:,i]==p_id).cumsum()) >= 1 
 #        i += 1
 #    return cmc/len(id_probes)
-        
-
-
-
-
-     
-#Prende in ingresso i ranks e calcola mAP. 
-#Il paramentro k indica l'ultima posizione in cui calcolo AP.
+#     
+##Prende in ingresso i ranks e calcola mAP. 
+##Il paramentro k indica l'ultima posizione in cui calcolo AP.
 #def calculate_mAP(ranks,id_query,k):
 #    AP=[]
 #    pos=np.arange(1,len(ranks)+1)

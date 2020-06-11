@@ -28,7 +28,7 @@ DirMarket = '..\\FeatureCNN\\Market-1501'
 DirDuke = '..\\FeatureCNN\\DukeMTMC'
 
 #Feature CNN
-testData,queryData,trainingData=loadCNN(DirMarket)
+testData,queryData,trainingData=loadCNN(DirDuke)
 
 #istogrammi RGB
 #testData,queryData,trainingData=loadMarket_1501(feature=True)

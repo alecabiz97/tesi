@@ -50,8 +50,8 @@ def test300_AQE(Dataset):
     
     print('TRAINING COMPLETE')
          
-    gallery,gallery_id=test_feature,test_id
-    query,query_id=query_feature[0:300],query_id[0:300] 
+    gallery,gallery_id,gallery_cams=test_feature,test_id,test_cams
+    query,query_id,query_cams=query_feature[0:300],query_id[0:300],query_cams[0:300]
     
     query_first=query
     
@@ -61,10 +61,10 @@ def test300_AQE(Dataset):
     first_ranks_index,first_ranks_probability,first_ranks_label =calculateRanks(query,gallery,gallery_id,Bayes)
     
     #Calcolo la prima cmc
-    first_cmc_vector=calculateCmcFromRanks(first_ranks_label,query_id)
+    first_cmc_vector=calculateCmcFromRanks(first_ranks_index,first_ranks_label,query_id,gallery_cams,query_cams)
     
     #Calcolo il primo mAP
-    first_mAP=calculate_mAP(first_ranks_label,query_id,first_ranks_label.shape[0])
+    first_mAP=calculate_mAP(first_ranks_index,first_ranks_label,query_id,gallery_cams,query_cams)
     
     n=10
     results,results_Ranks=[],[]
@@ -76,7 +76,7 @@ def test300_AQE(Dataset):
         ranks_index,ranks_probability,ranks_label = first_ranks_index,first_ranks_probability,first_ranks_label 
         vettori_cmc,ranks,mAP_list=[],[],[] 
         
-        ranks.append(first_ranks_label)
+        ranks.append(first_ranks_index)
         vettori_cmc.append(first_cmc_vector)
         mAP_list.append(first_mAP)
         print(k)
@@ -86,14 +86,14 @@ def test300_AQE(Dataset):
     
             ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,Bayes)
             print('Ranks calcolato')
-            ranks.append(ranks_label)
+            ranks.append(ranks_index)
             
             #Calcolo la cmc
-            cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
+            cmc_vector=calculateCmcFromRanks(ranks_index,ranks_label,query_id,gallery_cams,query_cams)
             vettori_cmc.append(cmc_vector)
         
             #Calcolo mAP
-            mAP=calculate_mAP(ranks_label,query_id,ranks_label.shape[0])
+            mAP=calculate_mAP(ranks_index,ranks_label,query_id,gallery_cams,query_cams)
             mAP_list.append(mAP)
             
         k_n_cmc_mAP=[k,n,vettori_cmc,mAP_list]

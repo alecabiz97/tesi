@@ -50,10 +50,6 @@ class BayesianModel(object):
         hist_sameId,bins_sameId=np.histogram(d_sameId,M)
         hist_differentId,bins_diffId=np.histogram(d_differentId,M)
         
-        #Calcolo probabilità 
-#        hist_sameId=hist_sameId/np.sum(hist_sameId) 
-#        hist_differentId=hist_differentId/np.sum(hist_differentId)
-        
         self.hist_d_sameId=[hist_sameId,bins_sameId]
         self.hist_d_differentId=[hist_differentId,bins_diffId]
         
@@ -62,6 +58,11 @@ class BayesianModel(object):
                 
         
     def calculateProbBayes(self,distanza):
+        #h_sameId: istogramma distanze sameId 
+        #h_diffId: istogramma distanze diffId 
+
+        #bins_sameId: valori estremi bins istogramma sameId
+        #bins_diffId: valori estremi bins istogramma diffId
         h_sameId, bins_sameId = self.hist_d_sameId
         h_diffId, bins_diffId = self.hist_d_differentId
         
@@ -95,8 +96,6 @@ class BayesianModel(object):
             
         #Teorema di Bayes
         P_sameId_d=(P_d_sameId*self.P_ltiEqualsltj)/P_d
-        #P_diffId=(P_d_diffId*self.P_ltiNotEqualsltj)/P_d
-        #print((P_sameId_d+P_diffId,P_sameId_d,P_diffId))
         return P_sameId_d
     
     def plotTrainingHistogram(self,norm=False):

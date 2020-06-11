@@ -10,6 +10,7 @@ import os
 import pandas as pd
 import numpy as np
 from importData import *
+
 import openpyxl
 import pickle
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -31,7 +32,6 @@ rows=[]
 for results,filename in zip(X,n):
 
     n_id,query_id,risultati=results
-
 
     for r in risultati:
         k,n,vettori_cmc,vettore_mAP=r

@@ -42,36 +42,45 @@ from test_FeedbackPesato_CrossDataset import *
 #Dataset='Duke'
 Dataset='Market'
 
-print('START ALL TEST')
-#Probabilità
-test_AQE(Dataset)
-test_BQE(Dataset)
-test_FeedbackPesato(Dataset)
-test_FeedbackNonPesato(Dataset)
+#print('START ALL TEST')
+#test300_AQE(Dataset)
+#print('TEST ESEGUITO')
+#test300_BQE(Dataset)
+#print('TEST ESEGUITO')
+#test300_FeedbackPesato(Dataset)
+#print('TEST ESEGUITO')
+#test300_FeedbackNonPesato(Dataset)
+#print('TEST ESEGUITO')
 
-#Similarità
-test_AQE_Similarity(Dataset)
+#Probabilità
+#test_AQE(Dataset)
+#test_BQE(Dataset)
+#test_FeedbackPesato(Dataset)
+#test_FeedbackNonPesato(Dataset)
+#
+##Similarità
+#test_AQE_Similarity(Dataset)
 test_BQE_Similarity(Dataset)
 test_FeedbackPesato_Similarity(Dataset)
 test_FeedbackNonPesato_Similarity(Dataset)
-
-
-#Scelta dataset
-CrossDataset='DukeFromMarket'
-CrossDataset='MarketFromDuke'
-
-#Cross Dataset
-#Probabilità
-test_AQE_CrossDataset(CrossDataset)
-test_BQE_CrossDataset(CrossDataset)
-test_FeedbackPesato_CrossDataset(CrossDataset)
-test_FeedbackNonPesato_CrossDataset(CrossDataset)
-
-#Similarità
-test_AQE_CrossDataset_Similarity(CrossDataset)
-test_BQE_CrossDataset_Similarity(CrossDataset)
-test_FeedbackPesato_CrossDataset_Similarity(CrossDataset)
-test_FeedbackNonPesato_CrossDataset_Similarity(CrossDataset)
+#
+#
+##Scelta dataset
+#CrossDataset='DukeFromMarket'
+#CrossDataset='MarketFromDuke'
+#
+##Cross Dataset
+##Probabilità
+#test_AQE_CrossDataset(CrossDataset)
+#test_BQE_CrossDataset(CrossDataset)
+#test_FeedbackPesato_CrossDataset(CrossDataset)
+#test_FeedbackNonPesato_CrossDataset(CrossDataset)
+#
+##Similarità
+#test_AQE_CrossDataset_Similarity(CrossDataset)
+#test_BQE_CrossDataset_Similarity(CrossDataset)
+#test_FeedbackPesato_CrossDataset_Similarity(CrossDataset)
+#test_FeedbackNonPesato_CrossDataset_Similarity(CrossDataset)
 
 
 

@@ -44,9 +44,8 @@ def test_FeedbackNonPesato(Dataset):
     #Load BayesianModel gia addestrato
     Bayes=loadFile(DirBayes)
     
-    gallery,gallery_id=test_feature,test_id
-    query,query_id = query_feature[0::], query_id[0::]
-    
+    gallery,gallery_id,gallery_cams=test_feature,test_id,test_cams
+    query,query_id,query_cams = query_feature[0::], query_id[0::], query_cams[0::]    
     
     start=time.time()
     
@@ -58,15 +57,15 @@ def test_FeedbackNonPesato(Dataset):
     vettori_cmc,ranks,mAP_list=[],[],[] 
     for i in range(n+1):
         ranks_index,ranks_probability,ranks_label =calculateRanks(query,gallery,gallery_id,Bayes)
-        ranks.append(ranks_label)
+        ranks.append(ranks_index)
         print('Ranks calcolato')
         
         #Calcolo la cmc
-        cmc_vector=calculateCmcFromRanks(ranks_label,query_id)
+        cmc_vector=calculateCmcFromRanks(ranks_index,ranks_label,query_id,gallery_cams,query_cams)
         vettori_cmc.append(cmc_vector)
     
         #Calcolo mAP
-        mAP=calculate_mAP(ranks_label,query_id,len(ranks_label))
+        mAP=calculate_mAP(ranks_index,ranks_label,query_id,gallery_cams,query_cams)
         mAP_list.append(mAP)
     
         #Calcolo la nuova query simulando il feedback da parte di un utente
