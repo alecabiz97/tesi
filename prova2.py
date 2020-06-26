@@ -19,8 +19,8 @@ DirDuke = '..\\FeatureCNN\\DukeMTMC'
 DirDataset=DirMarket
 Dir1='C:\\Users\\aleca\\Desktop\\Nuova cartella\\Ranksi-DukeFromMarket'
 
-n,X=loadFiles(Dir1)
-testData,queryData,trainingData=loadCNN(DirDuke)
+n,X=loadFiles("C:\\Users\\aleca\\Desktop\\Nuova cartella\\Nuova cartella")
+testData,queryData,trainingData=loadCNN(DirMarket)
 
 test_cams, test_feature, test_id, test_desc = testData
 query_cams, query_feature, query_id, query_desc = queryData
@@ -54,9 +54,9 @@ for results,filename in zip(X,n):
         x2.append(xk)
     X2.append(x2)
     
-    f=open(newFilename,'wb')
-    pickle.dump(X2,f)
-    f.close()
+#    f=open(newFilename,'wb')
+#    pickle.dump(X2,f)
+#    f.close()
         
         
         

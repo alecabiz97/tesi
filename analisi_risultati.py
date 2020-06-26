@@ -21,7 +21,7 @@ import time
 import random
 import pickle
 
-#Mostra l'andamento di mAP  all variare di k per i diversi metodi
+#Mostra l'andamento di mAP alla prima iterazione all variare di k per i diversi metodi
 def plot_mAP_functionOfK(directory,testname,title):
     for Dir,name in zip(directory,testname):
         f=open(Dir,'rb')
@@ -48,7 +48,7 @@ def plot_mAP_functionOfK(directory,testname,title):
     pl.title(title)
     pl.show()
  
-#Mostra l'andamento di rank1 all variare di k per i diversi metodi
+#Mostra l'andamento di rank1 alla prima iterazione all variare di k per i diversi metodi
 def plot_rank1_functionOfK(directory,testname,title):
     for Dir,name in zip(directory,testname):
         f=open(Dir,'rb')
@@ -74,7 +74,34 @@ def plot_rank1_functionOfK(directory,testname,title):
     pl.ylabel('rank1(%)')
     pl.xlabel('K')
     pl.title(title)
-    pl.show()   
+    pl.show()  
+
+#Mostra l'andamento di rank10 alla prima iterazione all variare di k per i diversi metodi
+def plot_rank10_functionOfK(directory,testname,title):
+    for Dir,name in zip(directory,testname):
+        f=open(Dir,'rb')
+        results=pickle.load(f)
+        f.close()
+    
+        n_id,q_id,risultati=results
+        
+        k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
+        r10_first=vettori_cmc[0][9]
+        x,rank10=[0],[r10_first]
+        for r in risultati: 
+            k,n,vettori_cmc,vettore_mAP=r           
+            x.append(k)
+            r10=vettori_cmc[1][9] #Rank10 dopo la prima iterazione
+            rank10.append(r10)
+        
+        pl.plot(x,np.array(rank10)*100,'-o',label=name)
+        pl.ylim(50,100)
+    pl.legend()
+    pl.grid(True)
+    pl.ylabel('rank10(%)')
+    pl.xlabel('K')
+    pl.title(title)
+    pl.show()      
 
 #Mostra l'andamento di rank1 all variare di n per i diversi metodi
 def plot_rank1_functionOfn(directory,testname,title):
@@ -100,6 +127,31 @@ def plot_rank1_functionOfn(directory,testname,title):
     pl.xlabel('n')
     pl.title(title)
     pl.show() 
+    
+#Mostra l'andamento di rank10 all variare di n per i diversi metodi
+def plot_rank10_functionOfn(directory,testname,title):
+    for Dir,name in zip(directory,testname):
+        f=open(Dir,'rb')
+        results=pickle.load(f)
+        f.close()
+    
+        n_id,q_id,risultati=results
+        
+        k,n_iteration,vettori_cmc,vettore_mAP=risultati[0]
+
+        for r in risultati: 
+            k,n,vettori_cmc,vettore_mAP=r 
+            if ('Feedback' in Dir and k==55) or (('AQE' in Dir or 'BQE' in Dir) and k==5):
+                x=np.arange(n+1)
+                rank10=[v[9] for v in vettori_cmc] #Rank1 dopo la prima iterazione
+                pl.plot(x,np.array(rank10)*100,'-o',label=name)
+    pl.ylim(50,100)
+    pl.legend(loc='lower right')
+    pl.grid(True)
+    pl.ylabel('rank10(%)')
+    pl.xlabel('n')
+    pl.title(title)
+    pl.show()    
 
 #Mostra l'andamento di mAP all variare di n per i diversi metodi
 def plot_mAP_functionOfn(directory,testname,title):
@@ -215,8 +267,21 @@ if __name__ == '__main__':
 #    Dir='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'
     
 #################################################
-    
-
+    dir_resultTest="..\\Risultati test\\"
+    filenames=['Duke_Rocchio.pkl','Market_Rocchio.pkl','DukeFromMarket_Rocchio.pkl','MarketFromDuke_Rocchio.pkl']
+    for filename in filenames:
+        f=open(dir_resultTest+filename,'rb')
+        n_id,q_id,risultati=pickle.load(f)
+        
+        for r in risultati:
+            k,n,v_cmc,v_mAP=r
+            r1=[v[0] for v in v_cmc]
+            r10=[v[9] for v in v_cmc]
+        
+        print(filename.split('.')[0])
+        for i in range(4):
+            print('Round {} mAP: {:.2f}  rank1: {:.2f}  rank10: {:.2f}'.format(i,v_mAP[i]*100,r1[i]*100,r10[i]*100))
+        print('\n')
     
 #    f=open(Dir,'rb')
 #    results=pickle.load(f)
@@ -233,20 +298,24 @@ if __name__ == '__main__':
     
 #    plotCMC_forEachIteration(risultati,title)
     
-    directory_duke=[Dir1,Dir2,Dir3,Dir4]
-    
-    directory_market=[Dir5,Dir6,Dir7,Dir8]
-    testname=['AQE','BQE','Feedback pesato','Feedback non pesato']
-    title_duke='DukeMTMC-reID'
-    title_market='Market-1501'
+#    directory_duke=[Dir1,Dir2,Dir3,Dir4]
+#    
+#    directory_market=[Dir5,Dir6,Dir7,Dir8]
+#    
+#    testname=['AQE','BQE','Feedback pesato','Feedback non pesato']
+#    title_duke='DukeMTMC-reID'
+#    title_market='Market-1501'
+#
+##    plot_mAP_functionOfK(directory_market,testname,title_market)
+#    plot_rank1_functionOfK(directory_duke,testname,title_duke)
+#    
+#    plot_rank1_functionOfn(directory_duke,testname,title_duke)
+##    plot_mAP_functionOfn(directory_market,testname,title_market)
+#
+#    plot_rank10_functionOfK(directory_duke,testname,title_duke)
+#    
+#    plot_rank10_functionOfn(directory_duke,testname,title_duke)
 
-    plot_mAP_functionOfK(directory_market,testname,title_market)
-    plot_rank1_functionOfK(directory_market,testname,title_market)
-    
-    plot_rank1_functionOfn(directory_market,testname,title_market)
-    plot_mAP_functionOfn(directory_market,testname,title_market)
-
-    
     
 
   
