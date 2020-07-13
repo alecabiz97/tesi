@@ -132,7 +132,10 @@ if __name__ == '__main__':
         
     print('START')
     
-    distance=calculateDistance(training,training_id)
+    #distance=calculateDistance(training,training_id)
+    f=open('..\\distance_100Id.pkl','rb')
+    distance=pickle.load(f)
+    f.close()
         
     M=100
     
@@ -167,8 +170,8 @@ if __name__ == '__main__':
         h1_n=(h1/np.sum(h1))/width_binsSame
         h2_n=(h2/np.sum(h2))/width_binsDiff
        
-        pl.bar(x1,h1_n,width_binsSame,label='Distance between images of Id {}'.format(y),color='r')
-        pl.bar(x2,h2_n,width_binsDiff,label='Distance between images different Id',color='b')
+        pl.bar(x1,h1_n,width_binsSame,label='Distances between images sameId',color='r')
+        pl.bar(x2,h2_n,width_binsDiff,label='Distances between images differentId',color='b')
     
         pl.legend()
         pl.xlabel('Distance')
@@ -176,8 +179,8 @@ if __name__ == '__main__':
         pl.show()
     
     #Load BayesianModel gia addestrato
-    B_Market=loadFile('..\\B_Market_trained')
-    d_same,d_different=B_Market.d_sameId,B_Market.d_differentId
+    Bayes_Market=loadFile('..\\Bayes_Market_trained.pkl')
+    d_same,d_different=Bayes_Market.d_sameId,Bayes_Market.d_differentId
     
     Ds,Dd,Y=[],[],[]
     print((len(d_same),len(d_different)))
@@ -191,12 +194,12 @@ if __name__ == '__main__':
     Dd.append(d_different)
     Y.append('Media')
     pl.boxplot(Dd,labels=Y)
+#    pl.boxplot(Ds,labels=Y)
+
     pl.title('Boxplot of distances between different Id')
     pl.ylabel('Distance')
     pl.xlabel('ID')
     pl.plot()
-#    pl.boxplot(Dd,labels=Y)
-#    pl.plot()
                
     
     

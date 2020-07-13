@@ -10,37 +10,41 @@ import os
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
-from importData import *
-from histogram import *
-from evaluation import *
-from Lbp import *
-from hog import *
+from utils.importData import *
+from utils.histogram import *
+from utils.evaluation import *
 from BayesianModel import *
-from queryExpansion import *
+from utils.queryExpansion import *
 import pickle
-from test_FeedbackPesato_Similarity import *
-from test_BQE_Similarity import *
-from test_FeedbackNonPesato_Similarity import *
-from test_FeedbackNonPesato import *
-from test300_FeedbackNonPesato import *
-from test300_FeedbackPesato import *
-from test_FeedbackPesato import *
-from test_AQE import *
-from test_AQE_Similarity import *
-from test300_BQE import *
-from test300_AQE import *
-from test_BQE import *
-from test_BQE_CrossDataset_Similarity import *
-from test_AQE_CrossDataset_Similarity import *
-from test_FeedbackNonPesato_CrossDataset_Similarity import *
-from test_FeedbackPesato_CrossDataset_Similarity import *
-from test_AQE_CrossDataset import *
-from test_FeedbackNonPesato_CrossDataset import *
-from test_BQE_CrossDataset import *
-from test_FeedbackPesato_CrossDataset import *
+from test_vari.test_FeedbackPesato_Similarity import *
+from test_vari.test_BQE_Similarity import *
+from test_vari.test_FeedbackNonPesato_Similarity import *
+from test_vari.test_FeedbackNonPesato import *
+from test_vari.test300_FeedbackNonPesato import *
+from test_vari.test300_FeedbackPesato import *
+from test_vari.test_FeedbackPesato import *
+from test_vari.test_AQE import *
+from test_vari.test_AQE_Similarity import *
+from test_vari.test300_BQE import *
+from test_vari.test300_AQE import *
+from test_vari.test_BQE import *
+from test_vari.test_BQE_CrossDataset_Similarity import *
+from test_vari.test_AQE_CrossDataset_Similarity import *
+from test_vari.test_FeedbackNonPesato_CrossDataset_Similarity import *
+from test_vari.test_FeedbackPesato_CrossDataset_Similarity import *
+from test_vari.test_AQE_CrossDataset import *
+from test_vari.test_FeedbackNonPesato_CrossDataset import *
+from test_vari.test_BQE_CrossDataset import *
+from test_vari.test_FeedbackPesato_CrossDataset import *
+
+#Rocchio
+from test_vari.test300_Rocchio import *
 
 #Dataset='Duke'
-Dataset='Market'
+#Dataset='Market'
+
+D=['Market','Duke']
+for Dataset in D:
 
 #print('START ALL TEST')
 #test300_AQE(Dataset)
@@ -53,16 +57,16 @@ Dataset='Market'
 #print('TEST ESEGUITO')
 
 #Probabilità
-#test_AQE(Dataset)
+#    test_AQE(Dataset)
 #test_BQE(Dataset)
 #test_FeedbackPesato(Dataset)
 #test_FeedbackNonPesato(Dataset)
 #
 ##Similarità
-#test_AQE_Similarity(Dataset)
-test_BQE_Similarity(Dataset)
-test_FeedbackPesato_Similarity(Dataset)
-test_FeedbackNonPesato_Similarity(Dataset)
+    test_AQE_Similarity(Dataset)
+#test_BQE_Similarity(Dataset)
+#test_FeedbackPesato_Similarity(Dataset)
+#test_FeedbackNonPesato_Similarity(Dataset)
 #
 #
 ##Scelta dataset

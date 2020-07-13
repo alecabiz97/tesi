@@ -11,11 +11,11 @@ import glob
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
-from importData import *
-from histogram import *
-from evaluation import *
-from Lbp import *
-from hog import *
+from utils.importData import *
+from utils.histogram import *
+from utils.evaluation import *
+from utils.Lbp import *
+from utils.hog import *
 from BayesianModel import *
 import time
 import random
@@ -177,46 +177,7 @@ def plot_mAP_functionOfn(directory,testname,title):
     pl.title(title)
     pl.show()     
     
-    
-#BOZZE
-#Mostra la cmc per ogni iterazione
-def plotCMC_forEachIteration(risultati,title=''):
-    for r in risultati:
-        if len(r) == 4:
-            k,n,vettori_cmc,vettore_mAP=r
-        else:
-            print('ERROR')
             
-        i=0
-        print(k)
-        for y in vettori_cmc:
-            x1=np.arange(1,len(y)+1)
-            pl.plot(x1,y,label='Iterazione: {}'.format(i))
-            i += 1
-        pl.legend()
-        pl.grid(True)
-        pl.xlim([1,100])
-        pl.ylabel('Probability')
-        pl.xlabel('Rank')
-        pl.title(title)
-        pl.plot()
-        pl.show()     
-
-def evaluation_forEachIdentity(ranks,id_query):
-    resultati_totali=[]
-    id_query=np.array(id_query)
-    labels=list(set(id_query))
-    for q in labels:
-        colonne=np.array(id_query==q)
-        rank_tmp=ranks[:,colonne]
-        rank1=calculateCmcFromRanks(rank_tmp,[q])[0] #Calcolo rank1
-        mAP=(calculate_mAP(rank_tmp,[q],len(rank_tmp)))
-        if rank1 < 0.9:  
-            results=[q]
-            results.append(rank1)
-            results.append(mAP)
-            resultati_totali.append(results)
-    return resultati_totali
                   
 if __name__ == '__main__':
 
@@ -267,21 +228,21 @@ if __name__ == '__main__':
 #    Dir='..//Risultati test//Market//Market_test_complete_Similarity_HumanFeedback_Prob1_k55.pkl'
     
 #################################################
-    dir_resultTest="..\\Risultati test\\"
-    filenames=['Duke_Rocchio.pkl','Market_Rocchio.pkl','DukeFromMarket_Rocchio.pkl','MarketFromDuke_Rocchio.pkl']
-    for filename in filenames:
-        f=open(dir_resultTest+filename,'rb')
-        n_id,q_id,risultati=pickle.load(f)
-        
-        for r in risultati:
-            k,n,v_cmc,v_mAP=r
-            r1=[v[0] for v in v_cmc]
-            r10=[v[9] for v in v_cmc]
-        
-        print(filename.split('.')[0])
-        for i in range(4):
-            print('Round {} mAP: {:.2f}  rank1: {:.2f}  rank10: {:.2f}'.format(i,v_mAP[i]*100,r1[i]*100,r10[i]*100))
-        print('\n')
+#    dir_resultTest="..\\Risultati test\\"
+#    filenames=['Duke_Rocchio.pkl','Market_Rocchio.pkl','DukeFromMarket_Rocchio.pkl','MarketFromDuke_Rocchio.pkl']
+#    for filename in filenames:
+#        f=open(dir_resultTest+filename,'rb')
+#        n_id,q_id,risultati=pickle.load(f)
+#        
+#        for r in risultati:
+#            k,n,v_cmc,v_mAP=r
+#            r1=[v[0] for v in v_cmc]
+#            r10=[v[9] for v in v_cmc]
+#        
+#        print(filename.split('.')[0])
+#        for i in range(4):
+#            print('Round {} mAP: {:.2f}  rank1: {:.2f}  rank10: {:.2f}'.format(i,v_mAP[i]*100,r1[i]*100,r10[i]*100))
+#        print('\n')
     
 #    f=open(Dir,'rb')
 #    results=pickle.load(f)
@@ -298,20 +259,23 @@ if __name__ == '__main__':
     
 #    plotCMC_forEachIteration(risultati,title)
     
-#    directory_duke=[Dir1,Dir2,Dir3,Dir4]
-#    
-#    directory_market=[Dir5,Dir6,Dir7,Dir8]
-#    
-#    testname=['AQE','BQE','Feedback pesato','Feedback non pesato']
-#    title_duke='DukeMTMC-reID'
-#    title_market='Market-1501'
-#
-##    plot_mAP_functionOfK(directory_market,testname,title_market)
+    Dir9="..\\Risultati test\\Duke300_Rocchio.pkl"
+    Dir10="..\\Risultati test\\Market300_Rocchio.pkl"
+    
+    directory_duke=[Dir1,Dir2,Dir3,Dir4,Dir9]
+    
+    directory_market=[Dir5,Dir6,Dir7,Dir8,Dir10]
+    
+    testname=['AQE','BQE','Feedback pesato','Feedback non pesato','Rocchio']
+    title_duke='DukeMTMC-reID'
+    title_market='Market-1501'
+
+    plot_mAP_functionOfK(directory_duke,testname,title_duke)
 #    plot_rank1_functionOfK(directory_duke,testname,title_duke)
-#    
+    
+#    plot_mAP_functionOfn(directory_market,testname,title_market)
 #    plot_rank1_functionOfn(directory_duke,testname,title_duke)
-##    plot_mAP_functionOfn(directory_market,testname,title_market)
-#
+
 #    plot_rank10_functionOfK(directory_duke,testname,title_duke)
 #    
 #    plot_rank10_functionOfn(directory_duke,testname,title_duke)

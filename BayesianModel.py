@@ -8,11 +8,12 @@ Created on Tue Apr  7 11:28:01 2020
 import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as pl
-from importData import *
-from histogram import *
-from evaluation import *
+from utils.importData import *
+from utils.histogram import *
+from utils.evaluation import *
 import time
 import random
+from scipy.spatial import distance
 
 
 
@@ -210,42 +211,40 @@ if __name__ == '__main__':
     
     #Load BayesianModel gia addestrato
     Bayes=loadFile('..\\Bayes_Market_trained.pkl')
-#    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
-#    Bayes.calculateProbBayes(0.19)
-#    print(min(Bayes.d_differentId))
-#    print('TRAINING COMPLETE')
-#    #Bayes.plotTrainingHistogram(True)
-#    d=np.arange(0,3,0.005)
-#    s=[1/(1+i) for i in d]
-#    p=[Bayes.calculateProbBayes(i) for i in d]
-#    X=np.array([d,s,p])
+    Bayes=loadFile('..\\Bayes_Duke_trained.pkl')
+    print('TRAINING COMPLETE')
+    #Bayes.plotTrainingHistogram(True)
+    d=np.arange(0,3,0.005)
+    s=[1/(1+i) for i in d]
+    p=[Bayes.calculateProbBayes(i) for i in d]
+    X=np.array([d,s,p])
+    
+    pl.plot(d,s,label='Similarità')
+    pl.plot(d,p,label='Probabilità sameId')
+    pl.title('Market')
+    pl.legend()
+    pl.grid()
+    pl.show()
+    
+#    gallery,g_id=test_feature,test_id
+#    query,q_id = query_feature[0:400], query_id[0:400]
 #    
-#    pl.plot(d,s,label='Similarità')
-#    pl.plot(d,p,label='Probabilità sameId')
-#    pl.title('Market')
-#    pl.legend()
-#    pl.grid()
-#    pl.show()
-    
-    gallery,g_id=test_feature,test_id
-    query,q_id = query_feature[0:400], query_id[0:400]
-    
-    n,k=0,5
-    q1,q2=query,query
-    for i in range(n+1):
-        r1,r2,r3=calculateRanks(q1,gallery,g_id,Bayes)
-
-        #Probabilità
-        mAP=calculate_mAP(r3,q_id,r3.shape[0])
-        rank1=calculateCmcFromRanks(r3,q_id)[0]
-        print(('Prob',mAP,rank1))
-        
-        rr1,rr2,rr3=calculateRanks_Similarity(q2,gallery,g_id,Bayes)
-
-        #Similarità
-        mAP=calculate_mAP(rr3,q_id,rr3.shape[0])
-        rank1=calculateCmcFromRanks(rr3,q_id)[0]
-        print(('Sim',mAP,rank1))
+#    n,k=0,5
+#    q1,q2=query,query
+#    for i in range(n+1):
+#        r1,r2,r3=calculateRanks(q1,gallery,g_id,Bayes)
+#
+#        #Probabilità
+#        mAP=calculate_mAP(r3,q_id,r3.shape[0])
+#        rank1=calculateCmcFromRanks(r3,q_id)[0]
+#        print(('Prob',mAP,rank1))
+#        
+#        rr1,rr2,rr3=calculateRanks_Similarity(q2,gallery,g_id,Bayes)
+#
+#        #Similarità
+#        mAP=calculate_mAP(rr3,q_id,rr3.shape[0])
+#        rank1=calculateCmcFromRanks(rr3,q_id)[0]
+#        print(('Sim',mAP,rank1))
 #    
 #        q1=queryExpansion(r1,r2,gallery,query,k,AQE=False,soglia=0)
 #        q2=queryExpansion(rr1,rr2,gallery,query,k,AQE=False,soglia=0)

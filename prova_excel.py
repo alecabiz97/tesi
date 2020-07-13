@@ -25,7 +25,23 @@ Dir6='..//Risultati test//DukeFromMarketSimilarity'
 Dir7='..//Risultati test//MarketFromDukeProbability'
 Dir8='..//Risultati test//MarketFromDukeSimilarity'
 
-n,X=loadFiles(Dir8)
+Dir9='..//Risultati test//DukeFeedback'
+Dir10='..//Risultati test//MarketFeedback'
+Dir11='..//Risultati test//DukeFromMarketFeedback'
+Dir12='..//Risultati test//MarketFromDukeFeedback'
+
+Dir13='..//Risultati test//DukeCoseno'
+Dir14='..//Risultati test//MarketCoseno'
+Dir15='..//Risultati test//DukeFromMarketCoseno'
+Dir16='..//Risultati test//MarketFromDukeCoseno'
+
+Dir17='..//Risultati test//Duke_CameraFilter'
+Dir18='..//Risultati test//Market_CameraFilter'
+Dir19='..//Risultati test//DukeFromMarket_CameraFilter'
+Dir20='..//Risultati test//MarketFromDuke_CameraFilter'
+
+
+n,X=loadFiles(Dir18)
 
 rows_baseline=[]
 rows=[]
